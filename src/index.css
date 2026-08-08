@@ -1,0 +1,312 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   App shell theme (the studio UI around the previews)
+   --------------------------------------------------------------------------- */
+@theme {
+  --font-sans: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: Sora, Inter, system-ui, sans-serif;
+
+  --color-shell-950: #08090d;
+  --color-shell-900: #0b0d13;
+  --color-shell-850: #10131b;
+  --color-shell-800: #161a24;
+  --color-shell-700: #1e2330;
+  --color-brand-400: #8b93ff;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-accent-400: #34d3c0;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-shell-950);
+    color: #e7eaf3;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-brand-500) 45%, transparent);
+  }
+
+  /* Subtle scrollbars for the control panel and preview stage. */
+  .scroll-slim {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  }
+  .scroll-slim::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .scroll-slim::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.14);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+  .scroll-slim::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.26);
+    background-clip: content-box;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Studio UI helpers
+   --------------------------------------------------------------------------- */
+@layer components {
+  .panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+  }
+
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--color-brand-400);
+    outline-offset: 2px;
+  }
+
+  /* Alternating checkerboard behind device frames. */
+  .stage-grid {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  .fade-up {
+    animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Template design tokens
+   ---------------------------------------------------------------------------
+   Every class below reads only CSS custom properties produced by
+   `styleVars()`. Templates therefore never hardcode a colour, radius or font,
+   which is what makes live restyling possible without touching markup.
+   --------------------------------------------------------------------------- */
+@layer components {
+  .tpl {
+    font-family: var(--tp-font-body);
+    background: var(--tp-bg);
+    color: var(--tp-text);
+    line-height: 1.6;
+    container-type: inline-size;
+    /* Clients can switch to a wide display font at any moment. `anywhere`
+       (not `break-word`) also shrinks intrinsic min-content width, so a long
+       Russian word can never inflate its grid/flex column on a phone. */
+    overflow-wrap: anywhere;
+  }
+
+  .tpl h1,
+  .tpl h2,
+  .tpl h3,
+  .tpl h4,
+  .tpl h5,
+  .tpl .t-head {
+    font-family: var(--tp-font-head);
+    letter-spacing: var(--tp-track-head);
+    line-height: 1.06;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+
+  .tpl p {
+    text-wrap: pretty;
+  }
+
+  /* --- colour helpers --- */
+  .t-primary { color: var(--tp-primary); }
+  .t-secondary { color: var(--tp-secondary); }
+  .t-muted { color: var(--tp-muted); }
+  .t-faint { color: var(--tp-faint); }
+  .t-bg-primary { background: var(--tp-primary); color: var(--tp-on-primary); }
+  .t-bg-secondary { background: var(--tp-secondary); color: var(--tp-on-secondary); }
+  .t-bg-tint { background: var(--tp-primary-tint); }
+  .t-bg-tint-2 { background: var(--tp-secondary-tint); }
+  .t-surface { background: var(--tp-surface); }
+  .t-surface-2 { background: var(--tp-surface-2); }
+  .t-inverse { background: var(--tp-inverse); color: var(--tp-on-inverse); }
+  .t-border { border: 1px solid var(--tp-border); }
+  .t-border-t { border-top: 1px solid var(--tp-border); }
+  .t-border-b { border-bottom: 1px solid var(--tp-border); }
+  .t-border-l { border-left: 1px solid var(--tp-border); }
+  .t-border-r { border-right: 1px solid var(--tp-border); }
+  .t-border-strong { border: 1px solid var(--tp-border-strong); }
+  .t-grad { background-image: linear-gradient(135deg, var(--tp-primary), var(--tp-secondary)); }
+  .t-grad-soft {
+    background-image: linear-gradient(135deg, var(--tp-primary-tint), var(--tp-secondary-tint));
+  }
+  .t-grad-text {
+    background-image: linear-gradient(100deg, var(--tp-primary), var(--tp-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* --- radii --- */
+  .t-r-card { border-radius: var(--tp-radius-card); }
+  .t-r-card-lg { border-radius: var(--tp-radius-card-lg); }
+  .t-r-card-sm { border-radius: var(--tp-radius-card-sm); }
+  .t-r-btn { border-radius: var(--tp-radius-btn); }
+  .t-r-pill { border-radius: 999px; }
+
+  /* --- elevation --- */
+  .t-shadow { box-shadow: var(--tp-shadow); }
+  .t-shadow-sm { box-shadow: var(--tp-shadow-sm); }
+  .t-shadow-lg { box-shadow: var(--tp-shadow-lg); }
+  .t-glow { box-shadow: var(--tp-glow); }
+
+  /* --- card --- */
+  .t-card {
+    background: var(--tp-surface);
+    border: 1px solid var(--tp-border);
+    border-radius: var(--tp-radius-card);
+  }
+
+  /* --- buttons --- */
+  .t-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--tp-radius-btn);
+    padding: 0.8rem 1.4rem;
+    font-family: var(--tp-font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    transition:
+      transform 0.18s ease,
+      filter 0.18s ease,
+      background-color 0.18s ease,
+      color 0.18s ease;
+  }
+  .t-btn-lg {
+    padding: 1.05rem 1.9rem;
+    font-size: 1.02rem;
+  }
+  .t-btn-sm {
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+  }
+  .t-btn-solid {
+    background: var(--tp-button);
+    color: var(--tp-on-button);
+  }
+  .t-btn-primary {
+    background: var(--tp-primary);
+    color: var(--tp-on-primary);
+  }
+  .t-btn-secondary {
+    background: var(--tp-secondary);
+    color: var(--tp-on-secondary);
+  }
+  .t-btn-outline {
+    border-color: var(--tp-border-strong);
+    color: var(--tp-text);
+    background: transparent;
+  }
+  .t-btn-soft {
+    background: var(--tp-button-tint);
+    color: var(--tp-text);
+  }
+  .t-btn-ghost {
+    background: transparent;
+    color: var(--tp-text);
+  }
+  .t-btn-inverse {
+    background: var(--tp-bg);
+    color: var(--tp-text);
+  }
+
+  /* --- form controls --- */
+  .t-input {
+    width: 100%;
+    border-radius: var(--tp-radius-btn);
+    border: 1px solid var(--tp-border);
+    background: var(--tp-bg);
+    color: var(--tp-text);
+    padding: 0.85rem 1rem;
+    font-family: var(--tp-font-body);
+    font-size: 0.95rem;
+  }
+  .t-input::placeholder {
+    color: var(--tp-faint);
+  }
+
+  /* --- chips / eyebrows --- */
+  .t-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--tp-primary-tint);
+    color: var(--tp-primary);
+  }
+  .t-eyebrow {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tp-primary);
+  }
+
+  /* Dotted leader used in menu / price lists. */
+  .t-leader {
+    flex: 1;
+    border-bottom: 1px dashed var(--tp-border-strong);
+    margin: 0 0.75rem;
+    transform: translateY(-0.25rem);
+  }
+
+  .t-marquee {
+    animation: marquee-x 26s linear infinite;
+  }
+}
