@@ -5,6 +5,7 @@ import { TEMPLATES } from '../templates/registry';
 import { HOW_IT_WORKS, studio } from '../data/studio';
 import TopBar from '../components/TopBar';
 import TemplateCard from '../components/TemplateCard';
+import AdSlot from '../components/ads/AdSlot';
 
 export default function GalleryPage() {
   const [query, setQuery] = useState('');
@@ -104,6 +105,11 @@ export default function GalleryPage() {
         </div>
       </section>
 
+      {/* advertising bands sit between sections, never over the catalog */}
+      <div className="mx-auto max-w-6xl px-5 pt-8 sm:px-8">
+        <AdSlot placement="header" />
+      </div>
+
       {/* catalog */}
       <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8">
         {results.length === 0 ? (
@@ -118,6 +124,10 @@ export default function GalleryPage() {
           </div>
         )}
       </section>
+
+      <div className="mx-auto max-w-6xl px-5 pb-10 sm:px-8">
+        <AdSlot placement="betweenSections" />
+      </div>
 
       {/* how it works */}
       <section className="border-t border-white/8 bg-shell-900">

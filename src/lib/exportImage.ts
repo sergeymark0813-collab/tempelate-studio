@@ -1,6 +1,6 @@
 import { toCanvas } from 'html-to-image';
 import type { FontId } from '../types';
-import { fontEmbedCss } from './fontEmbed';
+import { fontEmbedCss, fontEmbedCssForSpecs } from './fontEmbed';
 
 export type ExportFormat = 'png' | 'jpeg';
 
@@ -26,13 +26,15 @@ export interface CaptureOptions {
   /** Painted behind the node — matters for JPG, which has no alpha. */
   background: string;
   /** Which pairing to inline, so exported text keeps the chosen typeface. */
-  font: FontId;
+  font?: FontId;
+  /** Explicit Google Fonts specs — used by the studio, whose families sit outside `FONTS`. */
+  fontSpecs?: string[];
 }
 
 /** Rasterises a live DOM node at its natural size. */
 export async function captureNode(
   node: HTMLElement,
-  { format, scale = 2, background, font }: CaptureOptions,
+  { format, scale = 2, background, font, fontSpecs }: CaptureOptions,
 ): Promise<Blob> {
   const width = node.offsetWidth;
   const height = node.offsetHeight;
@@ -40,7 +42,11 @@ export async function captureNode(
 
   const budget = Math.sqrt(MAX_PIXELS / (width * height));
   const pixelRatio = Math.max(1, Math.min(scale, budget));
-  const fontEmbedCSS = await fontEmbedCss(font);
+  const fontEmbedCSS = fontSpecs
+    ? await fontEmbedCssForSpecs(fontSpecs)
+    : font
+      ? await fontEmbedCss(font)
+      : '';
 
   const canvas = await withTimeout(
     toCanvas(node, {

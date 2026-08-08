@@ -216,6 +216,12 @@ export function buildTypography(rng: Rng, input: TypeInput) {
   return { display, body, ratio, baseSize, scale, rationale };
 }
 
+/** Google Fonts specs for the two families a project actually uses — for export. */
+export function specsForFamilies(...families: string[]): string[] {
+  const wanted = new Set(families);
+  return STUDIO_FONT_SPECS.filter((spec) => wanted.has(spec.split(':')[0]));
+}
+
 /** `<link>` spec for every family the studio can use. */
 export const STUDIO_FONT_SPECS = [
   'Inter:wght@300..800',

@@ -608,6 +608,49 @@ export const NICHES: Niche[] = [
     ],
   },
   {
+    id: 'photo',
+    label: 'Фотограф, видеограф',
+    group: 'Образование и люди',
+    note: 'Портфолио, съёмки, бронирование дат',
+    domain: 'creative',
+    sections: [
+      ...WEB_SECTIONS_BASE,
+      { id: 'gallery', label: 'Портфолио-галерея' },
+      { id: 'showcase', label: 'Избранные съёмки' },
+      { id: 'pricing', label: 'Пакеты съёмок' },
+      { id: 'steps', label: 'Как проходит съёмка' },
+    ],
+    questions: [
+      q('specialization', 'Какая у вас специализация?', 'multi', [
+        { id: 'portrait', label: 'Портрет', adds: ['gallery'] },
+        { id: 'wedding', label: 'Свадьбы', adds: ['gallery', 'pricing'] },
+        { id: 'family', label: 'Семейная и детская' },
+        { id: 'commercial', label: 'Коммерческая, предметная', adds: ['showcase'] },
+        { id: 'reportage', label: 'Репортаж и события' },
+        { id: 'video', label: 'Видеосъёмка' },
+      ]),
+      q('portfolio', 'Как показывать портфолио?', 'single', [
+        { id: 'wall', label: 'Стеной кадров во весь экран', adds: ['gallery'] },
+        { id: 'series', label: 'Отдельными съёмками-историями', adds: ['showcase'] },
+        { id: 'selected', label: 'Только 10–15 лучших кадров', adds: ['gallery'] },
+      ]),
+      q('packages', 'Как устроены услуги и цены?', 'single', [
+        { id: 'packages', label: 'Готовые пакеты съёмок', adds: ['pricing'] },
+        { id: 'hourly', label: 'Почасовая оплата', adds: ['pricing'] },
+        { id: 'request', label: 'Цена по запросу', adds: ['contactForm'] },
+      ]),
+      q('booking', 'Нужно ли бронирование даты?', 'single', [
+        { id: 'calendar', label: 'Да, с занятыми датами', adds: ['contactForm'] },
+        { id: 'form', label: 'Да, простая заявка', adds: ['contactForm'] },
+        { id: 'no', label: 'Нет, только контакты' },
+      ]),
+      q('social', 'Какие соцсети показывать?', 'text', undefined, {
+        placeholder: 'Например: Instagram, Telegram-канал, VK — ссылки попадут в шапку и подвал',
+        optional: true,
+      }),
+    ],
+  },
+  {
     id: 'personal',
     label: 'Личный бренд, эксперт, портфолио',
     group: 'Образование и люди',

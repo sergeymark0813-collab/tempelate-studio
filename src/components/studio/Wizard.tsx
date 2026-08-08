@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { buildFlow, trackOf } from '../../lib/studio/flow';
 import type { Answers, Question } from '../../lib/studio/types';
@@ -75,9 +75,35 @@ const TRACK_LABELS: Record<string, string> = {
   graphic: 'Анкета для макета',
 };
 
+const DRAFT_KEY = 'template-studio:wizard-draft';
+
+/** Answers survive a reload — losing a filled-in brief to a stray refresh is unforgivable. */
+function readDraft(): { answers: Answers; index: number } {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return { answers: {}, index: 0 };
+    const parsed = JSON.parse(raw) as { answers?: Answers; index?: number };
+    return {
+      answers: parsed.answers && typeof parsed.answers === 'object' ? parsed.answers : {},
+      index: typeof parsed.index === 'number' ? parsed.index : 0,
+    };
+  } catch {
+    return { answers: {}, index: 0 };
+  }
+}
+
+export function clearWizardDraft() {
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // Nothing to do — the draft simply isn't persisted.
+  }
+}
+
 export default function Wizard({ onComplete }: { onComplete: (answers: Answers) => void }) {
-  const [answers, setAnswers] = useState<Answers>({});
-  const [index, setIndex] = useState(0);
+  const restored = useRef(readDraft()).current;
+  const [answers, setAnswers] = useState<Answers>(restored.answers);
+  const [index, setIndex] = useState(restored.index);
 
   // Rebuilt every render: answering «Логотип» or picking a sphere swaps the
   // remaining questions out entirely.
@@ -96,8 +122,26 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
   const canAdvance = answered || question.optional;
   const isLast = safeIndex === questions.length - 1;
 
+  // Persist the draft, but only once something has actually been answered.
+  useEffect(() => {
+    if (Object.keys(answers).length === 0) return;
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ answers, index: safeIndex }));
+    } catch {
+      // Private mode or quota — the wizard still works, it just won't resume.
+    }
+  }, [answers, safeIndex]);
+
   const setValues = (next: string[]) =>
-    setAnswers((prev) => ({ ...prev, [question.id]: { questionId: question.id, values: next, custom: prev[question.id]?.custom } }));
+    setAnswers((prev) => {
+      // Switching the product switches the whole questionnaire. Answers from the
+      // previous track are meaningless here and would otherwise leak into
+      // generation — a logo brief inheriting a website's sections, for example.
+      if (question.id === 'product' && prev.product?.values[0] !== next[0]) {
+        return { product: { questionId: 'product', values: next } };
+      }
+      return { ...prev, [question.id]: { questionId: question.id, values: next, custom: prev[question.id]?.custom } };
+    });
 
   const setCustom = (next: string) =>
     setAnswers((prev) => ({ ...prev, [question.id]: { questionId: question.id, values: prev[question.id]?.values ?? [], custom: next } }));

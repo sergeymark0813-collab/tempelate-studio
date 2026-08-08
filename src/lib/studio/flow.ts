@@ -50,7 +50,20 @@ const NICHE_QUESTION: Question = {
   title: 'Какая у вас сфера?',
   hint: 'Дальнейшие вопросы будут именно про неё — общей анкеты не будет.',
   kind: 'single',
-  options: NICHES.map((niche) => ({ id: niche.id, label: niche.label, note: niche.note })),
+  options: [
+    ...NICHES.map((niche) => ({ id: niche.id, label: niche.label, note: niche.note })),
+    // Any business at all: the sphere is then read from free text.
+    { id: 'custom', label: 'Своя сфера', note: 'Впишу словами — списка недостаточно' },
+  ],
+};
+
+/** Asked only when the user chose «Своя сфера». */
+const CUSTOM_NICHE_QUESTION: Question = {
+  id: 'nicheText',
+  title: 'Опишите вашу сферу',
+  hint: 'Своими словами. По описанию подберу словарь текстов и уточняющие вопросы.',
+  kind: 'text',
+  placeholder: 'Например: прокат туристического снаряжения, студия звукозаписи, питомник растений',
 };
 
 const nameQuestion = (title: string, placeholder: string): Question => ({
@@ -134,11 +147,17 @@ const extrasQuestion = (hint: string): Question => ({
 
 function webFlow(answers: Answers): Question[] {
   const nicheId = firstAnswer(answers, 'niche');
-  const niche = nicheId ? getNiche(nicheId) : null;
+  const isCustom = nicheId === 'custom';
+  const customText = customOf(answers, 'nicheText');
+
+  // A custom sphere still gets sphere-shaped questions: the generic set from
+  // «Другая сфера», which asks what is sold and what the visitor should do.
+  const niche = isCustom ? (customText ? getNiche('other') : null) : nicheId ? getNiche(nicheId) : null;
 
   const core: Question[] = [
     PRODUCT_QUESTION,
     NICHE_QUESTION,
+    ...(isCustom ? [CUSTOM_NICHE_QUESTION] : []),
     nameQuestion('Как называется проект?', 'Например: «Тракт», «Зерно», Flowdesk'),
     {
       id: 'purpose',

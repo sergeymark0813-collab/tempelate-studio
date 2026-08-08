@@ -6,8 +6,10 @@ import { PRODUCTS } from '../lib/studio/products';
 import type { Answers, Project } from '../lib/studio/types';
 import { cn } from '../lib/cn';
 import TopBar from '../components/TopBar';
-import Wizard from '../components/studio/Wizard';
+import Wizard, { clearWizardDraft } from '../components/studio/Wizard';
 import ProjectView from '../components/studio/ProjectView';
+import ErrorBoundary from '../components/ErrorBoundary';
+import AdSlot from '../components/ads/AdSlot';
 
 const STEPS = [
   'Разбираю ответы',
@@ -24,7 +26,9 @@ export default function StudioPage() {
   const [answers, setAnswers] = useState<Answers | null>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [step, setStep] = useState(-1);
+  const [failure, setFailure] = useState<string | null>(null);
   const timers = useRef<number[]>([]);
+  const running = useRef(false);
   const resultRef = useRef<HTMLDivElement>(null);
 
   const clearTimers = useCallback(() => {
@@ -36,14 +40,31 @@ export default function StudioPage() {
 
   const run = useCallback(
     (input: Answers) => {
+      // Guard against a second Generate landing while one is already in flight.
+      if (running.current) return;
+      running.current = true;
+
       clearTimers();
       setAnswers(input);
       setProject(null);
+      setFailure(null);
       setStep(0);
 
-      // Generation itself is synchronous; the pacing exists so the decisions
-      // arrive in a readable order rather than all at once.
-      const result = generateProject(input);
+      // Generation is synchronous, so a failure surfaces here — before the UI
+      // has committed to showing a result. The brief is kept either way.
+      let result: Project;
+      try {
+        result = generateProject(input);
+      } catch (error) {
+        running.current = false;
+        setStep(-1);
+        setFailure(
+          error instanceof Error
+            ? `Не удалось собрать дизайн: ${error.message}`
+            : 'Не удалось собрать дизайн по неизвестной причине.',
+        );
+        return;
+      }
 
       STEPS.forEach((_, index) => {
         timers.current.push(window.setTimeout(() => setStep(index), index * STEP_MS));
@@ -52,6 +73,9 @@ export default function StudioPage() {
         window.setTimeout(() => {
           setProject(result);
           setStep(-1);
+          running.current = false;
+          // The brief is now embodied in the project; the resume draft can go.
+          clearWizardDraft();
         }, STEPS.length * STEP_MS + 140),
       );
     },
@@ -160,12 +184,55 @@ export default function StudioPage() {
           </div>
         )}
 
-        {!busy && !project && <Wizard onComplete={run} />}
+        {failure && !busy && (
+          <div className="panel mb-5 px-5 py-5">
+            <h2 className="font-display text-base font-semibold tracking-tight">Генерация не удалась</h2>
+            <p className="mt-2 max-w-xl text-[13.5px] leading-relaxed text-white/50">
+              {failure} Ваши ответы сохранены — можно повторить или изменить бриф.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => answers && run(answers)}
+                className="focus-ring rounded-xl bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-brand-600"
+              >
+                Попробовать снова
+              </button>
+              <button
+                type="button"
+                onClick={() => setFailure(null)}
+                className="focus-ring rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white/60 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
+              >
+                Вернуться к вопросам
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!busy && !project && !failure && (
+          <ErrorBoundary title="Анкета не отрисовалась">
+            <Wizard onComplete={run} />
+          </ErrorBoundary>
+        )}
 
         {!busy && project && (
-          <ProjectView project={project} onRegenerate={() => answers && run(answers)} />
+          <ErrorBoundary
+            title="Не удалось отрисовать результат"
+            onReset={() => {
+              setProject(null);
+              running.current = false;
+            }}
+          >
+            <ProjectView project={project} onRegenerate={() => answers && run(answers)} />
+          </ErrorBoundary>
         )}
       </section>
+
+      {/* Reserved advertising bands — inline, below the working area, never over it. */}
+      <div className="mx-auto max-w-6xl px-5 pb-10 sm:px-8">
+        <AdSlot placement="content" className="mb-5" />
+        <AdSlot placement="bottom" />
+      </div>
     </div>
   );
 }

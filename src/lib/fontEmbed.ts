@@ -21,14 +21,24 @@ const FACE_RE = /\/\*\s*([\w-]+)\s*\*\/\s*(@font-face\s*\{[\s\S]*?\})/g;
 
 const TIMEOUT_MS = 10_000;
 
-const cache = new Map<FontId, Promise<string>>();
+const cache = new Map<string, Promise<string>>();
 
 /** Resolves to CSS with data-URI `src`, or `''` if anything went wrong. */
 export function fontEmbedCss(fontId: FontId): Promise<string> {
-  let pending = cache.get(fontId);
+  return fontEmbedCssForSpecs(getFont(fontId).googleSpecs);
+}
+
+/**
+ * Same inlining for an arbitrary set of Google Fonts specs — the studio picks
+ * its families outside the editor's `FONTS` list, so it can't go through the
+ * pairing id.
+ */
+export function fontEmbedCssForSpecs(specs: string[]): Promise<string> {
+  const key = specs.join('|');
+  let pending = cache.get(key);
   if (!pending) {
-    pending = withTimeout(build(getFont(fontId).googleSpecs), TIMEOUT_MS).catch(() => '');
-    cache.set(fontId, pending);
+    pending = withTimeout(build(specs), TIMEOUT_MS).catch(() => '');
+    cache.set(key, pending);
   }
   return pending;
 }

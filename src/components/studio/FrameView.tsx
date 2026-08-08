@@ -189,7 +189,16 @@ function Artboard({ frame }: { frame: Frame }) {
 
 /* --------------------------------- shell --------------------------------- */
 
-export default function FrameView({ frame, ds }: { frame: Frame; ds: DesignSystem }) {
+export default function FrameView({
+  frame,
+  ds,
+  nodeRef,
+}: {
+  frame: Frame;
+  ds: DesignSystem;
+  /** Points at the unscaled artboard, so image export captures full resolution. */
+  nodeRef?: React.Ref<HTMLDivElement>;
+}) {
   const { canvas } = frame;
   const { ref, scale } = useFitScale(canvas.width, { gutter: 2 });
 
@@ -231,7 +240,7 @@ export default function FrameView({ frame, ds }: { frame: Frame; ds: DesignSyste
               </div>
             )}
 
-            <div style={{ height: canvas.height ? canvas.height : undefined }}>
+            <div ref={nodeRef} style={{ height: canvas.height ? canvas.height : undefined }}>
               <DsProvider ds={ds}>
                 <Artboard frame={frame} />
               </DsProvider>

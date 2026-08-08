@@ -158,7 +158,11 @@ export function generateProject(answers: Answers, seedInput?: number): Project {
   const product = getProduct(firstAnswer(answers, 'product'));
   const track = trackOf(answers);
   const nicheId = firstAnswer(answers, 'niche');
-  const niche = nicheId ? getNiche(nicheId) : null;
+  const customNiche = customOf(answers, 'nicheText');
+  const niche = nicheId && nicheId !== 'custom' ? getNiche(nicheId) : null;
+  // A free-text sphere has no preset vocabulary, so the copy engine falls back
+  // to reading the description — which now leads with the user's own words.
+  const nicheLabel = niche?.label ?? (customNiche || null);
 
   // Every track has its own free-text field; whichever exists describes the project.
   const description = [
@@ -171,7 +175,7 @@ export function generateProject(answers: Answers, seedInput?: number): Project {
     customOf(answers, 'subjects'),
     customOf(answers, 'problem'),
     customOf(answers, 'extras'),
-    niche?.label ?? '',
+    nicheLabel ?? "",
   ]
     .filter(Boolean)
     .join('. ') || 'проект';
@@ -259,8 +263,8 @@ export function generateProject(answers: Answers, seedInput?: number): Project {
         `Типографика: ${ds.type.rationale}`,
       ]
     : [
-        niche
-          ? `Сфера «${niche.label.toLowerCase()}» задала и вопросы, и словарь: тексты, названия позиций и цифры взяты из этой отрасли, а не из общего шаблона.`
+        nicheLabel
+          ? `Сфера «${nicheLabel.toLowerCase()}» задала и вопросы, и словарь: тексты, названия позиций и цифры взяты из этой отрасли, а не из общего шаблона.`
           : 'Сфера определена по описанию проекта.',
         required.length > 0
           ? `Ваши ответы напрямую добавили в макет ${required.length} ${plural(required.length, ['блок', 'блока', 'блоков'])} — остальные выбраны исходя из задачи.`
@@ -286,7 +290,7 @@ export function generateProject(answers: Answers, seedInput?: number): Project {
     moodLabel: moods.map((mood) => MOOD_LABELS[mood] ?? mood).join(', ') || 'не задано',
     audienceLabel: AUDIENCE_LABELS[audience] ?? audience,
     colorLabel,
-    keywords: [niche?.label ?? content.domain.label, ...content.categories.slice(0, 3)],
+    keywords: [nicheLabel ?? content.domain.label, ...content.categories.slice(0, 3)],
     decisions,
   };
 
@@ -295,8 +299,8 @@ export function generateProject(answers: Answers, seedInput?: number): Project {
 
   const blockCount = frames[0].blocks.length;
   const summary = [
-    niche
-      ? `${product.label.toLowerCase()} · ${niche.label.toLowerCase()} · задача «${PURPOSE_LABELS[purpose] ?? purpose}».`
+    nicheLabel
+      ? `${product.label.toLowerCase()} · ${nicheLabel.toLowerCase()} · задача «${PURPOSE_LABELS[purpose] ?? purpose}».`
       : `${product.label.toLowerCase()} для задачи «${PURPOSE_LABELS[purpose] ?? purpose}».`,
     `${STYLE_LABELS[style] ?? style} стиль, ${scheme === 'dark' ? 'тёмная' : 'светлая'} схема, ${ds.color.harmony.toLowerCase()} гармония.`,
     // Single-artboard products (logo, poster, card) have nothing to count.
@@ -316,7 +320,7 @@ export function generateProject(answers: Answers, seedInput?: number): Project {
     seed,
     createdAt: Date.now(),
     name: conceptName,
-    tagline: `${content.brand} · ${niche?.label ?? content.domain.label}`,
+    tagline: `${content.brand} · ${nicheLabel ?? content.domain.label}`,
     summary,
     product,
     answers,

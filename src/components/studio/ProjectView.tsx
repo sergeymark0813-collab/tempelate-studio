@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { Boxes, Brain, Download, Images, Layers, Palette, RefreshCw, Ruler, Type as TypeIcon } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Boxes, Brain, Download, ImageDown, Images, Layers, Loader2, Palette, RefreshCw, Ruler, Type as TypeIcon } from 'lucide-react';
 import type { Project } from '../../lib/studio/types';
 import { auditContrast } from '../../lib/studio/palette';
 import { cssExport } from '../../lib/studio/tokens';
+import { specsForFamilies } from '../../lib/studio/typography';
 import { readableOn } from '../../lib/color';
-import { saveBlob } from '../../lib/exportImage';
+import { captureNode, saveBlob } from '../../lib/exportImage';
 import { cn } from '../../lib/cn';
 import { Chip, CopyButton, ResultCard, SpecRow } from './primitives';
 import FrameView from './FrameView';
@@ -48,8 +49,33 @@ function downloadJson(project: Project) {
 
 export default function ProjectView({ project, onRegenerate }: { project: Project; onRegenerate: () => void }) {
   const [frameIndex, setFrameIndex] = useState(0);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
+  const artboardRef = useRef<HTMLDivElement>(null);
   const { ds } = project;
   const frame = project.frames[Math.min(frameIndex, project.frames.length - 1)];
+
+  /** Rasterises the artboard at its true size — the real "download" of this app. */
+  const exportImage = async () => {
+    const node = artboardRef.current;
+    if (!node || exporting) return;
+
+    setExporting(true);
+    setExportError('');
+    try {
+      const blob = await captureNode(node, {
+        format: 'png',
+        scale: 2,
+        background: ds.color.bg,
+        fontSpecs: specsForFamilies(ds.type.display.family, ds.type.body.family),
+      });
+      saveBlob(blob, `${project.name.replace(/\s+/g, '-').toLowerCase()}-${frame.name.replace(/\s+/g, '-').toLowerCase()}.png`);
+    } catch (error) {
+      setExportError(error instanceof Error ? error.message : 'Не удалось сохранить изображение.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const swatches = [
     { id: 'primary', label: 'Основной', value: ds.color.primary, role: 'Акценты, кнопки, активные состояния' },
@@ -83,6 +109,15 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
             </button>
             <button
               type="button"
+              onClick={exportImage}
+              disabled={exporting}
+              className="focus-ring flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white disabled:pointer-events-none disabled:opacity-50"
+            >
+              {exporting ? <Loader2 size={15} className="animate-spin" /> : <ImageDown size={15} />}
+              {exporting ? 'Готовлю PNG…' : 'PNG'}
+            </button>
+            <button
+              type="button"
               onClick={() => downloadJson(project)}
               className="focus-ring flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
             >
@@ -90,6 +125,12 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
             </button>
           </div>
         </div>
+
+        {exportError && (
+          <p className="mt-3 rounded-xl bg-rose-500/10 px-3.5 py-2.5 text-[13px] text-rose-200 ring-1 ring-rose-400/25">
+            {exportError}
+          </p>
+        )}
 
         <div className="mt-5 flex flex-wrap gap-2">
           <Chip tone="accent">{project.archetype}</Chip>
@@ -130,7 +171,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
         }
       >
         <div className="scroll-slim stage-grid max-h-[680px] overflow-y-auto rounded-xl bg-shell-950 p-4">
-          <FrameView key={`${project.id}-${frame.id}`} frame={frame} ds={ds} />
+          <FrameView key={`${project.id}-${frame.id}`} frame={frame} ds={ds} nodeRef={artboardRef} />
         </div>
       </ResultCard>
 
