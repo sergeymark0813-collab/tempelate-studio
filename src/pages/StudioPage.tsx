@@ -9,8 +9,7 @@ import TopBar from '../components/TopBar';
 import Wizard, { clearWizardDraft } from '../components/studio/Wizard';
 import ProjectView from '../components/studio/ProjectView';
 import ErrorBoundary from '../components/ErrorBoundary';
-import AdSlot from '../components/ads/AdSlot';
-import GenerationAd from '../components/ads/GenerationAd';
+import AdSense, { AD_SLOTS } from '../components/AdSense';
 
 const STEPS = [
   'Разбираю ответы',
@@ -28,9 +27,6 @@ export default function StudioPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [step, setStep] = useState(-1);
   const [failure, setFailure] = useState<string | null>(null);
-  // Advertising state is kept entirely separate from generation state: neither
-  // one waits for, cancels or blocks the other.
-  const [isAdVisible, setIsAdVisible] = useState(false);
   const timers = useRef<number[]>([]);
   const running = useRef(false);
   const resultRef = useRef<HTMLDivElement>(null);
@@ -53,8 +49,6 @@ export default function StudioPage() {
       setProject(null);
       setFailure(null);
       setStep(0);
-      // Opens with Generate and then lives its own life.
-      setIsAdVisible(true);
 
       // Generation is synchronous, so a failure surfaces here — before the UI
       // has committed to showing a result. The brief is kept either way.
@@ -155,17 +149,6 @@ export default function StudioPage() {
       )}
 
       <section ref={resultRef} className="mx-auto max-w-6xl scroll-mt-20 px-5 py-8 sm:px-8 sm:py-10">
-        {/*
-          Its own reserved area above the working column. It appears with
-          Generate and stays until its timer runs out or the user closes it —
-          independently of whether the design is still being built.
-        */}
-        {isAdVisible && (
-          <GenerationAd key="generation-ad" onClose={() => setIsAdVisible(false)} />
-        )}
-
-        {isAdVisible && <div className="h-5" />}
-
         {busy && (
           <div className="panel px-5 py-6 sm:px-6" role="status" aria-live="polite">
             <ul className="grid gap-2.5">
@@ -245,10 +228,11 @@ export default function StudioPage() {
         )}
       </section>
 
-      {/* Scheduled band, shown only once the user is past generation. */}
+      {/* Ad unit sits below the working area and never over it. Renders nothing
+          until an AdSense publisher id is configured. */}
       {!busy && (
         <div className="mx-auto max-w-6xl px-5 pb-10 sm:px-8">
-          <AdSlot placement="bottom" />
+          <AdSense slot={AD_SLOTS.studioBottom} />
         </div>
       )}
     </div>

@@ -5,3 +5,8 @@ dist-ssr
 .DS_Store
 .vite
 tsconfig.tsbuildinfo
+
+# Local env (AdSense publisher/slot ids)
+.env
+.env.local
+.env.*.local
