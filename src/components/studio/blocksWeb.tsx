@@ -112,7 +112,7 @@ export function Hero({ block }: { block: BlockInstance }) {
   if (variant === 'overlay') {
     return (
       <div style={{ position: 'relative', minHeight: 720, display: 'grid', alignItems: 'center', overflow: 'hidden' }}>
-        <Visual seed={seed} radius="none" style={{ position: 'absolute', inset: 0 }} />
+        <Visual seed={seed} src={block.content.image} radius="none" style={{ position: 'absolute', inset: 0 }} />
         <div
           style={{
             position: 'absolute',
@@ -138,7 +138,7 @@ export function Hero({ block }: { block: BlockInstance }) {
         <Container>
           <Stack gap={56} align="center">
             <Copy center />
-            <Visual seed={seed} radius="lg" style={{ width: '100%', height: 420, boxShadow: ds.shadow.lg }} />
+            <Visual seed={seed} src={block.content.image} radius="lg" style={{ width: '100%', height: 420, boxShadow: ds.shadow.lg }} />
           </Stack>
         </Container>
       </Section>
@@ -164,7 +164,7 @@ export function Hero({ block }: { block: BlockInstance }) {
                 </Btn>
               </div>
             </div>
-            <Visual seed={seed} radius="lg" style={{ width: '100%', height: 480 }} />
+            <Visual seed={seed} src={block.content.image} radius="lg" style={{ width: '100%', height: 480 }} />
           </Stack>
         </Container>
       </Section>
@@ -180,7 +180,7 @@ export function Hero({ block }: { block: BlockInstance }) {
               <Copy />
             </Stack>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: ds.grid.gutter / 2, minHeight: 460 }}>
-              <Visual seed={seed} radius="md" style={{ gridColumn: 'span 2' }} />
+              <Visual seed={seed} src={block.content.image} radius="md" style={{ gridColumn: 'span 2' }} />
               <Visual seed={seed + 7} radius="md" />
               <Surface pad={22} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <Type step="display" style={{ fontSize: 40 }} tone="primary">
@@ -203,7 +203,7 @@ export function Hero({ block }: { block: BlockInstance }) {
       <Container>
         <div style={{ display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: ds.grid.gutter * 1.6, alignItems: 'center' }}>
           <Copy />
-          <Visual seed={seed} radius="lg" style={{ height: 520, boxShadow: ds.shadow.lg }} />
+          <Visual seed={seed} src={block.content.image} radius="lg" style={{ height: 520, boxShadow: ds.shadow.lg }} />
         </div>
 
         {stats.length > 0 && (
@@ -515,7 +515,7 @@ export function ProductDetail({ block }: { block: BlockInstance }) {
       <Container>
         <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: ds.grid.gutter * 1.6 }}>
           <Stack gap={ds.grid.gutter / 2}>
-            <Visual seed={seed} radius="lg" style={{ height: 460 }} />
+            <Visual seed={seed} src={block.content.image} radius="lg" style={{ height: 460 }} />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: ds.grid.gutter / 2 }}>
               {[0, 1, 2].map((i) => (
                 <Visual key={i} seed={seed + i * 29} radius="md" style={{ height: 120 }} />
@@ -1003,7 +1003,7 @@ export function Cta({ block }: { block: BlockInstance }) {
                 {block.content.cta}
               </Btn>
             </Stack>
-            <Visual seed={seed} radius="none" style={{ minHeight: 300 }} />
+            <Visual seed={seed} src={block.content.image} radius="none" style={{ minHeight: 300 }} />
           </Surface>
         </Container>
       </Section>

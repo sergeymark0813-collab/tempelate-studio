@@ -195,6 +195,10 @@ export interface BlockContent {
   body?: string;
   cta?: string;
   ctaSecondary?: string;
+  /** Destination of the primary button — editable after generation. */
+  ctaHref?: string;
+  /** Uploaded image replacing the block's procedural artwork. */
+  image?: string;
   items?: {
     title: string;
     text?: string;
@@ -223,6 +227,8 @@ export interface BlockInstance {
   content: BlockContent;
   /** Present only on logo blocks — the synthesised mark this block draws. */
   mark?: import('./logo/spec').MarkSpec;
+  /** Turned off in the editor; the block stays in the project but isn't drawn. */
+  hidden?: boolean;
 }
 
 export interface Frame {

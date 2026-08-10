@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, Megaphone } from 'lucide-react';
+import { Layers } from 'lucide-react';
 import { studio } from '../data/studio';
 import { cn } from '../lib/cn';
 
@@ -30,15 +30,11 @@ export default function TopBar({
       {left && <div className="min-w-0 flex-1">{left}</div>}
       {!left && <div className="flex-1" />}
 
-      {/* Present on every page so the advertising area is always one tap away. */}
-      <Link
-        to="/ads"
-        className="focus-ring flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-semibold text-white/60 ring-1 ring-white/10 transition hover:bg-white/6 hover:text-white"
-      >
-        <Megaphone size={15} />
-        <span className="hidden md:inline">Реклама</span>
-      </Link>
-
+      {/*
+        No permanent advertising control here by design: the ad system opens by
+        itself at the point in the flow where it belongs (alongside Generate).
+        The manager stays reachable at #/ads.
+      */}
       {right}
     </header>
   );

@@ -9,6 +9,7 @@ import { captureNode, saveBlob } from '../../lib/exportImage';
 import { cn } from '../../lib/cn';
 import { Chip, CopyButton, ResultCard, SpecRow } from './primitives';
 import FrameView from './FrameView';
+import DesignEditor from './DesignEditor';
 
 function downloadJson(project: Project) {
   const payload = {
@@ -52,8 +53,17 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
   const artboardRef = useRef<HTMLDivElement>(null);
-  const { ds } = project;
-  const frame = project.frames[Math.min(frameIndex, project.frames.length - 1)];
+
+  /*
+    The generated design is state, not an image: `draft` is what the preview and
+    every export read, and the editor below writes straight into it. `project`
+    is kept untouched so «Вернуть как было» is exact.
+  */
+  const [draft, setDraft] = useState<Project>(project);
+  const edited = draft !== project;
+
+  const { ds } = draft;
+  const frame = draft.frames[Math.min(frameIndex, draft.frames.length - 1)];
 
   /** Rasterises the artboard at its true size — the real "download" of this app. */
   const exportImage = async () => {
@@ -69,7 +79,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
         background: ds.color.bg,
         fontSpecs: specsForFamilies(ds.type.display.family, ds.type.body.family),
       });
-      saveBlob(blob, `${project.name.replace(/\s+/g, '-').toLowerCase()}-${frame.name.replace(/\s+/g, '-').toLowerCase()}.png`);
+      saveBlob(blob, `${draft.name.replace(/\s+/g, '-').toLowerCase()}-${frame.name.replace(/\s+/g, '-').toLowerCase()}.png`);
     } catch (error) {
       setExportError(error instanceof Error ? error.message : 'Не удалось сохранить изображение.');
     } finally {
@@ -118,7 +128,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
             </button>
             <button
               type="button"
-              onClick={() => downloadJson(project)}
+              onClick={() => downloadJson(draft)}
               className="focus-ring flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
             >
               <Download size={15} /> JSON
@@ -149,9 +159,9 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
         title="Макет"
         hint={`${frame.canvas.label} · каждый экран отрисован по сгенерированной системе, а не выбран из готовых.`}
         action={
-          project.frames.length > 1 ? (
+          draft.frames.length > 1 ? (
             <div className="flex flex-wrap gap-1.5">
-              {project.frames.map((entry, index) => (
+              {draft.frames.map((entry, index) => (
                 <button
                   key={entry.id}
                   type="button"
@@ -173,7 +183,15 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
         <div className="scroll-slim stage-grid max-h-[680px] overflow-y-auto rounded-xl bg-shell-950 p-4">
           <FrameView key={`${project.id}-${frame.id}`} frame={frame} ds={ds} nodeRef={artboardRef} />
         </div>
+        {edited && (
+          <p className="mt-3 text-xs text-white/35">
+            Макет отредактирован вручную. Экспорт в PNG и JSON сохранит именно эту версию.
+          </p>
+        )}
       </ResultCard>
+
+      {/* Editing the result — sits directly under the preview it changes. */}
+      <DesignEditor draft={draft} original={project} onChange={setDraft} />
 
       {/* decisions */}
       <ResultCard
@@ -279,7 +297,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
         hint={`${project.archetypeNote}`}
       >
         <div className="grid gap-5 lg:grid-cols-2">
-          {project.frames.map((entry) => (
+          {draft.frames.map((entry) => (
             <div key={entry.id}>
               <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
                 {entry.name} · {entry.canvas.label}

@@ -136,7 +136,7 @@ function AppChrome({ frame }: { frame: Frame }) {
         </header>
 
         <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', padding: 24, display: 'flex', flexDirection: 'column', gap: ds.grid.gutter }}>
-          {frame.blocks.map((block) => (
+          {frame.blocks.filter((block) => !block.hidden).map((block) => (
             <Block key={block.id} block={block} />
           ))}
         </div>
@@ -170,7 +170,7 @@ function Artboard({ frame }: { frame: Frame }) {
         </div>
 
         <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          {frame.blocks.map((block) => (
+          {frame.blocks.filter((block) => !block.hidden).map((block) => (
             <Block key={block.id} block={block} />
           ))}
         </div>
@@ -180,7 +180,7 @@ function Artboard({ frame }: { frame: Frame }) {
 
   return (
     <div style={{ background: ds.color.bg, height: canvas.height ? '100%' : undefined, display: 'flex', flexDirection: 'column' }}>
-      {frame.blocks.map((block) => (
+      {frame.blocks.filter((block) => !block.hidden).map((block) => (
         <Block key={block.id} block={block} />
       ))}
     </div>

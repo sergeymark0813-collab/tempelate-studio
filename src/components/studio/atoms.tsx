@@ -300,14 +300,25 @@ export function Visual({
   seed,
   radius = 'md',
   style,
+  src,
 }: {
   seed: number;
   radius?: 'none' | 'sm' | 'md' | 'lg';
   style?: CSSProperties;
+  /** Real image supplied in the editor; replaces the generated artwork. */
+  src?: string;
 }) {
   const ds = useDs();
   const next = rand(seed);
   const borderRadius = radius === 'none' ? 0 : ds.radius[radius];
+
+  if (src) {
+    return (
+      <div style={{ overflow: 'hidden', borderRadius, minHeight: 120, ...style }}>
+        <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      </div>
+    );
+  }
 
   const palette = [ds.color.primary, ds.color.secondary, ds.color.accent];
   const mode = Math.floor(next() * 4);
