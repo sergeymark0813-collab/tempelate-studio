@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { Layers } from 'lucide-react';
 import { studio } from '../data/studio';
 import { cn } from '../lib/cn';
+import BrandMark from './BrandMark';
 
 export default function TopBar({
   left,
@@ -20,11 +20,17 @@ export default function TopBar({
         className,
       )}
     >
-      <Link to="/" className="focus-ring flex shrink-0 items-center gap-2.5 rounded-lg">
-        <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-400 text-shell-950">
-          <Layers size={17} strokeWidth={2.4} />
-        </span>
-        <span className="font-display text-[15px] font-semibold tracking-tight">{studio.brand}</span>
+      <Link
+        to="/"
+        aria-label={`${studio.brand} — на главную`}
+        className="focus-ring group flex shrink-0 items-center gap-3 rounded-lg"
+      >
+        {/* Sized to actually be seen: the mark is the only branding on the page. */}
+        <BrandMark
+          size={36}
+          className="shrink-0 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105"
+        />
+        <span className="font-display text-[17px] font-semibold tracking-tight">{studio.brand}</span>
       </Link>
 
       {left && <div className="min-w-0 flex-1">{left}</div>}
