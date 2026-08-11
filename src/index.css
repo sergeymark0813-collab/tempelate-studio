@@ -368,3 +368,32 @@
     min-height: 520px !important;
   }
 }
+
+@container (max-width: 560px) {
+  /* A desktop nav bar is a single non-wrapping row of logo + links + button.
+     At phone width the links alone are wider than the screen, so the bar wraps
+     and the link list becomes a compact centred row — the closest honest
+     equivalent of a mobile header without inventing a burger menu. */
+  .ds-artboard [style*="justify-content: space-between"],
+  .ds-artboard [style*="justify-content: flex-end"] {
+    flex-wrap: wrap !important;
+  }
+  .ds-artboard nav {
+    flex-wrap: wrap !important;
+    gap: 12px 16px !important;
+    justify-content: center !important;
+    width: 100% !important;
+    order: 3 !important;
+  }
+  /* Buttons and chips are set to never wrap so they keep their pill shape;
+     on a phone that is what pushes the layout past the viewport. */
+  .ds-artboard [style*="white-space: nowrap"] {
+    white-space: normal !important;
+  }
+  /* Header bars are given a fixed desktop height that the wrapped content
+     no longer fits into. */
+  .ds-artboard [style*="height: 76px"] {
+    height: auto !important;
+    padding-block: 14px !important;
+  }
+}

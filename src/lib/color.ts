@@ -98,6 +98,33 @@ export function hslToHex(h: number, s: number, l: number): string {
   return toHex({ r: channel(0), g: channel(8), b: channel(4) });
 }
 
+/** `#rrggbb` → HSL. The inverse of `hslToHex`, for the editor's colour inputs. */
+export function hexToHsl(hex: string): { h: number; s: number; l: number } {
+  const { r, g, b } = parseHex(hex);
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const delta = max - min;
+  const l = (max + min) / 2;
+
+  if (delta === 0) return { h: 0, s: 0, l: Math.round(l * 100) };
+
+  const s = delta / (1 - Math.abs(2 * l - 1));
+  let h: number;
+  if (max === rn) h = ((gn - bn) / delta) % 6;
+  else if (max === gn) h = (bn - rn) / delta + 2;
+  else h = (rn - gn) / delta + 4;
+
+  return {
+    h: Math.round(((h * 60) % 360 + 360) % 360),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
+  };
+}
+
 /**
  * Walks a colour toward white or black (whichever direction the backdrop
  * allows) until it clears `target` contrast. A generated accent can be pretty

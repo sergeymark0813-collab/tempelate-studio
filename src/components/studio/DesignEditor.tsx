@@ -3,6 +3,7 @@ import { ChevronDown, Eye, EyeOff, Image as ImageIcon, RotateCcw, SlidersHorizon
 import type { BlockInstance, Project } from '../../lib/studio/types';
 import { FAMILIES } from '../../lib/studio/typography';
 import { mix, readableOn } from '../../lib/color';
+import ColorField from './ColorField';
 import { cn } from '../../lib/cn';
 
 /* ===========================================================================
@@ -52,19 +53,9 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function ColorInput({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
-  return (
-    <span className="flex items-center gap-2">
-      <span className="font-mono text-[11px] text-white/35 uppercase">{value}</span>
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-7 w-10 cursor-pointer rounded-md border-0 bg-transparent p-0"
-      />
-    </span>
-  );
-}
+
+const sliderClass =
+  'focus-ring mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/12 accent-brand-500 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white';
 
 const textInput =
   'focus-ring w-full rounded-lg bg-white/[0.05] px-3 py-2 text-[13px] text-white ring-1 ring-white/10 outline-none transition placeholder:text-white/25 hover:ring-white/20 focus:ring-brand-400/60';
@@ -235,6 +226,32 @@ export default function DesignEditor({
       },
     });
 
+  const setSection = (section: number) =>
+    onChange({ ...draft, ds: { ...ds, space: { ...ds.space, section } } });
+
+  const setMargin = (margin: number) =>
+    onChange({ ...draft, ds: { ...ds, grid: { ...ds.grid, margin } } });
+
+  /**
+   * Rescales the whole type ramp around a new base size. Editing one step in
+   * isolation would break the modular relationship the generator established,
+   * so every step moves by the same ratio.
+   */
+  const setBaseSize = (baseSize: number) => {
+    const factor = baseSize / ds.type.baseSize;
+    onChange({
+      ...draft,
+      ds: {
+        ...ds,
+        type: {
+          ...ds.type,
+          baseSize,
+          scale: ds.type.scale.map((step) => ({ ...step, size: Math.round(step.size * factor) })),
+        },
+      },
+    });
+  };
+
   const setBlock = (next: BlockInstance) =>
     onChange({
       ...draft,
@@ -281,25 +298,19 @@ export default function DesignEditor({
             <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">Цвета</h3>
             <div className="mt-2 divide-y divide-white/6">
               <Row label="Основной">
-                <ColorInput value={ds.color.primary} onChange={(v) => setColor('primary', v)} />
+                <ColorField label="Основной цвет" value={ds.color.primary} onChange={(v) => setColor('primary', v)} />
               </Row>
               <Row label="Дополнительный">
-                <ColorInput value={ds.color.secondary} onChange={(v) => setColor('secondary', v)} />
+                <ColorField label="Дополнительный цвет" value={ds.color.secondary} onChange={(v) => setColor('secondary', v)} />
               </Row>
               <Row label="Акцентный">
-                <ColorInput value={ds.color.accent} onChange={(v) => setColor('accent', v)} />
+                <ColorField label="Акцентный цвет" value={ds.color.accent} onChange={(v) => setColor('accent', v)} />
               </Row>
               <Row label="Фон">
-                <ColorInput
-                  value={ds.color.bg}
-                  onChange={(v) => onChange(reconcile(draft, v, ds.color.text))}
-                />
+                <ColorField label="Цвет фона" value={ds.color.bg} onChange={(v) => onChange(reconcile(draft, v, ds.color.text))} />
               </Row>
               <Row label="Текст">
-                <ColorInput
-                  value={ds.color.text}
-                  onChange={(v) => onChange(reconcile(draft, ds.color.bg, v))}
-                />
+                <ColorField label="Цвет текста" value={ds.color.text} onChange={(v) => onChange(reconcile(draft, ds.color.bg, v))} />
               </Row>
             </div>
           </div>
@@ -341,6 +352,56 @@ export default function DesignEditor({
                 value={ds.radius.md}
                 onChange={(e) => setRadius(Number(e.target.value))}
                 className="focus-ring mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/12 accent-brand-500 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+              />
+            </label>
+          </div>
+
+          <div>
+            <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
+              Отступы и размеры
+            </h3>
+
+            <label className="mt-2 block">
+              <span className="flex items-baseline justify-between text-[12.5px] text-white/50">
+                Отступ секций <span className="font-mono text-white/40">{ds.space.section}px</span>
+              </span>
+              <input
+                type="range"
+                min={24}
+                max={180}
+                step={4}
+                value={ds.space.section}
+                onChange={(e) => setSection(Number(e.target.value))}
+                className={sliderClass}
+              />
+            </label>
+
+            <label className="mt-3 block">
+              <span className="flex items-baseline justify-between text-[12.5px] text-white/50">
+                Внутренние поля <span className="font-mono text-white/40">{ds.grid.margin}px</span>
+              </span>
+              <input
+                type="range"
+                min={12}
+                max={120}
+                step={4}
+                value={ds.grid.margin}
+                onChange={(e) => setMargin(Number(e.target.value))}
+                className={sliderClass}
+              />
+            </label>
+
+            <label className="mt-3 block">
+              <span className="flex items-baseline justify-between text-[12.5px] text-white/50">
+                Базовый кегль <span className="font-mono text-white/40">{ds.type.baseSize}px</span>
+              </span>
+              <input
+                type="range"
+                min={13}
+                max={22}
+                value={ds.type.baseSize}
+                onChange={(e) => setBaseSize(Number(e.target.value))}
+                className={sliderClass}
               />
             </label>
           </div>
