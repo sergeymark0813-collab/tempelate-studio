@@ -94,6 +94,12 @@ export default function StudioPage() {
         className="sticky top-0"
         right={
           <div className="flex items-center gap-2">
+            <Link
+              to="/community"
+              className="focus-ring rounded-xl px-3.5 py-2 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
+            >
+              Сообщество
+            </Link>
             {project && (
               <button
                 type="button"

@@ -13,6 +13,7 @@ import DeviceTabs from '../DeviceTabs';
 import { getDevice } from '../../lib/devices';
 import type { DeviceId } from '../../types';
 import DesignEditor from './DesignEditor';
+import PublishPanel from '../community/PublishPanel';
 
 function downloadJson(project: Project) {
   const payload = {
@@ -214,6 +215,10 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
 
       {/* Editing the result — sits directly under the preview it changes. */}
       <DesignEditor draft={draft} original={project} onChange={setDraft} />
+
+      {/* Publishing takes the edited draft, so the community sees what the
+          author actually finished with — not the raw generated version. */}
+      <PublishPanel project={draft} />
 
       {/* decisions */}
       <ResultCard
