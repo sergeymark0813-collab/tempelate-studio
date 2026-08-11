@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Search, Sparkles, Wand2 } from 'lucide-react';
+import { Search, Sparkles, Wand2 } from 'lucide-react';
 import { TEMPLATES } from '../templates/registry';
 import { HOW_IT_WORKS, studio } from '../data/studio';
 import TopBar from '../components/TopBar';
@@ -31,13 +31,6 @@ export default function GalleryPage() {
               <Wand2 size={15} />
               <span className="hidden sm:inline">AI-студия</span>
             </Link>
-            <a
-              href={`mailto:${studio.email}`}
-              className="focus-ring flex items-center gap-2 rounded-xl bg-white/6 px-3.5 py-2 text-[13px] font-semibold text-white/80 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
-            >
-              <Mail size={15} />
-              <span className="hidden sm:inline">Связаться</span>
-            </a>
           </div>
         }
       />
@@ -154,22 +147,6 @@ export default function GalleryPage() {
               Напишите — обсудим содержание, соберу сайт на React и подключу домен. Срок{' '}
               {studio.turnaround}, {studio.priceFrom}.
             </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <a
-              href={`mailto:${studio.email}`}
-              className="focus-ring flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-shell-950 transition hover:bg-white/90"
-            >
-              <Mail size={16} /> {studio.email}
-            </a>
-            <a
-              href={studio.github}
-              target="_blank"
-              rel="noreferrer"
-              className="focus-ring rounded-xl px-4 py-2.5 text-sm font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
-            >
-              GitHub
-            </a>
           </div>
         </div>
         <div className="border-t border-white/8 py-5 text-center text-xs text-white/25">

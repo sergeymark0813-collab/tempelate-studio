@@ -9,6 +9,9 @@ import { captureNode, saveBlob } from '../../lib/exportImage';
 import { cn } from '../../lib/cn';
 import { Chip, CopyButton, ResultCard, SpecRow } from './primitives';
 import FrameView from './FrameView';
+import DeviceTabs from '../DeviceTabs';
+import { getDevice } from '../../lib/devices';
+import type { DeviceId } from '../../types';
 import DesignEditor from './DesignEditor';
 
 function downloadJson(project: Project) {
@@ -50,6 +53,7 @@ function downloadJson(project: Project) {
 
 export default function ProjectView({ project, onRegenerate }: { project: Project; onRegenerate: () => void }) {
   const [frameIndex, setFrameIndex] = useState(0);
+  const [deviceId, setDeviceId] = useState<DeviceId>('desktop');
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
   const artboardRef = useRef<HTMLDivElement>(null);
@@ -64,6 +68,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
 
   const { ds } = draft;
   const frame = draft.frames[Math.min(frameIndex, draft.frames.length - 1)];
+  const reflows = frame.canvas.kind === 'page' || frame.canvas.kind === 'email';
 
   /** Rasterises the artboard at its true size — the real "download" of this app. */
   const exportImage = async () => {
@@ -180,8 +185,25 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
           ) : undefined
         }
       >
+        {/* Reflowing artboards get a real viewport switcher; fixed ones
+            (logo, poster, card) have nothing to reflow. */}
+        {reflows && (
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <DeviceTabs value={deviceId} onChange={setDeviceId} />
+            <span className="font-mono text-xs text-white/35">
+              {getDevice(deviceId).width}px
+            </span>
+          </div>
+        )}
+
         <div className="scroll-slim stage-grid max-h-[680px] overflow-y-auto rounded-xl bg-shell-950 p-4">
-          <FrameView key={`${project.id}-${frame.id}`} frame={frame} ds={ds} nodeRef={artboardRef} />
+          <FrameView
+            key={`${project.id}-${frame.id}`}
+            frame={frame}
+            ds={ds}
+            nodeRef={artboardRef}
+            deviceWidth={reflows ? getDevice(deviceId).width : undefined}
+          />
         </div>
         {edited && (
           <p className="mt-3 text-xs text-white/35">

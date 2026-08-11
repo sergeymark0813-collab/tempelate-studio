@@ -193,13 +193,22 @@ export default function FrameView({
   frame,
   ds,
   nodeRef,
+  deviceWidth,
 }: {
   frame: Frame;
   ds: DesignSystem;
   /** Points at the unscaled artboard, so image export captures full resolution. */
   nodeRef?: React.Ref<HTMLDivElement>;
+  /**
+   * Renders a flowing page at this width instead of the design width, so the
+   * layout genuinely reflows for tablet and phone rather than being scaled down.
+   * Fixed artboards (logo, poster, card) ignore it — they have no reflow.
+   */
+  deviceWidth?: number;
 }) {
-  const { canvas } = frame;
+  const reflows = frame.canvas.kind === 'page' || frame.canvas.kind === 'email';
+  const canvas =
+    reflows && deviceWidth ? { ...frame.canvas, width: deviceWidth } : frame.canvas;
   const { ref, scale } = useFitScale(canvas.width, { gutter: 2 });
 
   const phone = canvas.chrome === 'phone';
@@ -240,7 +249,13 @@ export default function FrameView({
               </div>
             )}
 
-            <div ref={nodeRef} style={{ height: canvas.height ? canvas.height : undefined }}>
+            {/* `ds-artboard` opens a size container; the reflow rules in
+                index.css collapse multi-column layouts inside it. */}
+            <div
+              ref={nodeRef}
+              className="ds-artboard"
+              style={{ height: canvas.height ? canvas.height : undefined }}
+            >
               <DsProvider ds={ds}>
                 <Artboard frame={frame} />
               </DsProvider>

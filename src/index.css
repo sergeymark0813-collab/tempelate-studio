@@ -310,3 +310,61 @@
     animation: marquee-x 26s linear infinite;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Generated-design reflow
+   ---------------------------------------------------------------------------
+   Studio blocks lay themselves out with inline styles, so media queries can't
+   reach them. The artboard opens a size container instead, and these rules
+   collapse its multi-column structures when it is rendered at tablet or phone
+   width. A stylesheet `!important` outranks an inline style (only an inline
+   `!important` would beat it), which is what makes this work.
+
+   The result genuinely reflows rather than being a shrunken desktop copy.
+   --------------------------------------------------------------------------- */
+.ds-artboard {
+  container-type: inline-size;
+}
+
+@container (max-width: 820px) {
+  .ds-artboard [style*="grid-template-columns"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .ds-artboard [style*="grid-template-rows"] {
+    grid-template-rows: auto !important;
+  }
+  /* Side-by-side copy/visual pairs stack. */
+  .ds-artboard [style*="flex-direction: row"] {
+    flex-direction: column !important;
+  }
+  /* Bento and mosaic spans would otherwise overflow the single column. */
+  .ds-artboard [style*="grid-column"] {
+    grid-column: auto !important;
+  }
+  .ds-artboard [style*="grid-row"] {
+    grid-row: auto !important;
+  }
+}
+
+@container (max-width: 560px) {
+  /* Display type set for 1440px is unreadable at 390px. */
+  .ds-artboard h1,
+  .ds-artboard h2 {
+    font-size: clamp(26px, 8cqw, 44px) !important;
+    line-height: 1.12 !important;
+  }
+  .ds-artboard h3 {
+    font-size: clamp(17px, 4.6cqw, 24px) !important;
+  }
+  /* Desktop section rhythm and page margins are far too generous on a phone. */
+  .ds-artboard section {
+    padding-block: clamp(28px, 9cqw, 64px) !important;
+  }
+  .ds-artboard [style*="padding-inline"] {
+    padding-inline: 20px !important;
+  }
+  .ds-artboard [style*="min-height: 720px"],
+  .ds-artboard [style*="min-height:720px"] {
+    min-height: 520px !important;
+  }
+}

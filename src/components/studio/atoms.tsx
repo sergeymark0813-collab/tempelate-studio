@@ -292,10 +292,18 @@ const rand = (seed: number) => {
 /**
  * Procedural artwork standing in for photography.
  *
- * Grey placeholder boxes make any layout look unfinished, and there is no image
- * to fetch — so the studio draws an abstract composition from its own palette.
- * Deterministic per `seed`, so a given slot keeps its picture across re-renders.
+ * Flat tinted rectangles make a layout look unfinished, so this draws actual
+ * scenes: a mesh of coloured light, depth layers, a subject, film grain and a
+ * vignette. Everything comes from the palette, so the imagery belongs to the
+ * design rather than sitting on top of it.
+ *
+ * Deterministic per `seed`, so a slot keeps its picture across re-renders.
  */
+
+/** Shared film grain. One data URI for the whole app — no per-node filters. */
+const GRAIN =
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.5'/></svg>\")";
+
 export function Visual({
   seed,
   radius = 'md',
@@ -320,32 +328,33 @@ export function Visual({
     );
   }
 
-  const palette = [ds.color.primary, ds.color.secondary, ds.color.accent];
-  const mode = Math.floor(next() * 4);
-  const rotate = Math.floor(next() * 360);
+  const { primary, secondary, accent, surface2, surface3, bg } = ds.color;
+  const inks = [primary, secondary, accent];
+  const scene = Math.floor(next() * 4);
+  const dark = ds.color.scheme === 'dark';
 
-  const shapes = Array.from({ length: 3 + Math.floor(next() * 3) }, (_, i) => {
-    const size = 24 + next() * 58;
-    return {
-      key: i,
-      cx: 8 + next() * 84,
-      cy: 8 + next() * 84,
-      size,
-      color: palette[Math.floor(next() * palette.length)],
-      opacity: 0.35 + next() * 0.5,
-      round: next() > 0.45,
-      rot: Math.floor(next() * 90),
-    };
-  });
+  /* A mesh of overlapping radial gradients reads as lit space rather than a
+     flat fill — this is what separates "image" from "coloured block". */
+  const mesh = [
+    `radial-gradient(80% 70% at ${12 + next() * 26}% ${8 + next() * 24}%, ${inks[0]}, transparent 62%)`,
+    `radial-gradient(70% 65% at ${62 + next() * 28}% ${14 + next() * 22}%, ${inks[1]}, transparent 58%)`,
+    `radial-gradient(90% 80% at ${28 + next() * 44}% ${74 + next() * 20}%, ${inks[2]}, transparent 64%)`,
+    `linear-gradient(${Math.floor(next() * 360)}deg, ${dark ? surface3 : surface2}, ${bg})`,
+  ].join(', ');
 
-  const base =
-    mode === 0
-      ? `linear-gradient(${rotate}deg, ${ds.color.primary}, ${ds.color.accent})`
-      : mode === 1
-        ? `radial-gradient(120% 120% at ${20 + next() * 60}% ${10 + next() * 40}%, ${ds.color.accent}, ${ds.color.primary})`
-        : mode === 2
-          ? ds.color.surface2
-          : `linear-gradient(${rotate}deg, ${ds.color.surface2}, ${ds.color.surface3})`;
+  /** Out-of-focus highlights — the giveaway of a real photograph. */
+  const bokeh = Array.from({ length: 3 + Math.floor(next() * 3) }, (_, i) => ({
+    key: i,
+    left: `${next() * 88}%`,
+    top: `${next() * 84}%`,
+    size: 14 + next() * 34,
+    tint: inks[Math.floor(next() * inks.length)],
+    opacity: 0.18 + next() * 0.34,
+    blur: 6 + next() * 18,
+  }));
+
+  const horizon = 52 + next() * 22;
+  const sunX = 18 + next() * 64;
 
   return (
     <div
@@ -353,33 +362,102 @@ export function Visual({
         position: 'relative',
         overflow: 'hidden',
         borderRadius,
-        background: base,
+        background: mesh,
         minHeight: 120,
+        isolation: 'isolate',
         ...style,
       }}
     >
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-        {shapes.map((shape) =>
-          shape.round ? (
-            <circle key={shape.key} cx={shape.cx} cy={shape.cy} r={shape.size / 2.6} fill={shape.color} opacity={shape.opacity} />
-          ) : (
-            <rect
-              key={shape.key}
-              x={shape.cx - shape.size / 2.4}
-              y={shape.cy - shape.size / 2.4}
-              width={shape.size / 1.2}
-              height={shape.size / 1.2}
-              fill={shape.color}
-              opacity={shape.opacity}
-              transform={`rotate(${shape.rot} ${shape.cx} ${shape.cy})`}
+      {/* Depth: a horizon and layered planes give the frame a subject. */}
+      {scene === 0 && (
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+          <circle cx={sunX} cy={horizon - 16} r={7 + next() * 6} fill={accent} opacity={0.85} />
+          <path d={`M0 ${horizon} C 22 ${horizon - 9}, 38 ${horizon + 7}, 58 ${horizon - 3} S 86 ${horizon - 11}, 100 ${horizon - 1} L100 100 L0 100 Z`} fill={primary} opacity={0.55} />
+          <path d={`M0 ${horizon + 12} C 26 ${horizon + 3}, 44 ${horizon + 19}, 66 ${horizon + 9} S 88 ${horizon + 2}, 100 ${horizon + 11} L100 100 L0 100 Z`} fill={dark ? bg : surface3} opacity={0.9} />
+        </svg>
+      )}
+
+      {/* Studio: a lit subject on a seamless backdrop. */}
+      {scene === 1 && (
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+          <ellipse cx="50" cy="84" rx="30" ry="6" fill={dark ? '#000' : primary} opacity={0.28} />
+          <rect x="33" y="26" width="34" height="56" rx={next() > 0.5 ? 17 : 5} fill={inks[Math.floor(next() * 3)]} opacity={0.92} />
+          <rect x="33" y="26" width="34" height="56" rx={next() > 0.5 ? 17 : 5} fill={`url(#lift-${seed})`} opacity={0.5} />
+          <defs>
+            <linearGradient id={`lift-${seed}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#fff" stopOpacity="0.42" />
+              <stop offset="100%" stopColor="#000" stopOpacity="0.28" />
+            </linearGradient>
+          </defs>
+        </svg>
+      )}
+
+      {/* Architecture: planes catching light at an angle. */}
+      {scene === 2 && (
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+          <path d="M0 100 L0 42 L38 22 L38 100 Z" fill={primary} opacity={0.7} />
+          <path d="M38 100 L38 22 L72 38 L72 100 Z" fill={dark ? surface3 : bg} opacity={0.55} />
+          <path d="M72 100 L72 38 L100 26 L100 100 Z" fill={secondary} opacity={0.6} />
+          <path d="M0 42 L38 22 L72 38 L100 26" stroke={accent} strokeWidth="1.2" fill="none" opacity={0.8} />
+        </svg>
+      )}
+
+      {/* Flow: soft layered curves, good behind text. */}
+      {scene === 3 && (
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+          {[0, 1, 2].map((i) => (
+            <path
+              key={i}
+              d={`M0 ${34 + i * 18} C 24 ${22 + i * 18}, 44 ${48 + i * 18}, 68 ${34 + i * 18} S 92 ${20 + i * 18}, 100 ${32 + i * 18} L100 100 L0 100 Z`}
+              fill={inks[i % 3]}
+              opacity={0.28 + i * 0.16}
             />
-          ),
-        )}
-      </svg>
+          ))}
+        </svg>
+      )}
+
+      {/* Out-of-focus highlights. */}
+      {bokeh.map((dot) => (
+        <span
+          key={dot.key}
+          style={{
+            position: 'absolute',
+            left: dot.left,
+            top: dot.top,
+            width: `${dot.size}%`,
+            aspectRatio: '1',
+            borderRadius: 999,
+            background: dot.tint,
+            opacity: dot.opacity,
+            filter: `blur(${dot.blur}px)`,
+            pointerEvents: 'none',
+          }}
+        />
+      ))}
+
+      {/* Vignette + grain: what makes the frame read as a photograph. */}
+      <span
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `radial-gradient(120% 100% at 50% 40%, transparent 42%, ${dark ? '#000' : '#1a1a20'} 130%)`,
+          opacity: dark ? 0.55 : 0.3,
+          pointerEvents: 'none',
+        }}
+      />
+      <span
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: GRAIN,
+          opacity: 0.14,
+          mixBlendMode: 'overlay',
+          pointerEvents: 'none',
+        }}
+      />
     </div>
   );
 }
-
 /** Geometric icon stand-in, drawn in the system's icon style. */
 export function Glyph({ seed, size = 24, color }: { seed: number; size?: number; color?: string }) {
   const ds = useDs();
