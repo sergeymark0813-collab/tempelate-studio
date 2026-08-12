@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Star } from 'lucide-react';
 import { cn } from '../../lib/cn';
+import { useT } from '../../lib/i18n';
 
 /* ===========================================================================
    Star rating.
@@ -27,6 +28,7 @@ export default function StarRating({
   size?: number;
   className?: string;
 }) {
+  const t = useT();
   const [hover, setHover] = useState<number | null>(null);
 
   // While hovering show the prospective score, otherwise your own, otherwise
@@ -38,7 +40,7 @@ export default function StarRating({
       <div
         className="flex items-center gap-0.5"
         role={canRate ? 'radiogroup' : undefined}
-        aria-label={canRate ? 'Оценка проекта' : undefined}
+        aria-label={canRate ? t('rating.label') : undefined}
         onMouseLeave={() => setHover(null)}
       >
         {[1, 2, 3, 4, 5].map((star) => {
@@ -53,7 +55,7 @@ export default function StarRating({
                     type: 'button' as const,
                     role: 'radio',
                     'aria-checked': mine === star,
-                    'aria-label': `${star} из 5`,
+                    'aria-label': t('rating.outOf', { stars: star }),
                     onMouseEnter: () => setHover(star),
                     onClick: () => onRate?.(star),
                     className:
@@ -83,13 +85,13 @@ export default function StarRating({
             {count}
           </>
         ) : (
-          <span className="text-white/30">нет оценок</span>
+          <span className="text-white/30">{t('rating.none')}</span>
         )}
       </span>
 
       {mine != null && (
         <span className="rounded-full bg-amber-400/12 px-2 py-0.5 text-[11px] text-amber-200/80 ring-1 ring-amber-400/20">
-          ваша: {mine}
+          {t('rating.yours', { stars: mine })}
         </span>
       )}
     </div>

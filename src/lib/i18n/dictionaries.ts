@@ -1,0 +1,394 @@
+/* ===========================================================================
+   Interface copy in every supported language.
+
+   English is the source of truth and the default: a visitor who never touches
+   the selector sees English. `ru` and `hy` are complete mirrors of the same key
+   set, which is enforced by typing them against the English dictionary.
+   =========================================================================== */
+
+export const LOCALES = ['en', 'ru', 'hy'] as const;
+export type Locale = (typeof LOCALES)[number];
+
+export const LOCALE_NAMES: Record<Locale, string> = {
+  en: 'English',
+  ru: 'Русский',
+  hy: 'Հայերեն',
+};
+
+const en = {
+  /* --- shell --- */
+  'nav.studio': 'Studio',
+  'nav.catalog': 'Catalog',
+  'nav.community': 'Community',
+  'nav.newProject': 'New project',
+  'nav.backToStudio': 'Back to studio',
+  'nav.home': 'home',
+  'lang.label': 'Language',
+
+  /* --- studio landing --- */
+  'studio.badge': 'Generative design studio',
+  'studio.titleLine1': 'Answer a few questions —',
+  'studio.titleLine2': 'get a design of your own',
+  'studio.intro':
+    'No ready-made templates: the palette, type scale, grid, composition and every block are built from scratch for your project. {count} product types — from a landing page and a mobile app to a logo, a deck and an email.',
+
+  /* --- generation --- */
+  'gen.step.parse': 'Reading your answers',
+  'gen.step.color': 'Building the colour system',
+  'gen.step.type': 'Assembling the type scale',
+  'gen.step.grid': 'Setting the grid and rhythm',
+  'gen.step.compose': 'Composing the blocks',
+  'gen.step.render': 'Drawing the artboard',
+  'gen.failed.title': 'Generation failed',
+  'gen.failed.body': 'Your answers are safe — you can retry or adjust the brief.',
+  'gen.failed.retry': 'Try again',
+  'gen.failed.back': 'Back to the questions',
+
+  /* --- wizard --- */
+  'wizard.question': 'question {current} of {total}',
+  'wizard.track.web': 'Website brief',
+  'wizard.track.logo': 'Logo brief',
+  'wizard.track.interface': 'Interface brief',
+  'wizard.track.graphic': 'Layout brief',
+  'wizard.back': 'Back',
+  'wizard.next': 'Next',
+  'wizard.skip': 'Skip',
+  'wizard.generate': 'Generate design',
+  'wizard.multiHint': 'You can pick more than one.',
+  'wizard.errorTitle': 'The brief failed to render',
+
+  /* --- result --- */
+  'result.created': 'Design created',
+  'result.regenerate': 'Another version',
+  'result.exportPng': 'PNG',
+  'result.exporting': 'Preparing PNG…',
+  'result.json': 'JSON',
+  'result.errorTitle': 'The result failed to render',
+  'result.artboard': 'Artboard',
+  'result.edited': 'Edited by hand. PNG and JSON export this version.',
+
+  /* --- editor --- */
+  'editor.title': 'Edit the generated design',
+  'editor.subtitle': 'Changes apply to the artboard immediately, with no regeneration.',
+  'editor.reset': 'Revert',
+  'editor.colors': 'Colours',
+  'editor.fonts': 'Fonts',
+  'editor.shape': 'Shape',
+  'editor.spacing': 'Spacing and sizes',
+  'editor.sections': 'Sections and content',
+  'color.primary': 'Primary',
+  'color.secondary': 'Secondary',
+  'color.accent': 'Accent',
+  'color.background': 'Background',
+  'color.text': 'Text',
+  'color.custom': 'Custom',
+  'color.harmonies': 'Harmonies with the current colour',
+  'color.palette': 'Palette',
+  'color.neutrals': 'Neutrals',
+  'color.invalid': 'Not a colour I recognise. Try #2E7D32, rgb(46 125 50) or hsl(123 46% 34%).',
+
+  /* --- publishing --- */
+  'publish.title': 'Publish to the community',
+  'publish.subtitle':
+    'Your work appears in the shared gallery with your description and becomes open to ratings.',
+  'publish.name': 'Title',
+  'publish.description': 'Description',
+  'publish.descriptionHint':
+    'Say what the project is and who it is for. Publishing without a description is not possible.',
+  'publish.descriptionPlaceholder':
+    'For example: a landing page for a family bakery. Warm palette, large product photography, ordering front and centre.',
+  'publish.author': 'Author',
+  'publish.submit': 'Publish',
+  'publish.done.title': 'Project published',
+  'publish.done.body':
+    'It is now in the Community section — others can open it, read your description and rate it.',
+  'publish.done.open': 'Open project',
+  'publish.done.all': 'All work',
+  'publish.local':
+    'There are no accounts or sign-in yet: work and ratings live in this browser and are visible on this device only. The data layer is defined by a contract, so connecting a real backend will not require reworking the interface.',
+  'publish.error.description': 'Please add a description before publishing.',
+  'publish.error.title': 'Please give the project a title.',
+  'publish.error.tooLarge':
+    'The project is too large to publish — reduce or remove the uploaded images.',
+  'publish.error.storage':
+    'Could not save: the browser refused to write. Storage may be full or private mode may be on.',
+
+  /* --- community --- */
+  'community.badge': 'Community',
+  'community.title': 'Work by other people',
+  'community.intro':
+    'Published projects with descriptions written by their authors. Open any of them in full and rate it.',
+  'community.empty': 'Nothing here yet.',
+  'community.emptyHint': 'Generate a design in the studio and publish it — it will show up here.',
+  'community.openStudio': 'Open the studio',
+  'community.allWork': 'All work',
+  'community.notFound': 'Project not found',
+  'community.notFoundHint': 'The author may have withdrawn it.',
+  'community.author': 'Author',
+  'community.unpublish': 'Withdraw',
+  'community.you': 'You',
+  'community.save': 'Save',
+  'community.renderError': 'The project failed to render',
+
+  /* --- rating --- */
+  'rating.none': 'no ratings',
+  'rating.yours': 'yours: {stars}',
+  'rating.label': 'Project rating',
+  'rating.outOf': '{stars} out of 5',
+  'rating.rule': 'One rating per person — rating again replaces yours rather than adding another.',
+  'rating.ownWork': 'You cannot rate your own work.',
+
+  /* --- errors --- */
+  'error.title': 'Something went wrong',
+  'error.body': 'The interface could not draw this block. Your answers are safe — you can retry.',
+  'error.retry': 'Try again',
+} as const;
+
+export type TranslationKey = keyof typeof en;
+type Dictionary = Record<TranslationKey, string>;
+
+const ru: Dictionary = {
+  'nav.studio': 'Студия',
+  'nav.catalog': 'Каталог',
+  'nav.community': 'Сообщество',
+  'nav.newProject': 'Новый проект',
+  'nav.backToStudio': 'В студию',
+  'nav.home': 'на главную',
+  'lang.label': 'Язык',
+
+  'studio.badge': 'Генеративная дизайн-студия',
+  'studio.titleLine1': 'Ответьте на вопросы —',
+  'studio.titleLine2': 'получите уникальный дизайн',
+  'studio.intro':
+    'Ни одного готового шаблона: палитра, шрифтовая шкала, сетка, композиция и все блоки собираются с нуля под ваш проект. {count} типов продуктов — от лендинга и мобильного приложения до логотипа, презентации и email-рассылки.',
+
+  'gen.step.parse': 'Разбираю ответы',
+  'gen.step.color': 'Строю цветовую систему',
+  'gen.step.type': 'Собираю шрифтовую шкалу',
+  'gen.step.grid': 'Определяю сетку и ритм',
+  'gen.step.compose': 'Компоную блоки',
+  'gen.step.render': 'Отрисовываю макет',
+  'gen.failed.title': 'Генерация не удалась',
+  'gen.failed.body': 'Ваши ответы сохранены — можно повторить или изменить бриф.',
+  'gen.failed.retry': 'Попробовать снова',
+  'gen.failed.back': 'Вернуться к вопросам',
+
+  'wizard.question': 'вопрос {current} из {total}',
+  'wizard.track.web': 'Анкета для сайта',
+  'wizard.track.logo': 'Анкета для логотипа',
+  'wizard.track.interface': 'Анкета для интерфейса',
+  'wizard.track.graphic': 'Анкета для макета',
+  'wizard.back': 'Назад',
+  'wizard.next': 'Далее',
+  'wizard.skip': 'Пропустить',
+  'wizard.generate': 'Сгенерировать дизайн',
+  'wizard.multiHint': 'Можно выбрать несколько вариантов.',
+  'wizard.errorTitle': 'Анкета не отрисовалась',
+
+  'result.created': 'Дизайн создан',
+  'result.regenerate': 'Другой вариант',
+  'result.exportPng': 'PNG',
+  'result.exporting': 'Готовлю PNG…',
+  'result.json': 'JSON',
+  'result.errorTitle': 'Не удалось отрисовать результат',
+  'result.artboard': 'Макет',
+  'result.edited': 'Макет отредактирован вручную. Экспорт в PNG и JSON сохранит эту версию.',
+
+  'editor.title': 'Редактировать сгенерированный дизайн',
+  'editor.subtitle': 'Изменения применяются к макету сразу, без повторной генерации.',
+  'editor.reset': 'Вернуть как было',
+  'editor.colors': 'Цвета',
+  'editor.fonts': 'Шрифты',
+  'editor.shape': 'Форма',
+  'editor.spacing': 'Отступы и размеры',
+  'editor.sections': 'Секции и содержимое',
+  'color.primary': 'Основной',
+  'color.secondary': 'Дополнительный',
+  'color.accent': 'Акцентный',
+  'color.background': 'Фон',
+  'color.text': 'Текст',
+  'color.custom': 'Свой',
+  'color.harmonies': 'Гармонии с текущим',
+  'color.palette': 'Палитра',
+  'color.neutrals': 'Нейтральные',
+  'color.invalid': 'Не распознал цвет. Примеры: #2E7D32, rgb(46 125 50), hsl(123 46% 34%)',
+
+  'publish.title': 'Опубликовать в сообществе',
+  'publish.subtitle':
+    'Работа появится в общей галерее вместе с вашим описанием и станет доступна для оценок.',
+  'publish.name': 'Название',
+  'publish.description': 'Описание',
+  'publish.descriptionHint':
+    'Расскажите, что это за проект и для кого он. Без описания опубликовать нельзя.',
+  'publish.descriptionPlaceholder':
+    'Например: лендинг для семейной пекарни. Тёплая палитра, крупные фотографии продукции, упор на онлайн-заказ.',
+  'publish.author': 'Автор',
+  'publish.submit': 'Опубликовать',
+  'publish.done.title': 'Проект опубликован',
+  'publish.done.body':
+    'Он появился в разделе «Сообщество» — другие смогут открыть его, прочитать ваше описание и поставить оценку.',
+  'publish.done.open': 'Открыть проект',
+  'publish.done.all': 'Все работы',
+  'publish.local':
+    'Аккаунтов и входа в проекте пока нет: работы и оценки хранятся в этом браузере и видны только на этом устройстве. Слой данных описан контрактом, поэтому подключение настоящего backend не потребует переделки интерфейса.',
+  'publish.error.description': 'Добавьте описание перед публикацией.',
+  'publish.error.title': 'Укажите название проекта.',
+  'publish.error.tooLarge':
+    'Проект слишком большой для публикации — уменьшите или уберите загруженные изображения.',
+  'publish.error.storage':
+    'Не удалось сохранить: браузер отказал в записи. Возможно, закончилось место или включён приватный режим.',
+
+  'community.badge': 'Сообщество',
+  'community.title': 'Работы пользователей',
+  'community.intro':
+    'Опубликованные проекты с описанием от авторов. Каждую работу можно открыть целиком и оценить.',
+  'community.empty': 'Здесь пока пусто.',
+  'community.emptyHint':
+    'Сгенерируйте дизайн в студии и опубликуйте его — он появится тут.',
+  'community.openStudio': 'Открыть студию',
+  'community.allWork': 'Все работы',
+  'community.notFound': 'Проект не найден',
+  'community.notFoundHint': 'Возможно, автор снял его с публикации.',
+  'community.author': 'Автор',
+  'community.unpublish': 'Снять с публикации',
+  'community.you': 'Вы',
+  'community.save': 'Сохранить',
+  'community.renderError': 'Не удалось отрисовать проект',
+
+  'rating.none': 'нет оценок',
+  'rating.yours': 'ваша: {stars}',
+  'rating.label': 'Оценка проекта',
+  'rating.outOf': '{stars} из 5',
+  'rating.rule':
+    'Одна оценка на человека — повторная заменяет прежнюю, а не добавляет новую.',
+  'rating.ownWork': 'Свою работу оценивать нельзя.',
+
+  'error.title': 'Что-то пошло не так',
+  'error.body':
+    'Интерфейс не смог отрисовать этот блок. Ваши ответы сохранены — можно попробовать ещё раз.',
+  'error.retry': 'Попробовать снова',
+};
+
+const hy: Dictionary = {
+  'nav.studio': 'Ստուդիա',
+  'nav.catalog': 'Կատալոգ',
+  'nav.community': 'Համայնք',
+  'nav.newProject': 'Նոր նախագիծ',
+  'nav.backToStudio': 'Դեպի ստուդիա',
+  'nav.home': 'գլխավոր',
+  'lang.label': 'Լեզու',
+
+  'studio.badge': 'Գեներատիվ դիզայն-ստուդիա',
+  'studio.titleLine1': 'Պատասխանեք հարցերին —',
+  'studio.titleLine2': 'ստացեք եզակի դիզայն',
+  'studio.intro':
+    'Ոչ մի պատրաստի ձևանմուշ. գունապնակը, տառաչափերի սանդղակը, ցանցը, կոմպոզիցիան և բոլոր բլոկները հավաքվում են զրոյից ձեր նախագծի համար։ {count} տեսակի արտադրանք՝ լենդինգից և բջջային հավելվածից մինչև լոգոտիպ, ներկայացում և email-նամակ։',
+
+  'gen.step.parse': 'Վերլուծում եմ պատասխանները',
+  'gen.step.color': 'Կառուցում եմ գունային համակարգը',
+  'gen.step.type': 'Հավաքում եմ տառաչափերի սանդղակը',
+  'gen.step.grid': 'Որոշում եմ ցանցը և ռիթմը',
+  'gen.step.compose': 'Կոմպոզիցիա եմ կազմում',
+  'gen.step.render': 'Նկարում եմ մակետը',
+  'gen.failed.title': 'Գեներացիան ձախողվեց',
+  'gen.failed.body': 'Ձեր պատասխանները պահպանված են — կարող եք կրկնել կամ փոխել բրիֆը։',
+  'gen.failed.retry': 'Փորձել կրկին',
+  'gen.failed.back': 'Վերադառնալ հարցերին',
+
+  'wizard.question': 'հարց {current} / {total}',
+  'wizard.track.web': 'Կայքի բրիֆ',
+  'wizard.track.logo': 'Լոգոտիպի բրիֆ',
+  'wizard.track.interface': 'Ինտերֆեյսի բրիֆ',
+  'wizard.track.graphic': 'Մակետի բրիֆ',
+  'wizard.back': 'Հետ',
+  'wizard.next': 'Առաջ',
+  'wizard.skip': 'Բաց թողնել',
+  'wizard.generate': 'Գեներացնել դիզայնը',
+  'wizard.multiHint': 'Կարելի է ընտրել մի քանիսը։',
+  'wizard.errorTitle': 'Հարցաթերթիկը չհաջողվեց ցուցադրել',
+
+  'result.created': 'Դիզայնը ստեղծված է',
+  'result.regenerate': 'Այլ տարբերակ',
+  'result.exportPng': 'PNG',
+  'result.exporting': 'Պատրաստում եմ PNG…',
+  'result.json': 'JSON',
+  'result.errorTitle': 'Չհաջողվեց ցուցադրել արդյունքը',
+  'result.artboard': 'Մակետ',
+  'result.edited': 'Մակետը խմբագրվել է ձեռքով։ PNG-ն և JSON-ը կպահեն այս տարբերակը։',
+
+  'editor.title': 'Խմբագրել գեներացված դիզայնը',
+  'editor.subtitle': 'Փոփոխություններն անմիջապես կիրառվում են մակետին՝ առանց նոր գեներացիայի։',
+  'editor.reset': 'Վերականգնել',
+  'editor.colors': 'Գույներ',
+  'editor.fonts': 'Տառատեսակներ',
+  'editor.shape': 'Ձև',
+  'editor.spacing': 'Բացվածքներ և չափսեր',
+  'editor.sections': 'Բաժիններ և բովանդակություն',
+  'color.primary': 'Հիմնական',
+  'color.secondary': 'Լրացուցիչ',
+  'color.accent': 'Շեշտադրող',
+  'color.background': 'Ֆոն',
+  'color.text': 'Տեքստ',
+  'color.custom': 'Իմ գույնը',
+  'color.harmonies': 'Ներդաշնակություններ ընթացիկի հետ',
+  'color.palette': 'Գունապնակ',
+  'color.neutrals': 'Չեզոք',
+  'color.invalid': 'Գույնը չճանաչվեց։ Օրինակ՝ #2E7D32, rgb(46 125 50), hsl(123 46% 34%)',
+
+  'publish.title': 'Հրապարակել համայնքում',
+  'publish.subtitle':
+    'Աշխատանքը կհայտնվի ընդհանուր պատկերասրահում ձեր նկարագրության հետ և հասանելի կդառնա գնահատականների համար։',
+  'publish.name': 'Անվանում',
+  'publish.description': 'Նկարագրություն',
+  'publish.descriptionHint':
+    'Պատմեք, թե ինչ նախագիծ է սա և ում համար։ Առանց նկարագրության հրապարակել հնարավոր չէ։',
+  'publish.descriptionPlaceholder':
+    'Օրինակ՝ լենդինգ ընտանեկան հացատան համար։ Ջերմ գունապնակ, արտադրանքի խոշոր լուսանկարներ, շեշտը՝ առցանց պատվերի վրա։',
+  'publish.author': 'Հեղինակ',
+  'publish.submit': 'Հրապարակել',
+  'publish.done.title': 'Նախագիծը հրապարակված է',
+  'publish.done.body':
+    'Այն հայտնվեց «Համայնք» բաժնում — մյուսները կկարողանան բացել այն, կարդալ ձեր նկարագրությունը և գնահատել։',
+  'publish.done.open': 'Բացել նախագիծը',
+  'publish.done.all': 'Բոլոր աշխատանքները',
+  'publish.local':
+    'Նախագծում դեռ չկան հաշիվներ և մուտք. աշխատանքներն ու գնահատականները պահվում են այս բրաուզերում և տեսանելի են միայն այս սարքում։ Տվյալների շերտը նկարագրված է պայմանագրով, ուստի իրական backend-ի միացումը չի պահանջի ինտերֆեյսի վերափոխում։',
+  'publish.error.description': 'Ավելացրեք նկարագրություն հրապարակելուց առաջ։',
+  'publish.error.title': 'Նշեք նախագծի անվանումը։',
+  'publish.error.tooLarge':
+    'Նախագիծը չափազանց մեծ է հրապարակելու համար — նվազեցրեք կամ հեռացրեք վերբեռնված պատկերները։',
+  'publish.error.storage':
+    'Չհաջողվեց պահպանել. բրաուզերը մերժեց գրառումը։ Հնարավոր է՝ տեղը սպառվել է կամ միացված է գաղտնի ռեժիմը։',
+
+  'community.badge': 'Համայնք',
+  'community.title': 'Օգտատերերի աշխատանքները',
+  'community.intro':
+    'Հրապարակված նախագծեր՝ հեղինակների նկարագրություններով։ Յուրաքանչյուր աշխատանք կարելի է բացել ամբողջությամբ և գնահատել։',
+  'community.empty': 'Այստեղ դեռ դատարկ է։',
+  'community.emptyHint':
+    'Գեներացրեք դիզայն ստուդիայում և հրապարակեք այն — այն կհայտնվի այստեղ։',
+  'community.openStudio': 'Բացել ստուդիան',
+  'community.allWork': 'Բոլոր աշխատանքները',
+  'community.notFound': 'Նախագիծը չի գտնվել',
+  'community.notFoundHint': 'Հնարավոր է՝ հեղինակը հանել է այն հրապարակումից։',
+  'community.author': 'Հեղինակ',
+  'community.unpublish': 'Հանել հրապարակումից',
+  'community.you': 'Դուք',
+  'community.save': 'Պահպանել',
+  'community.renderError': 'Չհաջողվեց ցուցադրել նախագիծը',
+
+  'rating.none': 'գնահատականներ չկան',
+  'rating.yours': 'ձերը՝ {stars}',
+  'rating.label': 'Նախագծի գնահատական',
+  'rating.outOf': '{stars} 5-ից',
+  'rating.rule':
+    'Մեկ գնահատական մեկ մարդու համար — կրկնակին փոխարինում է նախորդը, ոչ թե ավելացնում նորը։',
+  'rating.ownWork': 'Սեփական աշխատանքը գնահատել հնարավոր չէ։',
+
+  'error.title': 'Ինչ-որ բան սխալ գնաց',
+  'error.body':
+    'Ինտերֆեյսը չկարողացավ ցուցադրել այս բլոկը։ Ձեր պատասխանները պահպանված են — կարող եք կրկին փորձել։',
+  'error.retry': 'Փորձել կրկին',
+};
+
+export const DICTIONARIES: Record<Locale, Dictionary> = { en, ru, hy };

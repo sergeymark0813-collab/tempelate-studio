@@ -4,6 +4,7 @@ import { ArrowLeft, Pencil, Trash2, Users } from 'lucide-react';
 import type { PublishedProject } from '../lib/community/types';
 import { community } from '../lib/community/store';
 import { useInView } from '../hooks/useInView';
+import { useI18n, useT } from '../lib/i18n';
 import { useFitScale } from '../hooks/useFitScale';
 import TopBar from '../components/TopBar';
 import FrameView from '../components/studio/FrameView';
@@ -45,6 +46,7 @@ function useCommunity() {
 /* --------------------------------- card ---------------------------------- */
 
 function ProjectCard({ entry, index }: { entry: PublishedProject; index: number }) {
+  const { locale } = useI18n();
   const { ref, seen } = useInView<HTMLDivElement>({ fallbackMs: index < 4 ? 0 : 1200 });
   const stats = community.statsFor(entry.id);
 
@@ -65,7 +67,7 @@ function ProjectCard({ entry, index }: { entry: PublishedProject; index: number 
             {entry.productLabel}
           </span>
           <time className="text-[11px] text-white/30" dateTime={entry.publishedAt}>
-            {new Date(entry.publishedAt).toLocaleDateString('ru-RU')}
+            {new Date(entry.publishedAt).toLocaleDateString(locale)}
           </time>
         </div>
 
@@ -84,6 +86,7 @@ function ProjectCard({ entry, index }: { entry: PublishedProject; index: number 
 /* -------------------------------- detail --------------------------------- */
 
 function Detail({ entry }: { entry: PublishedProject }) {
+  const { t, locale } = useI18n();
   useCommunity();
   const stats = community.statsFor(entry.id);
   const user = community.currentUser();
@@ -99,7 +102,7 @@ function Detail({ entry }: { entry: PublishedProject }) {
         to="/community"
         className="focus-ring inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] text-white/50 transition hover:text-white"
       >
-        <ArrowLeft size={15} /> Все работы
+        <ArrowLeft size={15} /> {t('community.allWork')}
       </Link>
 
       <header className="panel mt-4 px-5 py-6 sm:px-7">
@@ -113,9 +116,9 @@ function Detail({ entry }: { entry: PublishedProject }) {
               {entry.description}
             </p>
             <p className="mt-4 text-[13px] text-white/40">
-              Автор: <span className="text-white/70">{entry.authorName}</span>
+              {t('community.author')}: <span className="text-white/70">{entry.authorName}</span>
               <span className="mx-2 text-white/20">·</span>
-              {new Date(entry.publishedAt).toLocaleDateString('ru-RU')}
+              {new Date(entry.publishedAt).toLocaleDateString(locale)}
             </p>
           </div>
 
@@ -125,7 +128,7 @@ function Detail({ entry }: { entry: PublishedProject }) {
               onClick={() => community.unpublish(entry.id)}
               className="focus-ring flex items-center gap-2 rounded-xl px-3.5 py-2 text-[13px] font-semibold text-rose-300/70 ring-1 ring-rose-400/20 transition hover:bg-rose-500/10 hover:text-rose-200"
             >
-              <Trash2 size={14} /> Снять с публикации
+              <Trash2 size={14} /> {t('community.unpublish')}
             </button>
           )}
         </div>
@@ -141,8 +144,8 @@ function Detail({ entry }: { entry: PublishedProject }) {
           />
           <p className="mt-2 text-[12px] text-white/30">
             {stats.canRate
-              ? 'Одна оценка на человека — повторная заменяет прежнюю, а не добавляет новую.'
-              : 'Свою работу оценивать нельзя.'}
+              ? t('rating.rule')
+              : t('rating.ownWork')}
           </p>
         </div>
       </header>
@@ -168,7 +171,7 @@ function Detail({ entry }: { entry: PublishedProject }) {
         )}
 
         <div className="scroll-slim stage-grid max-h-[680px] overflow-y-auto bg-shell-950 p-4">
-          <ErrorBoundary title="Не удалось отрисовать проект">
+          <ErrorBoundary title={t('community.renderError')}>
             <FrameView frame={frame} ds={entry.project.ds} nodeRef={captureRef} />
           </ErrorBoundary>
         </div>
@@ -180,6 +183,7 @@ function Detail({ entry }: { entry: PublishedProject }) {
 /* --------------------------------- page ---------------------------------- */
 
 export default function CommunityPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   useCommunity();
 
@@ -210,13 +214,13 @@ export default function CommunityPage() {
 
       {id && !entry && (
         <div className="mx-auto max-w-6xl px-5 py-20 text-center sm:px-8">
-          <h1 className="font-display text-xl font-semibold">Проект не найден</h1>
-          <p className="mt-2 text-sm text-white/45">Возможно, автор снял его с публикации.</p>
+          <h1 className="font-display text-xl font-semibold">{t('community.notFound')}</h1>
+          <p className="mt-2 text-sm text-white/45">{t('community.notFoundHint')}</p>
           <Link
             to="/community"
             className="focus-ring mt-5 inline-block rounded-xl bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-brand-600"
           >
-            Все работы
+            {t('community.allWork')}
           </Link>
         </div>
       )}
@@ -229,14 +233,13 @@ export default function CommunityPage() {
             <div>
               <span className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1.5 text-xs font-medium text-white/65 ring-1 ring-white/10">
                 <Users size={13} className="text-accent-400" />
-                Сообщество
+                {t('community.badge')}
               </span>
               <h1 className="font-display mt-5 text-[1.9rem] leading-tight font-bold tracking-tight sm:text-4xl">
-                Работы пользователей
+                {t('community.title')}
               </h1>
               <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white/50">
-                Опубликованные проекты с описанием от авторов. Каждую работу можно открыть целиком
-                и оценить.
+{t('community.intro')}
               </p>
             </div>
 
@@ -257,7 +260,7 @@ export default function CommunityPage() {
                     onClick={save}
                     className="focus-ring rounded-xl bg-brand-500 px-3.5 py-2 text-[13px] font-semibold text-white transition hover:bg-brand-600"
                   >
-                    Сохранить
+                    {t('community.save')}
                   </button>
                 </>
               ) : (
@@ -266,7 +269,7 @@ export default function CommunityPage() {
                   onClick={() => setEditing(true)}
                   className="focus-ring flex items-center gap-2 rounded-xl px-3.5 py-2 text-[13px] text-white/55 ring-1 ring-white/10 transition hover:bg-white/6 hover:text-white"
                 >
-                  <Pencil size={13} /> Вы: {community.currentUser().name}
+                  <Pencil size={13} /> {t('community.you')}: {community.currentUser().name}
                 </button>
               )}
             </div>
@@ -274,15 +277,15 @@ export default function CommunityPage() {
 
           {projects.length === 0 ? (
             <div className="mt-10 rounded-2xl border border-dashed border-white/12 py-20 text-center">
-              <p className="text-white/45">Здесь пока пусто.</p>
+              <p className="text-white/45">{t('community.empty')}</p>
               <p className="mt-1 text-sm text-white/30">
-                Сгенерируйте дизайн в студии и опубликуйте его — он появится тут.
+                {t('community.emptyHint')}
               </p>
               <Link
                 to="/"
                 className="focus-ring mt-5 inline-block rounded-xl bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-brand-600"
               >
-                Открыть студию
+                {t('community.openStudio')}
               </Link>
             </div>
           ) : (

@@ -2,7 +2,9 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { studio } from '../data/studio';
 import { cn } from '../lib/cn';
+import { useT } from '../lib/i18n';
 import BrandMark from './BrandMark';
+import LanguageSelector from './LanguageSelector';
 
 export default function TopBar({
   left,
@@ -13,6 +15,8 @@ export default function TopBar({
   right?: ReactNode;
   className?: string;
 }) {
+  const t = useT();
+
   return (
     <header
       className={cn(
@@ -22,7 +26,7 @@ export default function TopBar({
     >
       <Link
         to="/"
-        aria-label={`${studio.brand} — на главную`}
+        aria-label={`${studio.brand} — ${t('nav.home')}`}
         className="focus-ring group flex shrink-0 items-center gap-3 rounded-lg"
       >
         {/* Sized to actually be seen: the mark is the only branding on the page. */}
@@ -36,11 +40,7 @@ export default function TopBar({
       {left && <div className="min-w-0 flex-1">{left}</div>}
       {!left && <div className="flex-1" />}
 
-      {/*
-        No permanent advertising control here by design: the ad system opens by
-        itself at the point in the flow where it belongs (alongside Generate).
-        The manager stays reachable at #/ads.
-      */}
+      <LanguageSelector />
       {right}
     </header>
   );

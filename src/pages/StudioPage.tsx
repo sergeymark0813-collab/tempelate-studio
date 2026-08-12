@@ -5,24 +5,26 @@ import { generateProject } from '../lib/studio/generate';
 import { PRODUCTS } from '../lib/studio/products';
 import type { Answers, Project } from '../lib/studio/types';
 import { cn } from '../lib/cn';
+import { useT } from '../lib/i18n';
 import TopBar from '../components/TopBar';
 import Wizard, { clearWizardDraft } from '../components/studio/Wizard';
 import ProjectView from '../components/studio/ProjectView';
 import ErrorBoundary from '../components/ErrorBoundary';
 import AdSense, { AD_SLOTS } from '../components/AdSense';
 
-const STEPS = [
-  'Разбираю ответы',
-  'Строю цветовую систему',
-  'Собираю типографическую шкалу',
-  'Определяю сетку и ритм',
-  'Компоную блоки',
-  'Отрисовываю макет',
-];
+const STEP_KEYS = [
+  'gen.step.parse',
+  'gen.step.color',
+  'gen.step.type',
+  'gen.step.grid',
+  'gen.step.compose',
+  'gen.step.render',
+] as const;
 
 const STEP_MS = 260;
 
 export default function StudioPage() {
+  const t = useT();
   const [answers, setAnswers] = useState<Answers | null>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [step, setStep] = useState(-1);
@@ -60,13 +62,13 @@ export default function StudioPage() {
         setStep(-1);
         setFailure(
           error instanceof Error
-            ? `Не удалось собрать дизайн: ${error.message}`
-            : 'Не удалось собрать дизайн по неизвестной причине.',
+            ? `${t('gen.failed.title')}: ${error.message}`
+            : t('gen.failed.title'),
         );
         return;
       }
 
-      STEPS.forEach((_, index) => {
+      STEP_KEYS.forEach((_, index) => {
         timers.current.push(window.setTimeout(() => setStep(index), index * STEP_MS));
       });
       timers.current.push(
@@ -76,7 +78,7 @@ export default function StudioPage() {
           running.current = false;
           // The brief is now embodied in the project; the resume draft can go.
           clearWizardDraft();
-        }, STEPS.length * STEP_MS + 140),
+        }, STEP_KEYS.length * STEP_MS + 140),
       );
     },
     [clearTimers],
@@ -98,7 +100,7 @@ export default function StudioPage() {
               to="/community"
               className="focus-ring rounded-xl px-3.5 py-2 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
             >
-              Сообщество
+              {t('nav.community')}
             </Link>
             {project && (
               <button
@@ -109,14 +111,14 @@ export default function StudioPage() {
                 }}
                 className="focus-ring rounded-xl px-3.5 py-2 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
               >
-                Новый проект
+                {t('nav.newProject')}
               </button>
             )}
             <Link
               to="/templates"
               className="focus-ring rounded-xl px-3.5 py-2 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
             >
-              Каталог
+              {t('nav.catalog')}
             </Link>
           </div>
         }
@@ -135,20 +137,18 @@ export default function StudioPage() {
           <div className="relative mx-auto max-w-4xl px-5 pt-14 pb-10 sm:px-8 sm:pt-20 sm:pb-12">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1.5 text-xs font-medium text-white/65 ring-1 ring-white/10">
               <Sparkles size={13} className="text-accent-400" />
-              Генеративная дизайн-студия
+              {t('studio.badge')}
             </span>
 
             <h1 className="font-display mt-6 text-[2.1rem] leading-[1.08] font-bold tracking-tight sm:text-5xl">
-              Ответьте на вопросы —
+              {t('studio.titleLine1')}
               <span className="block bg-gradient-to-r from-brand-400 to-accent-400 bg-clip-text text-transparent">
-                получите уникальный дизайн
+                {t('studio.titleLine2')}
               </span>
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/55">
-              Ни одного готового шаблона: палитра, шрифтовая шкала, сетка, композиция и все блоки
-              собираются с нуля под ваш проект. {PRODUCTS.length} типов продуктов — от лендинга и
-              мобильного приложения до логотипа, презентации и email-рассылки.
+              {t('studio.intro', { count: PRODUCTS.length })}
             </p>
           </div>
         </section>
@@ -158,12 +158,12 @@ export default function StudioPage() {
         {busy && (
           <div className="panel px-5 py-6 sm:px-6" role="status" aria-live="polite">
             <ul className="grid gap-2.5">
-              {STEPS.map((label, index) => {
+              {STEP_KEYS.map((key, index) => {
                 const done = index < step;
                 const active = index === step;
                 return (
                   <li
-                    key={label}
+                    key={key}
                     className={cn(
                       'flex items-center gap-3 text-[14px] transition-opacity duration-300',
                       done && 'text-white/45',
@@ -182,7 +182,7 @@ export default function StudioPage() {
                       {done && <Check size={11} />}
                       {active && <Loader2 size={11} className="animate-spin" />}
                     </span>
-                    {label}
+                    {t(key)}
                   </li>
                 );
               })}
@@ -192,9 +192,9 @@ export default function StudioPage() {
 
         {failure && !busy && (
           <div className="panel mb-5 px-5 py-5">
-            <h2 className="font-display text-base font-semibold tracking-tight">Генерация не удалась</h2>
+            <h2 className="font-display text-base font-semibold tracking-tight">{t('gen.failed.title')}</h2>
             <p className="mt-2 max-w-xl text-[13.5px] leading-relaxed text-white/50">
-              {failure} Ваши ответы сохранены — можно повторить или изменить бриф.
+              {failure} {t('gen.failed.body')}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <button
@@ -202,28 +202,28 @@ export default function StudioPage() {
                 onClick={() => answers && run(answers)}
                 className="focus-ring rounded-xl bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-brand-600"
               >
-                Попробовать снова
+                {t('gen.failed.retry')}
               </button>
               <button
                 type="button"
                 onClick={() => setFailure(null)}
                 className="focus-ring rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white/60 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
               >
-                Вернуться к вопросам
+                {t('gen.failed.back')}
               </button>
             </div>
           </div>
         )}
 
         {!busy && !project && !failure && (
-          <ErrorBoundary title="Анкета не отрисовалась">
+          <ErrorBoundary title={t('wizard.errorTitle')}>
             <Wizard onComplete={run} />
           </ErrorBoundary>
         )}
 
         {!busy && project && (
           <ErrorBoundary
-            title="Не удалось отрисовать результат"
+            title={t('result.errorTitle')}
             onReset={() => {
               setProject(null);
               running.current = false;

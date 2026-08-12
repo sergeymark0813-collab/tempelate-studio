@@ -5,6 +5,7 @@ import type { Answers, Question } from '../../lib/studio/types';
 import { PRODUCT_GROUPS, PRODUCTS } from '../../lib/studio/products';
 import { NICHES, NICHE_GROUPS } from '../../lib/studio/niches';
 import { cn } from '../../lib/cn';
+import { useT } from '../../lib/i18n';
 
 /* ===========================================================================
    The interview.
@@ -68,12 +69,12 @@ function GroupedPicker({
   );
 }
 
-const TRACK_LABELS: Record<string, string> = {
-  web: 'Анкета для сайта',
-  logo: 'Анкета для логотипа',
-  interface: 'Анкета для интерфейса',
-  graphic: 'Анкета для макета',
-};
+const TRACK_KEYS = {
+  web: 'wizard.track.web',
+  logo: 'wizard.track.logo',
+  interface: 'wizard.track.interface',
+  graphic: 'wizard.track.graphic',
+} as const;
 
 const DRAFT_KEY = 'template-studio:wizard-draft';
 
@@ -101,6 +102,7 @@ export function clearWizardDraft() {
 }
 
 export default function Wizard({ onComplete }: { onComplete: (answers: Answers) => void }) {
+  const t = useT();
   const restored = useRef(readDraft()).current;
   const [answers, setAnswers] = useState<Answers>(restored.answers);
   const [index, setIndex] = useState(restored.index);
@@ -169,7 +171,7 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
         <div className="flex-1">
           <div className="flex items-baseline justify-between">
             <span className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
-              {TRACK_LABELS[track]} · вопрос {safeIndex + 1} из {questions.length}
+              {t(TRACK_KEYS[track])} · {t('wizard.question', { current: safeIndex + 1, total: questions.length })}
             </span>
             <span className="font-mono text-xs text-white/25">
               {Math.round(((safeIndex + 1) / questions.length) * 100)}%
@@ -248,7 +250,7 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
         )}
 
         {question.kind === 'multi' && (
-          <p className="mt-3 text-xs text-white/30">Можно выбрать несколько вариантов.</p>
+          <p className="mt-3 text-xs text-white/30">{t('wizard.multiHint')}</p>
         )}
       </div>
 
@@ -260,7 +262,7 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
           disabled={safeIndex === 0}
           className="focus-ring flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-[13px] font-semibold text-white/60 ring-1 ring-white/10 transition hover:bg-white/6 hover:text-white disabled:pointer-events-none disabled:opacity-30"
         >
-          <ArrowLeft size={15} /> Назад
+          <ArrowLeft size={15} /> {t('wizard.back')}
         </button>
 
         <div className="flex items-center gap-2">
@@ -270,7 +272,7 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
               onClick={next}
               className="focus-ring rounded-xl px-3.5 py-2.5 text-[13px] font-medium text-white/45 transition hover:text-white"
             >
-              Пропустить
+              {t('wizard.skip')}
             </button>
           )}
           <button
@@ -281,11 +283,11 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
           >
             {isLast ? (
               <>
-                <Sparkles size={15} /> Сгенерировать дизайн
+                <Sparkles size={15} /> {t('wizard.generate')}
               </>
             ) : (
               <>
-                Далее <ArrowRight size={15} />
+                {t('wizard.next')} <ArrowRight size={15} />
               </>
             )}
           </button>

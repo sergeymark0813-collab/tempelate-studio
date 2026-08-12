@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { RefreshCw } from 'lucide-react';
+import { errorFallbackCopy } from '../lib/i18n/fallback';
 
 /* ===========================================================================
    Catches render-time crashes so one bad branch can't white-screen the app.
@@ -11,7 +12,7 @@ import { RefreshCw } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
-  /** Shown instead of the default copy, e.g. "Не удалось собрать дизайн". */
+  /** Shown instead of the default title. */
   title?: string;
   /** Called when the user asks to retry, so the parent can reset its state. */
   onReset?: () => void;
@@ -42,13 +43,16 @@ export default class ErrorBoundary extends Component<Props, State> {
     const { error } = this.state;
     if (!error) return this.props.children;
 
+    // Resolved here, not at module load, so it follows the current language.
+    const copy = errorFallbackCopy();
+
     return (
       <div className="panel px-5 py-8 text-center sm:px-8">
         <h2 className="font-display text-lg font-semibold tracking-tight">
-          {this.props.title ?? 'Что-то пошло не так'}
+          {this.props.title ?? copy.title}
         </h2>
         <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-white/45">
-          Интерфейс не смог отрисовать этот блок. Ваши ответы сохранены — можно попробовать ещё раз.
+          {copy.body}
         </p>
         <p className="mx-auto mt-3 max-w-md font-mono text-[11.5px] break-words text-white/25">
           {error.message}
@@ -58,7 +62,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           onClick={this.reset}
           className="focus-ring mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-brand-600"
         >
-          <RefreshCw size={15} /> Попробовать снова
+          <RefreshCw size={15} /> {copy.retry}
         </button>
       </div>
     );
