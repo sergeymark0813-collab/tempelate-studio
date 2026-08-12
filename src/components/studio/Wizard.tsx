@@ -6,6 +6,7 @@ import { PRODUCT_GROUPS, PRODUCTS } from '../../lib/studio/products';
 import { NICHES, NICHE_GROUPS } from '../../lib/studio/niches';
 import { cn } from '../../lib/cn';
 import { useT } from '../../lib/i18n';
+import { useTr } from '../../lib/i18n/engine';
 
 /* ===========================================================================
    The interview.
@@ -28,15 +29,19 @@ function GroupedPicker({
   onChange,
 }: {
   groups: string[];
-  entries: { id: string; label: string; note: string; group: string }[];
+  entries: { id: string; label: string; note: string; group: string; labelKey?: string; noteKey?: string; groupKey?: string }[];
   value: string[];
   onChange: (values: string[]) => void;
 }) {
+  const tr = useTr();
+
   return (
     <div className="grid gap-6">
       {groups.map((group) => (
         <div key={group}>
-          <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">{group}</h3>
+          <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
+            {tr(entries.find((entry) => entry.group === group)?.groupKey, group)}
+          </h3>
           <div className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
             {entries
               .filter((entry) => entry.group === group)
@@ -55,10 +60,10 @@ function GroupedPicker({
                     )}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[14px] font-medium text-white">{entry.label}</span>
+                      <span className="text-[14px] font-medium text-white">{tr(entry.labelKey, entry.label)}</span>
                       {active && <Check size={14} className="shrink-0 text-brand-400" />}
                     </div>
-                    <span className="mt-1 block text-xs leading-relaxed text-white/40">{entry.note}</span>
+                    <span className="mt-1 block text-xs leading-relaxed text-white/40">{tr(entry.noteKey, entry.note)}</span>
                   </button>
                 );
               })}
@@ -103,6 +108,7 @@ export function clearWizardDraft() {
 
 export default function Wizard({ onComplete }: { onComplete: (answers: Answers) => void }) {
   const t = useT();
+  const tr = useTr();
   const restored = useRef(readDraft()).current;
   const [answers, setAnswers] = useState<Answers>(restored.answers);
   const [index, setIndex] = useState(restored.index);
@@ -188,8 +194,14 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
 
       {/* question */}
       <div className="mt-7">
-        <h2 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">{question.title}</h2>
-        {question.hint && <p className="mt-2 max-w-2xl text-[13.5px] leading-relaxed text-white/45">{question.hint}</p>}
+        <h2 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
+          {tr(question.titleKey, question.title)}
+        </h2>
+        {question.hint && (
+          <p className="mt-2 max-w-2xl text-[13.5px] leading-relaxed text-white/45">
+            {tr(question.hintKey, question.hint)}
+          </p>
+        )}
       </div>
 
       <div className="mt-6">
@@ -199,7 +211,7 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
             rows={question.kind === 'text' && (question.id === 'domainText' || question.id === 'message') ? 4 : 3}
             autoFocus
             onChange={(event) => setCustom(event.target.value)}
-            placeholder={question.placeholder}
+            placeholder={tr(question.placeholderKey, question.placeholder ?? '')}
             className="focus-ring w-full resize-none rounded-xl bg-white/[0.04] px-4 py-3.5 text-[15px] leading-relaxed text-white ring-1 ring-white/10 transition outline-none placeholder:text-white/25 hover:ring-white/20 focus:ring-brand-400/60"
           />
         )}
@@ -207,7 +219,15 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
         {question.id === 'product' && (
           <GroupedPicker
             groups={PRODUCT_GROUPS}
-            entries={PRODUCTS.map((entry) => ({ id: entry.id, label: entry.label, note: entry.note, group: entry.group }))}
+            entries={PRODUCTS.map((entry) => ({
+              id: entry.id,
+              label: entry.label,
+              note: entry.note,
+              group: entry.group,
+              labelKey: entry.labelKey,
+              noteKey: entry.noteKey,
+              groupKey: entry.groupKey,
+            }))}
             value={values}
             onChange={setValues}
           />
@@ -239,10 +259,12 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
                   )}
                 >
                   <span className="flex items-center gap-2 text-[14px] font-medium text-white">
-                    {option.label}
+                    {tr(option.labelKey, option.label)}
                     {active && <Check size={13} className="text-brand-400" />}
                   </span>
-                  {option.note && <span className="mt-0.5 block text-xs text-white/40">{option.note}</span>}
+                  {option.note && (
+                    <span className="mt-0.5 block text-xs text-white/40">{tr(option.noteKey, option.note)}</span>
+                  )}
                 </button>
               );
             })}

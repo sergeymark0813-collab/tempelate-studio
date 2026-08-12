@@ -39,6 +39,8 @@ export function trackOf(answers: Answers): Track {
 
 const PRODUCT_QUESTION: Question = {
   id: 'product',
+  titleKey: 'q.product',
+  hintKey: 'q.product.hint',
   title: 'Что вы хотите создать?',
   hint: 'От выбора зависит и артборд, и то, о чём я буду спрашивать дальше.',
   kind: 'single',
@@ -47,19 +49,24 @@ const PRODUCT_QUESTION: Question = {
 
 const NICHE_QUESTION: Question = {
   id: 'niche',
+  titleKey: 'q.niche',
+  hintKey: 'q.niche.hint',
   title: 'Какая у вас сфера?',
   hint: 'Дальнейшие вопросы будут именно про неё — общей анкеты не будет.',
   kind: 'single',
   options: [
     ...NICHES.map((niche) => ({ id: niche.id, label: niche.label, note: niche.note })),
     // Any business at all: the sphere is then read from free text.
-    { id: 'custom', label: 'Своя сфера', note: 'Впишу словами — списка недостаточно' },
+    { id: 'custom', labelKey: 'q.niche.custom', noteKey: 'q.niche.custom.note', label: 'Своя сфера', note: 'Впишу словами — списка недостаточно' },
   ],
 };
 
 /** Asked only when the user chose «Своя сфера». */
 const CUSTOM_NICHE_QUESTION: Question = {
   id: 'nicheText',
+  titleKey: 'q.nicheText',
+  hintKey: 'q.nicheText.hint',
+  placeholderKey: 'q.nicheText.placeholder',
   title: 'Опишите вашу сферу',
   hint: 'Своими словами. По описанию подберу словарь текстов и уточняющие вопросы.',
   kind: 'text',
@@ -75,56 +82,61 @@ const nameQuestion = (title: string, placeholder: string): Question => ({
 
 const STYLE_QUESTION: Question = {
   id: 'style',
+  titleKey: 'q.style',
   title: 'Какой визуальный стиль вам нравится?',
   kind: 'single',
   options: [
-    { id: 'minimal', label: 'Минимализм', note: 'Воздух, сетка, ничего лишнего' },
-    { id: 'premium', label: 'Премиальный', note: 'Антиква, сдержанный акцент' },
-    { id: 'bold', label: 'Смелый', note: 'Крупная типографика, контраст' },
-    { id: 'friendly', label: 'Дружелюбный', note: 'Круглые формы, тёплый цвет' },
-    { id: 'tech', label: 'Технологичный', note: 'Точная сетка, подсветка' },
-    { id: 'editorial', label: 'Журнальный', note: 'Текст как главный герой' },
-    { id: 'organic', label: 'Природный', note: 'Земляная палитра, мягкость' },
-    { id: 'brutal', label: 'Брутальный', note: 'Жёсткие рамки, никакой полировки' },
-    { id: 'retro', label: 'Ретро', note: 'Отсылка к печати и старому вебу' },
-    { id: 'glass', label: 'Стеклянный', note: 'Прозрачность, размытие, слои' },
+    { id: 'minimal', labelKey: 'q.style.minimal', label: 'Минимализм', note: 'Воздух, сетка, ничего лишнего' },
+    { id: 'premium', labelKey: 'q.style.premium', label: 'Премиальный', note: 'Антиква, сдержанный акцент' },
+    { id: 'bold', labelKey: 'q.style.bold', label: 'Смелый', note: 'Крупная типографика, контраст' },
+    { id: 'friendly', labelKey: 'q.style.friendly', label: 'Дружелюбный', note: 'Круглые формы, тёплый цвет' },
+    { id: 'tech', labelKey: 'q.style.tech', label: 'Технологичный', note: 'Точная сетка, подсветка' },
+    { id: 'editorial', labelKey: 'q.style.editorial', label: 'Журнальный', note: 'Текст как главный герой' },
+    { id: 'organic', labelKey: 'q.style.organic', label: 'Природный', note: 'Земляная палитра, мягкость' },
+    { id: 'brutal', labelKey: 'q.style.brutal', label: 'Брутальный', note: 'Жёсткие рамки, никакой полировки' },
+    { id: 'retro', labelKey: 'q.style.retro', label: 'Ретро', note: 'Отсылка к печати и старому вебу' },
+    { id: 'glass', labelKey: 'q.style.glass', label: 'Стеклянный', note: 'Прозрачность, размытие, слои' },
   ],
 };
 
 const COLORS_QUESTION: Question = {
   id: 'colors',
+  titleKey: 'q.colors',
+  hintKey: 'q.colors.hint',
   title: 'Какие цвета предпочитаете?',
   hint: 'Выберите направление — остальную палитру построю по правилам цветовой гармонии.',
   kind: 'multi',
   options: [
     { id: 'auto', label: 'На ваше усмотрение', note: 'Подберу под смысл проекта' },
-    { id: 'blue', label: 'Синий' },
-    { id: 'cyan', label: 'Бирюзовый' },
-    { id: 'green', label: 'Зелёный' },
-    { id: 'lime', label: 'Лаймовый' },
-    { id: 'gold', label: 'Золотой' },
-    { id: 'orange', label: 'Оранжевый' },
-    { id: 'red', label: 'Красный' },
-    { id: 'pink', label: 'Розовый' },
-    { id: 'purple', label: 'Фиолетовый' },
-    { id: 'earth', label: 'Земляные, бежевые' },
-    { id: 'mono', label: 'Монохром' },
+    { id: 'blue', labelKey: 'q.colors.blue', label: 'Синий' },
+    { id: 'cyan', labelKey: 'q.colors.cyan', label: 'Бирюзовый' },
+    { id: 'green', labelKey: 'q.colors.green', label: 'Зелёный' },
+    { id: 'lime', labelKey: 'q.colors.lime', label: 'Лаймовый' },
+    { id: 'gold', labelKey: 'q.colors.gold', label: 'Золотой' },
+    { id: 'orange', labelKey: 'q.colors.orange', label: 'Оранжевый' },
+    { id: 'red', labelKey: 'q.colors.red', label: 'Красный' },
+    { id: 'pink', labelKey: 'q.colors.pink', label: 'Розовый' },
+    { id: 'purple', labelKey: 'q.colors.purple', label: 'Фиолетовый' },
+    { id: 'earth', labelKey: 'q.colors.earth', label: 'Земляные, бежевые' },
+    { id: 'mono', labelKey: 'q.colors.mono', label: 'Монохром' },
   ],
 };
 
 const SCHEME_QUESTION: Question = {
   id: 'scheme',
+  titleKey: 'q.scheme',
   title: 'Светлая или тёмная тема?',
   kind: 'single',
   options: [
     { id: 'auto', label: 'На ваше усмотрение' },
-    { id: 'light', label: 'Светлая' },
-    { id: 'dark', label: 'Тёмная' },
+    { id: 'light', labelKey: 'q.scheme.light', label: 'Светлая' },
+    { id: 'dark', labelKey: 'q.scheme.dark', label: 'Тёмная' },
   ],
 };
 
 const MOTION_QUESTION: Question = {
   id: 'motion',
+  titleKey: 'q.motion',
   title: 'Нужны ли анимации или специальные эффекты?',
   kind: 'single',
   options: [
@@ -136,6 +148,8 @@ const MOTION_QUESTION: Question = {
 
 const extrasQuestion = (hint: string): Question => ({
   id: 'extras',
+  titleKey: 'q.extras',
+  placeholderKey: 'q.extras.placeholder',
   title: 'Дополнительные пожелания',
   hint,
   kind: 'text',
@@ -161,6 +175,8 @@ function webFlow(answers: Answers): Question[] {
     nameQuestion('Как называется проект?', 'Например: «Тракт», «Зерно», Flowdesk'),
     {
       id: 'purpose',
+      titleKey: 'q.purpose',
+      hintKey: 'q.purpose.hint',
       title: 'Какая главная цель сайта?',
       hint: 'Эта задача получит больше всего визуального веса.',
       kind: 'single',
@@ -175,6 +191,8 @@ function webFlow(answers: Answers): Question[] {
     },
     {
       id: 'audience',
+      titleKey: 'q.audience',
+      hintKey: 'q.audience.hint',
       title: 'Кто ваша целевая аудитория?',
       hint: 'Влияет на плотность вёрстки, размер шрифта и тон оформления.',
       kind: 'single',

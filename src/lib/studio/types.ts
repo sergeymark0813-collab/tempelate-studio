@@ -21,6 +21,9 @@ export interface Answer {
 export type Answers = Record<string, Answer>;
 
 export interface QuestionOption {
+  /** Engine dictionary key; falls back to `label` when absent. */
+  labelKey?: string;
+  noteKey?: string;
   id: string;
   label: string;
   /** Short clarifier under the label. */
@@ -34,6 +37,10 @@ export interface QuestionOption {
 }
 
 export interface Question {
+  /** Engine dictionary keys; each falls back to its literal when absent. */
+  titleKey?: string;
+  hintKey?: string;
+  placeholderKey?: string;
   id: string;
   /** The question itself, e.g. «Какое настроение должен передавать дизайн?» */
   title: string;
@@ -64,6 +71,7 @@ export type CanvasKind =
   | 'kit';
 
 export interface Canvas {
+  labelKey?: string;
   kind: CanvasKind;
   label: string;
   width: number;
@@ -76,6 +84,9 @@ export interface Canvas {
 export interface ProductKind {
   id: string;
   label: string;
+  labelKey?: string;
+  noteKey?: string;
+  groupKey?: string;
   /** Grouping in the picker. */
   group: string;
   note: string;
