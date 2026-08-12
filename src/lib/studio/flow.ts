@@ -55,7 +55,13 @@ const NICHE_QUESTION: Question = {
   hint: 'Дальнейшие вопросы будут именно про неё — общей анкеты не будет.',
   kind: 'single',
   options: [
-    ...NICHES.map((niche) => ({ id: niche.id, label: niche.label, note: niche.note })),
+    ...NICHES.map((niche) => ({
+      id: niche.id,
+      labelKey: niche.labelKey,
+      noteKey: niche.noteKey,
+      label: niche.label,
+      note: niche.note,
+    })),
     // Any business at all: the sphere is then read from free text.
     { id: 'custom', labelKey: 'q.niche.custom', noteKey: 'q.niche.custom.note', label: 'Своя сфера', note: 'Впишу словами — списка недостаточно' },
   ],

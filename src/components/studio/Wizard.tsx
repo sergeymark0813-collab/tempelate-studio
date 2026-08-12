@@ -236,7 +236,15 @@ export default function Wizard({ onComplete }: { onComplete: (answers: Answers) 
         {question.id === 'niche' && (
           <GroupedPicker
             groups={NICHE_GROUPS}
-            entries={NICHES.map((entry) => ({ id: entry.id, label: entry.label, note: entry.note, group: entry.group }))}
+            entries={NICHES.map((entry) => ({
+              id: entry.id,
+              label: entry.label,
+              note: entry.note,
+              group: entry.group,
+              labelKey: entry.labelKey,
+              noteKey: entry.noteKey,
+              groupKey: entry.groupKey,
+            }))}
             value={values}
             onChange={setValues}
           />
