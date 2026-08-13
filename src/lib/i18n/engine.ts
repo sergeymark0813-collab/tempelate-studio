@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useI18n } from './index';
 import type { Locale } from './dictionaries';
+import { nicheEn, nicheHy } from './nicheDict';
 
 /* ===========================================================================
    Translating the generator's own vocabulary.
@@ -240,7 +241,7 @@ const en: EngineDict = {
 
   'q.sections': 'Which sections do you definitely need?',
   'q.sections.hint':
-    'The list is built for «{niche}». What you tick is guaranteed to appear; I decide the rest.',
+    'The list is built for the field you chose. What you tick is guaranteed to appear; I decide the rest.',
 };
 
 /**
@@ -468,13 +469,18 @@ const hy: EngineDict = {
 
   'q.sections': 'Ո՞ր բաժիններն են անպայման անհրաժեշտ',
   'q.sections.hint':
-    'Ցանկը կազմված է «{niche}» ոլորտի համար։ Նշվածը հաստատ կհայտնվի մակետում, մնացածը կորոշեմ ես։',
+    'Ցանկը կազմված է ձեր ընտրած ոլորտի համար։ Նշվածը հաստատ կհայտնվի մակետում, մնացածը կորոշեմ ես։',
 };
 
 /** Russian is intentionally empty: the data files already hold Russian. */
 const ru: EngineDict = {};
 
-const ENGINE: Record<Locale, EngineDict> = { en, ru, hy };
+// Sphere vocabulary is merged in from its own file purely for size.
+const ENGINE: Record<Locale, EngineDict> = {
+  en: { ...en, ...nicheEn },
+  ru,
+  hy: { ...hy, ...nicheHy },
+};
 
 export type EngineTranslate = (key: string | undefined, fallback: string, vars?: Record<string, string | number>) => string;
 

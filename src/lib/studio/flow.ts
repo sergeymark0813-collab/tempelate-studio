@@ -79,8 +79,10 @@ const CUSTOM_NICHE_QUESTION: Question = {
   placeholder: 'Например: прокат туристического снаряжения, студия звукозаписи, питомник растений',
 };
 
-const nameQuestion = (title: string, placeholder: string): Question => ({
+const nameQuestion = (title: string, placeholder: string, keyBase = 'q.name'): Question => ({
   id: 'name',
+  titleKey: keyBase,
+  placeholderKey: `${keyBase}.placeholder`,
   title,
   kind: 'text',
   placeholder,
@@ -92,16 +94,16 @@ const STYLE_QUESTION: Question = {
   title: 'Какой визуальный стиль вам нравится?',
   kind: 'single',
   options: [
-    { id: 'minimal', labelKey: 'q.style.minimal', label: 'Минимализм', note: 'Воздух, сетка, ничего лишнего' },
-    { id: 'premium', labelKey: 'q.style.premium', label: 'Премиальный', note: 'Антиква, сдержанный акцент' },
-    { id: 'bold', labelKey: 'q.style.bold', label: 'Смелый', note: 'Крупная типографика, контраст' },
-    { id: 'friendly', labelKey: 'q.style.friendly', label: 'Дружелюбный', note: 'Круглые формы, тёплый цвет' },
-    { id: 'tech', labelKey: 'q.style.tech', label: 'Технологичный', note: 'Точная сетка, подсветка' },
-    { id: 'editorial', labelKey: 'q.style.editorial', label: 'Журнальный', note: 'Текст как главный герой' },
-    { id: 'organic', labelKey: 'q.style.organic', label: 'Природный', note: 'Земляная палитра, мягкость' },
-    { id: 'brutal', labelKey: 'q.style.brutal', label: 'Брутальный', note: 'Жёсткие рамки, никакой полировки' },
-    { id: 'retro', labelKey: 'q.style.retro', label: 'Ретро', note: 'Отсылка к печати и старому вебу' },
-    { id: 'glass', labelKey: 'q.style.glass', label: 'Стеклянный', note: 'Прозрачность, размытие, слои' },
+    { id: 'minimal', labelKey: 'q.style.minimal', noteKey: 'q.style.minimal.note', label: 'Минимализм', note: 'Воздух, сетка, ничего лишнего' },
+    { id: 'premium', labelKey: 'q.style.premium', noteKey: 'q.style.premium.note', label: 'Премиальный', note: 'Антиква, сдержанный акцент' },
+    { id: 'bold', labelKey: 'q.style.bold', noteKey: 'q.style.bold.note', label: 'Смелый', note: 'Крупная типографика, контраст' },
+    { id: 'friendly', labelKey: 'q.style.friendly', noteKey: 'q.style.friendly.note', label: 'Дружелюбный', note: 'Круглые формы, тёплый цвет' },
+    { id: 'tech', labelKey: 'q.style.tech', noteKey: 'q.style.tech.note', label: 'Технологичный', note: 'Точная сетка, подсветка' },
+    { id: 'editorial', labelKey: 'q.style.editorial', noteKey: 'q.style.editorial.note', label: 'Журнальный', note: 'Текст как главный герой' },
+    { id: 'organic', labelKey: 'q.style.organic', noteKey: 'q.style.organic.note', label: 'Природный', note: 'Земляная палитра, мягкость' },
+    { id: 'brutal', labelKey: 'q.style.brutal', noteKey: 'q.style.brutal.note', label: 'Брутальный', note: 'Жёсткие рамки, никакой полировки' },
+    { id: 'retro', labelKey: 'q.style.retro', noteKey: 'q.style.retro.note', label: 'Ретро', note: 'Отсылка к печати и старому вебу' },
+    { id: 'glass', labelKey: 'q.style.glass', noteKey: 'q.style.glass.note', label: 'Стеклянный', note: 'Прозрачность, размытие, слои' },
   ],
 };
 
@@ -113,7 +115,7 @@ const COLORS_QUESTION: Question = {
   hint: 'Выберите направление — остальную палитру построю по правилам цветовой гармонии.',
   kind: 'multi',
   options: [
-    { id: 'auto', label: 'На ваше усмотрение', note: 'Подберу под смысл проекта' },
+    { id: 'auto', labelKey: 'q.colors.auto', noteKey: 'q.colors.auto.note', label: 'На ваше усмотрение', note: 'Подберу под смысл проекта' },
     { id: 'blue', labelKey: 'q.colors.blue', label: 'Синий' },
     { id: 'cyan', labelKey: 'q.colors.cyan', label: 'Бирюзовый' },
     { id: 'green', labelKey: 'q.colors.green', label: 'Зелёный' },
@@ -134,7 +136,7 @@ const SCHEME_QUESTION: Question = {
   title: 'Светлая или тёмная тема?',
   kind: 'single',
   options: [
-    { id: 'auto', label: 'На ваше усмотрение' },
+    { id: 'auto', labelKey: 'q.scheme.auto', noteKey: 'q.scheme.auto.note', label: 'На ваше усмотрение' },
     { id: 'light', labelKey: 'q.scheme.light', label: 'Светлая' },
     { id: 'dark', labelKey: 'q.scheme.dark', label: 'Тёмная' },
   ],
@@ -146,15 +148,16 @@ const MOTION_QUESTION: Question = {
   title: 'Нужны ли анимации или специальные эффекты?',
   kind: 'single',
   options: [
-    { id: 'none', label: 'Без анимации', note: 'Только смена состояний' },
-    { id: 'subtle', label: 'Аккуратные микро-взаимодействия', note: 'Появления, ховеры' },
-    { id: 'rich', label: 'Выразительная анимация', note: 'Параллакс, сцены, переходы' },
+    { id: 'none', labelKey: 'q.motion.none', noteKey: 'q.motion.none.note', label: 'Без анимации', note: 'Только смена состояний' },
+    { id: 'subtle', labelKey: 'q.motion.subtle', noteKey: 'q.motion.subtle.note', label: 'Аккуратные микро-взаимодействия', note: 'Появления, ховеры' },
+    { id: 'rich', labelKey: 'q.motion.rich', noteKey: 'q.motion.rich.note', label: 'Выразительная анимация', note: 'Параллакс, сцены, переходы' },
   ],
 };
 
-const extrasQuestion = (hint: string): Question => ({
+const extrasQuestion = (hint: string, hintKey?: string): Question => ({
   id: 'extras',
   titleKey: 'q.extras',
+  hintKey,
   placeholderKey: 'q.extras.placeholder',
   title: 'Дополнительные пожелания',
   hint,
@@ -187,12 +190,12 @@ function webFlow(answers: Answers): Question[] {
       hint: 'Эта задача получит больше всего визуального веса.',
       kind: 'single',
       options: [
-        { id: 'leads', label: 'Собирать заявки и звонки', adds: ['contactForm'] },
-        { id: 'sell', label: 'Продавать онлайн', adds: ['catalog'] },
-        { id: 'present', label: 'Рассказать о компании' },
-        { id: 'showcase', label: 'Показать работы', adds: ['showcase'] },
-        { id: 'inform', label: 'Информировать клиентов' },
-        { id: 'engage', label: 'Привлечь внимание к бренду' },
+        { id: 'leads', labelKey: 'q.purpose.leads', noteKey: 'q.purpose.leads.note', label: 'Собирать заявки и звонки', adds: ['contactForm'] },
+        { id: 'sell', labelKey: 'q.purpose.sell', noteKey: 'q.purpose.sell.note', label: 'Продавать онлайн', adds: ['catalog'] },
+        { id: 'present', labelKey: 'q.purpose.present', noteKey: 'q.purpose.present.note', label: 'Рассказать о компании' },
+        { id: 'showcase', labelKey: 'q.purpose.showcase', noteKey: 'q.purpose.showcase.note', label: 'Показать работы', adds: ['showcase'] },
+        { id: 'inform', labelKey: 'q.purpose.inform', noteKey: 'q.purpose.inform.note', label: 'Информировать клиентов' },
+        { id: 'engage', labelKey: 'q.purpose.engage', noteKey: 'q.purpose.engage.note', label: 'Привлечь внимание к бренду' },
       ],
     },
     {
@@ -203,12 +206,12 @@ function webFlow(answers: Answers): Question[] {
       hint: 'Влияет на плотность вёрстки, размер шрифта и тон оформления.',
       kind: 'single',
       options: [
-        { id: 'mass', label: 'Массовая аудитория', note: 'Понятность важнее оригинальности' },
+        { id: 'mass', labelKey: 'q.audience.mass', noteKey: 'q.audience.mass.note', label: 'Массовая аудитория', note: 'Понятность важнее оригинальности' },
         { id: 'b2b', label: 'Компании, B2B', note: 'Факты, цифры, доверие' },
-        { id: 'premium', label: 'Премиум-сегмент', note: 'Воздух, сдержанность, детали' },
-        { id: 'youth', label: 'Молодая аудитория', note: 'Смелее цвет и типографика' },
-        { id: 'family', label: 'Семьи с детьми', note: 'Тепло, крупные формы' },
-        { id: 'pro', label: 'Профессионалы', note: 'Плотность информации' },
+        { id: 'premium', labelKey: 'q.audience.premium', noteKey: 'q.audience.premium.note', label: 'Премиум-сегмент', note: 'Воздух, сдержанность, детали' },
+        { id: 'youth', labelKey: 'q.audience.youth', noteKey: 'q.audience.youth.note', label: 'Молодая аудитория', note: 'Смелее цвет и типографика' },
+        { id: 'family', labelKey: 'q.audience.family', noteKey: 'q.audience.family.note', label: 'Семьи с детьми', note: 'Тепло, крупные формы' },
+        { id: 'pro', labelKey: 'q.audience.pro', noteKey: 'q.audience.pro.note', label: 'Профессионалы', note: 'Плотность информации' },
       ],
     },
   ];
@@ -221,6 +224,8 @@ function webFlow(answers: Answers): Question[] {
     ...niche.questions,
     {
       id: 'sections',
+      titleKey: 'q.sections',
+      hintKey: 'q.sections.hint',
       title: 'Какие разделы обязательно нужны?',
       hint: `Список собран под сферу «${niche.label.toLowerCase()}». Отмеченное точно попадёт в макет, остальное решу сам.`,
       kind: 'multi',
@@ -231,7 +236,7 @@ function webFlow(answers: Answers): Question[] {
     COLORS_QUESTION,
     SCHEME_QUESTION,
     MOTION_QUESTION,
-    extrasQuestion('Всё, что не поместилось в вопросы выше.'),
+    extrasQuestion('Всё, что не поместилось в вопросы выше.', 'q.extras.web'),
   ];
 }
 
@@ -243,7 +248,7 @@ function interfaceFlow(answers: Answers): Question[] {
 
   return [
     PRODUCT_QUESTION,
-    nameQuestion('Как называется продукт?', 'Название сервиса или системы'),
+    nameQuestion('Как называется продукт?', 'Название сервиса или системы', 'q.name.product'),
     {
       id: 'domainText',
       title: 'Что делает этот продукт?',
@@ -295,11 +300,11 @@ function interfaceFlow(answers: Answers): Question[] {
         { id: 'premium', label: 'Просторно и дорого' },
       ],
     },
-    { ...STYLE_QUESTION, title: 'Какой визуальный стиль у интерфейса?' },
+    { ...STYLE_QUESTION, titleKey: 'q.style.interface', title: 'Какой визуальный стиль у интерфейса?' },
     COLORS_QUESTION,
     SCHEME_QUESTION,
     MOTION_QUESTION,
-    extrasQuestion('Ограничения платформы, гайдлайны, интеграции.'),
+    extrasQuestion('Ограничения платформы, гайдлайны, интеграции.', 'q.extras.interface'),
   ];
 }
 
@@ -310,8 +315,8 @@ function graphicFlow(answers: Answers): Question[] {
 
   return [
     PRODUCT_QUESTION,
-    { ...NICHE_QUESTION, title: 'Для какой сферы макет?' },
-    nameQuestion('Название бренда или проекта?', 'Оно будет на макете'),
+    { ...NICHE_QUESTION, titleKey: 'q.niche.graphic', title: 'Для какой сферы макет?' },
+    nameQuestion('Название бренда или проекта?', 'Оно будет на макете', 'q.name.graphic'),
     {
       id: 'message',
       title: 'Какое одно сообщение должен донести макет?',
@@ -340,19 +345,20 @@ function graphicFlow(answers: Answers): Question[] {
     },
     {
       id: 'audience',
+      titleKey: 'q.audience.graphic',
       title: 'Кто увидит этот макет?',
       kind: 'single',
       options: [
         { id: 'mass', label: 'Широкая аудитория' },
         { id: 'b2b', label: 'Партнёры и бизнес' },
-        { id: 'premium', label: 'Премиум-сегмент' },
-        { id: 'youth', label: 'Молодая аудитория' },
+        { id: 'premium', labelKey: 'q.audience.premium', noteKey: 'q.audience.premium.note', label: 'Премиум-сегмент' },
+        { id: 'youth', labelKey: 'q.audience.youth', noteKey: 'q.audience.youth.note', label: 'Молодая аудитория' },
       ],
     },
-    { ...STYLE_QUESTION, title: 'Какая стилистика нужна?' },
+    { ...STYLE_QUESTION, titleKey: 'q.style.graphic', title: 'Какая стилистика нужна?' },
     COLORS_QUESTION,
     SCHEME_QUESTION,
-    extrasQuestion('Требования площадки, обязательные надписи, ограничения.'),
+    extrasQuestion('Требования площадки, обязательные надписи, ограничения.', 'q.extras.graphic'),
   ];
 }
 
