@@ -10,10 +10,34 @@ import { cn } from '../lib/cn';
    until the visitor chooses otherwise.
    =========================================================================== */
 
+/** Menu width in px — kept in sync with the `w-44` class below. */
+const MENU_WIDTH = 176;
+/** Minimum breathing room between the menu and the edge of the screen. */
+const EDGE_MARGIN = 12;
+
 export default function LanguageSelector() {
   const { locale, setLocale, t } = useI18n();
   const [open, setOpen] = useState(false);
+  const [align, setAlign] = useState<'left' | 'right'>('right');
   const root = useRef<HTMLDivElement>(null);
+
+  /*
+    The trigger sits in a different place on every page — 64px from the left in
+    the studio, 191px in the catalog — so no fixed anchor works everywhere.
+    Right-aligning pushed the menu to -46px on a 320px screen; left-aligning
+    pushed it to 367px on the catalog. The side is therefore chosen on open,
+    from the space actually available.
+  */
+  useEffect(() => {
+    if (!open || !root.current) return;
+
+    const rect = root.current.getBoundingClientRect();
+    const fitsRightAligned = rect.right - MENU_WIDTH >= EDGE_MARGIN;
+    const fitsLeftAligned = rect.left + MENU_WIDTH <= window.innerWidth - EDGE_MARGIN;
+
+    // Prefer right alignment; fall back to left only when right would clip.
+    setAlign(fitsRightAligned || !fitsLeftAligned ? 'right' : 'left');
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -47,7 +71,10 @@ export default function LanguageSelector() {
         <ul
           role="listbox"
           aria-label={t('lang.label')}
-          className="absolute right-0 z-40 mt-2 w-44 overflow-hidden rounded-xl bg-shell-850 py-1 shadow-2xl ring-1 ring-white/12"
+          className={cn(
+            'absolute z-40 mt-2 w-44 max-w-[calc(100vw-1.5rem)] overflow-hidden rounded-xl bg-shell-850 py-1 shadow-2xl ring-1 ring-white/12',
+            align === 'right' ? 'right-0' : 'left-0',
+          )}
         >
           {LOCALES.map((entry) => (
             <li key={entry}>
