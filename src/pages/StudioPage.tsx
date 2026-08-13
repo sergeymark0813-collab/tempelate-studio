@@ -98,7 +98,10 @@ export default function StudioPage() {
           <div className="flex items-center gap-2">
             <Link
               to="/community"
-              className="focus-ring rounded-xl px-3.5 py-2 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
+              className={cn(
+                'focus-ring shrink-0 rounded-xl px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white sm:px-3.5',
+                project && 'hidden sm:inline-flex',
+              )}
             >
               {t('nav.community')}
             </Link>
@@ -109,14 +112,24 @@ export default function StudioPage() {
                   setProject(null);
                   setAnswers(null);
                 }}
-                className="focus-ring rounded-xl px-3.5 py-2 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
+                className="focus-ring shrink-0 rounded-xl px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white sm:px-3.5"
               >
                 {t('nav.newProject')}
               </button>
             )}
+            {/*
+              Four controls do not fit a phone header — at 320px they measure
+              339px against a 320px box. Once a project is on screen, «Новый
+              проект» is the one that belongs there, so both secondary links
+              step aside below `sm`. Nothing becomes unreachable: the result
+              page links to the community itself after publishing.
+            */}
             <Link
               to="/templates"
-              className="focus-ring rounded-xl px-3.5 py-2 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
+              className={cn(
+                'focus-ring shrink-0 rounded-xl px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white sm:px-3.5',
+                project && 'hidden sm:inline-flex',
+              )}
             >
               {t('nav.catalog')}
             </Link>
