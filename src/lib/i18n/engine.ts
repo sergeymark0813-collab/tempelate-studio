@@ -493,7 +493,19 @@ export function useTr(): EngineTranslate {
 
   return useCallback<EngineTranslate>(
     (key, fallback, vars) => {
-      const template = (key && (ENGINE[locale][key] || (locale !== 'en' ? ENGINE.en[key] : ''))) || fallback;
+      const direct = key ? ENGINE[locale][key] : undefined;
+
+      /*
+        `fallback` is the literal from the data file, and those literals are
+        Russian. Russian must therefore go straight to it and never borrow from
+        the English map — the previous chain tried English first and showed an
+        English interface to anyone who picked Russian.
+
+        Armenian may borrow English for a key it does not have yet: both are
+        wrong for the reader, but English is the more widely readable of the two.
+      */
+      const borrowed = key && locale === 'hy' ? ENGINE.en[key] : undefined;
+      const template = direct || borrowed || fallback;
       if (!vars) return template;
 
       return Object.entries(vars).reduce(

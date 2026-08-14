@@ -44,7 +44,13 @@ const PRODUCT_QUESTION: Question = {
   title: 'Что вы хотите создать?',
   hint: 'От выбора зависит и артборд, и то, о чём я буду спрашивать дальше.',
   kind: 'single',
-  options: PRODUCTS.map((product) => ({ id: product.id, label: product.label, note: product.note })),
+  options: PRODUCTS.map((product) => ({
+    id: product.id,
+    labelKey: product.labelKey,
+    noteKey: product.noteKey,
+    label: product.label,
+    note: product.note,
+  })),
 };
 
 const NICHE_QUESTION: Question = {
@@ -136,7 +142,7 @@ const SCHEME_QUESTION: Question = {
   title: 'Светлая или тёмная тема?',
   kind: 'single',
   options: [
-    { id: 'auto', labelKey: 'q.scheme.auto', noteKey: 'q.scheme.auto.note', label: 'На ваше усмотрение' },
+    { id: 'auto', labelKey: 'q.scheme.auto', label: 'На ваше усмотрение' },
     { id: 'light', labelKey: 'q.scheme.light', label: 'Светлая' },
     { id: 'dark', labelKey: 'q.scheme.dark', label: 'Тёмная' },
   ],
@@ -190,12 +196,12 @@ function webFlow(answers: Answers): Question[] {
       hint: 'Эта задача получит больше всего визуального веса.',
       kind: 'single',
       options: [
-        { id: 'leads', labelKey: 'q.purpose.leads', noteKey: 'q.purpose.leads.note', label: 'Собирать заявки и звонки', adds: ['contactForm'] },
-        { id: 'sell', labelKey: 'q.purpose.sell', noteKey: 'q.purpose.sell.note', label: 'Продавать онлайн', adds: ['catalog'] },
-        { id: 'present', labelKey: 'q.purpose.present', noteKey: 'q.purpose.present.note', label: 'Рассказать о компании' },
-        { id: 'showcase', labelKey: 'q.purpose.showcase', noteKey: 'q.purpose.showcase.note', label: 'Показать работы', adds: ['showcase'] },
-        { id: 'inform', labelKey: 'q.purpose.inform', noteKey: 'q.purpose.inform.note', label: 'Информировать клиентов' },
-        { id: 'engage', labelKey: 'q.purpose.engage', noteKey: 'q.purpose.engage.note', label: 'Привлечь внимание к бренду' },
+        { id: 'leads', labelKey: 'q.purpose.leads', label: 'Собирать заявки и звонки', adds: ['contactForm'] },
+        { id: 'sell', labelKey: 'q.purpose.sell', label: 'Продавать онлайн', adds: ['catalog'] },
+        { id: 'present', labelKey: 'q.purpose.present', label: 'Рассказать о компании' },
+        { id: 'showcase', labelKey: 'q.purpose.showcase', label: 'Показать работы', adds: ['showcase'] },
+        { id: 'inform', labelKey: 'q.purpose.inform', label: 'Информировать клиентов' },
+        { id: 'engage', labelKey: 'q.purpose.engage', label: 'Привлечь внимание к бренду' },
       ],
     },
     {
