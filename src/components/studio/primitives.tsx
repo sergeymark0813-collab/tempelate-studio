@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { Check, Copy } from 'lucide-react';
 import { cn } from '../../lib/cn';
+import { useT } from '../../lib/i18n';
 
 /* ===========================================================================
    Small shared pieces of the concept report.
@@ -43,13 +44,14 @@ export function ResultCard({
 /** Copies `value` and confirms inline for two seconds. */
 export function CopyButton({
   value,
-  label = 'Копировать',
+  label,
   className,
 }: {
   value: string;
   label?: string;
   className?: string;
 }) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const timer = useRef<number | undefined>(undefined);
 
@@ -78,7 +80,7 @@ export function CopyButton({
       )}
     >
       {copied ? <Check size={13} /> : <Copy size={13} />}
-      {copied ? 'Скопировано' : label}
+      {copied ? t('copy.done') : (label ?? t('copy.action'))}
     </button>
   );
 }

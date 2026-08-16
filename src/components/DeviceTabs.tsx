@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import type { DeviceId } from '../types';
 import { DEVICES } from '../lib/devices';
 import { cn } from '../lib/cn';
+import { useT } from '../lib/i18n';
 
 const ICONS: Record<DeviceId, ComponentType<{ size?: number }>> = {
   desktop: Monitor,
@@ -17,15 +18,18 @@ export default function DeviceTabs({
   value: DeviceId;
   onChange: (id: DeviceId) => void;
 }) {
+  const t = useT();
+
   return (
     <div
       role="tablist"
-      aria-label="Устройство"
+      aria-label={t('device.legend')}
       className="flex gap-1 rounded-xl bg-white/[0.04] p-1 ring-1 ring-white/8"
     >
       {DEVICES.map((device) => {
         const Icon = ICONS[device.id];
         const active = device.id === value;
+        const label = t(device.labelKey);
         return (
           <button
             key={device.id}
@@ -33,7 +37,7 @@ export default function DeviceTabs({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(device.id)}
-            title={`${device.label} — ${device.width}px`}
+            title={`${label} — ${device.width}px`}
             className={cn(
               'focus-ring flex items-center gap-2 rounded-lg px-3 py-1.5 text-[13px] font-medium transition',
               active
@@ -42,7 +46,7 @@ export default function DeviceTabs({
             )}
           >
             <Icon size={15} />
-            <span className="hidden sm:inline">{device.label}</span>
+            <span className="hidden sm:inline">{label}</span>
           </button>
         );
       })}
