@@ -8,6 +8,7 @@ import { useI18n, useT } from '../lib/i18n';
 import { usePageMeta } from '../lib/seo';
 import { useFitScale } from '../hooks/useFitScale';
 import TopBar from '../components/TopBar';
+import SiteFooter from '../components/SiteFooter';
 import FrameView from '../components/studio/FrameView';
 import StarRating from '../components/community/StarRating';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -300,6 +301,8 @@ export default function CommunityPage() {
           )}
         </div>
       )}
+
+      <SiteFooter />
     </div>
   );
 }

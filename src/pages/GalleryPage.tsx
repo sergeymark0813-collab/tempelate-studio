@@ -157,8 +157,11 @@ export default function GalleryPage() {
             </p>
           </div>
         </div>
-        <div className="border-t border-white/8 py-5 text-center text-xs text-white/25">
-          © 2026 {studio.brand} · {studio.owner}
+        <div className="flex flex-col items-center gap-2 border-t border-white/8 py-5 text-center text-xs text-white/25 sm:flex-row sm:justify-center sm:gap-3">
+          <span>© {new Date().getFullYear()} {studio.brand} · {studio.owner}</span>
+          <Link to="/privacy" className="focus-ring rounded transition hover:text-white/60">
+            {t('nav.privacy')}
+          </Link>
         </div>
       </footer>
     </div>

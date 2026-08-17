@@ -8,6 +8,7 @@ import { cn } from '../lib/cn';
 import { useT } from '../lib/i18n';
 import { usePageMeta } from '../lib/seo';
 import TopBar from '../components/TopBar';
+import SiteFooter from '../components/SiteFooter';
 import Wizard, { clearWizardDraft } from '../components/studio/Wizard';
 import ProjectView from '../components/studio/ProjectView';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -261,6 +262,8 @@ export default function StudioPage() {
       <div className="mx-auto max-w-6xl px-5 pb-10 sm:px-8">
         <AdSense slot={AD_SLOTS.studioBottom} />
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

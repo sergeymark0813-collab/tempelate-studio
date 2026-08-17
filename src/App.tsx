@@ -4,6 +4,7 @@ import EditorPage from './pages/EditorPage';
 import StudioPage from './pages/StudioPage';
 import CommunityPage from './pages/CommunityPage';
 import DesignPage from './pages/DesignPage';
+import PrivacyPage from './pages/PrivacyPage';
 
 export default function App() {
   return (
@@ -17,6 +18,8 @@ export default function App() {
       <Route path="/template/:id" element={<EditorPage />} />
       {/* One indexable address per kind of design — see pages/DesignPage. */}
       <Route path="/design/:productId" element={<DesignPage />} />
+      {/* Required by AdSense, and linked from every page's footer. */}
+      <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

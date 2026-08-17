@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { PRODUCTS } from './src/lib/studio/products';
 import { DICTIONARIES } from './src/lib/i18n/dictionaries';
+import { PRIVACY } from './src/data/privacy';
 
 const SITE_URL = 'https://www.temlatestudio.site';
 
@@ -49,6 +50,13 @@ function pages(): Page[] {
       description: ru['meta.community.description'],
       heading: ru['community.title'],
       body: ru['community.intro'],
+    },
+    {
+      path: '/privacy',
+      title: `${PRIVACY.ru.title} — Template Studio`,
+      description: PRIVACY.ru.intro,
+      heading: PRIVACY.ru.title,
+      body: PRIVACY.ru.intro,
     },
   ];
 

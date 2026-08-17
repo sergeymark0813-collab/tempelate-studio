@@ -30,6 +30,7 @@ const en = {
   'nav.newProject': 'New project',
   'nav.backToStudio': 'Back to studio',
   'nav.home': 'home',
+  'nav.privacy': 'Privacy policy',
   'lang.label': 'Language',
 
   /* --- studio landing --- */
@@ -286,6 +287,7 @@ const ru: Dictionary = {
   'nav.newProject': 'Новый проект',
   'nav.backToStudio': 'В студию',
   'nav.home': 'на главную',
+  'nav.privacy': 'Политика конфиденциальности',
   'lang.label': 'Язык',
 
   'studio.badge': 'Генеративная дизайн-студия',
@@ -528,6 +530,7 @@ const hy: Dictionary = {
   'nav.newProject': 'Նոր նախագիծ',
   'nav.backToStudio': 'Դեպի ստուդիա',
   'nav.home': 'գլխավոր',
+  'nav.privacy': 'Գաղտնիության քաղաքականություն',
   'lang.label': 'Լեզու',
 
   'studio.badge': 'Գեներատիվ դիզայն-ստուդիա',

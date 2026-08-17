@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { ArrowRight, Layers } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import SiteFooter from '../components/SiteFooter';
 import { PRODUCTS } from '../lib/studio/products';
 import { blockMeta } from '../lib/studio/compose';
 import { useT } from '../lib/i18n';
@@ -145,6 +146,8 @@ export default function DesignPage() {
           </div>
         </section>
       </article>
+
+      <SiteFooter />
     </div>
   );
 }
