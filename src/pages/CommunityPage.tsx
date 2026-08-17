@@ -210,7 +210,7 @@ export default function CommunityPage() {
             to="/"
             className="focus-ring rounded-xl px-3.5 py-2 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
           >
-            В студию
+            {t('nav.backToStudio')}
           </Link>
         }
       />

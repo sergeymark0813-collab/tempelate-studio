@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import type { TranslationKey } from './lib/i18n/dictionaries';
 
 /** Shape of every interactive element (buttons, inputs, pills). */
 export type ButtonShape = 'sharp' | 'soft' | 'rounded' | 'pill';
@@ -34,6 +35,8 @@ export type DeviceId = 'desktop' | 'tablet' | 'mobile';
 
 export interface Device {
   id: DeviceId;
+  /** Dictionary key for the visible name; `label` is only the Russian source. */
+  labelKey: TranslationKey;
   label: string;
   width: number;
   /** Minimum rendered height, so short templates still fill the frame. */

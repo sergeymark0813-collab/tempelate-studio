@@ -14,6 +14,8 @@ import { getDevice } from '../../lib/devices';
 import type { DeviceId } from '../../types';
 import DesignEditor from './DesignEditor';
 import PublishPanel from '../community/PublishPanel';
+import { useT } from '../../lib/i18n';
+import { useTr } from '../../lib/i18n/engine';
 
 function downloadJson(project: Project) {
   const payload = {
@@ -53,6 +55,8 @@ function downloadJson(project: Project) {
 }
 
 export default function ProjectView({ project, onRegenerate }: { project: Project; onRegenerate: () => void }) {
+  const t = useT();
+  const tr = useTr();
   const [frameIndex, setFrameIndex] = useState(0);
   const [deviceId, setDeviceId] = useState<DeviceId>('desktop');
   const [exporting, setExporting] = useState(false);
@@ -87,22 +91,25 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       });
       saveBlob(blob, `${draft.name.replace(/\s+/g, '-').toLowerCase()}-${frame.name.replace(/\s+/g, '-').toLowerCase()}.png`);
     } catch (error) {
-      setExportError(error instanceof Error ? error.message : 'Не удалось сохранить изображение.');
+      setExportError(error instanceof Error ? error.message : t('result.exportFailed'));
     } finally {
       setExporting(false);
     }
   };
 
   const swatches = [
-    { id: 'primary', label: 'Основной', value: ds.color.primary, role: 'Акценты, кнопки, активные состояния' },
-    { id: 'secondary', label: 'Дополнительный', value: ds.color.secondary, role: 'Второй акцент и градиенты' },
-    { id: 'accent', label: 'Акцентный', value: ds.color.accent, role: 'Выделения и подсветка' },
-    { id: 'bg', label: 'Фон', value: ds.color.bg, role: 'Базовый фон артборда' },
-    { id: 'surface', label: 'Поверхность', value: ds.color.surface, role: 'Карточки и панели' },
-    { id: 'surface2', label: 'Второй уровень', value: ds.color.surface2, role: 'Вложенные блоки, таблицы' },
-    { id: 'text', label: 'Текст', value: ds.color.text, role: 'Заголовки и основной текст' },
-    { id: 'muted', label: 'Второстепенный', value: ds.color.textMuted, role: 'Описания и подписи' },
-  ];
+    { id: 'primary', value: ds.color.primary },
+    { id: 'secondary', value: ds.color.secondary },
+    { id: 'accent', value: ds.color.accent },
+    { id: 'bg', value: ds.color.bg },
+    { id: 'surface', value: ds.color.surface },
+    { id: 'surface2', value: ds.color.surface2 },
+    { id: 'text', value: ds.color.text },
+    { id: 'muted', value: ds.color.textMuted },
+  ] as const;
+
+  /** Artboard label — the canvas carries its own dictionary key from the generator. */
+  const canvasLabel = tr(frame.canvas.labelKey, frame.canvas.label);
 
   return (
     <div className="fade-up grid gap-5">
@@ -110,7 +117,9 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       <header className="panel px-5 py-6 sm:px-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <span className="text-xs font-medium text-brand-400">Дизайн создан · {project.product.label}</span>
+            <span className="text-xs font-medium text-brand-400">
+              {t('result.created')} · {tr(project.product.labelKey, project.product.label)}
+            </span>
             <h1 className="font-display mt-2 text-2xl font-bold tracking-tight sm:text-3xl">{project.name}</h1>
             <p className="mt-3 max-w-2xl text-[14.5px] leading-relaxed text-white/50">{project.summary}</p>
           </div>
@@ -121,7 +130,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
               onClick={onRegenerate}
               className="focus-ring flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-brand-600"
             >
-              <RefreshCw size={15} /> Другой вариант
+              <RefreshCw size={15} /> {t('result.regenerate')}
             </button>
             <button
               type="button"
@@ -130,14 +139,14 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
               className="focus-ring flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white disabled:pointer-events-none disabled:opacity-50"
             >
               {exporting ? <Loader2 size={15} className="animate-spin" /> : <ImageDown size={15} />}
-              {exporting ? 'Готовлю PNG…' : 'PNG'}
+              {exporting ? t('result.exporting') : t('result.exportPng')}
             </button>
             <button
               type="button"
               onClick={() => downloadJson(draft)}
               className="focus-ring flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-[13px] font-semibold text-white/70 ring-1 ring-white/12 transition hover:bg-white/6 hover:text-white"
             >
-              <Download size={15} /> JSON
+              <Download size={15} /> {t('result.json')}
             </button>
           </div>
         </div>
@@ -151,10 +160,10 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
         <div className="mt-5 flex flex-wrap gap-2">
           <Chip tone="accent">{project.archetype}</Chip>
           <Chip>{project.analysis.styleLabel}</Chip>
-          <Chip>{ds.color.scheme === 'dark' ? 'Тёмная схема' : 'Светлая схема'}</Chip>
+          <Chip>{ds.color.scheme === 'dark' ? t('result.schemeDark') : t('result.schemeLight')}</Chip>
           <Chip>{ds.color.harmony}</Chip>
           <Chip>{ds.type.display.family}</Chip>
-          <Chip>сетка {ds.grid.columns} колонок</Chip>
+          <Chip>{t('result.gridColumns', { count: ds.grid.columns })}</Chip>
           <Chip>seed {project.seed.toString(36)}</Chip>
         </div>
       </header>
@@ -162,8 +171,8 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       {/* artboards */}
       <ResultCard
         icon={Layers}
-        title="Макет"
-        hint={`${frame.canvas.label} · каждый экран отрисован по сгенерированной системе, а не выбран из готовых.`}
+        title={t('result.artboard')}
+        hint={t('result.artboardHint', { canvas: canvasLabel })}
         action={
           draft.frames.length > 1 ? (
             <div className="flex flex-wrap gap-1.5">
@@ -206,11 +215,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
             deviceWidth={reflows ? getDevice(deviceId).width : undefined}
           />
         </div>
-        {edited && (
-          <p className="mt-3 text-xs text-white/35">
-            Макет отредактирован вручную. Экспорт в PNG и JSON сохранит именно эту версию.
-          </p>
-        )}
+        {edited && <p className="mt-3 text-xs text-white/35">{t('result.edited')}</p>}
       </ResultCard>
 
       {/* Editing the result — sits directly under the preview it changes. */}
@@ -223,8 +228,8 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       {/* decisions */}
       <ResultCard
         icon={Brain}
-        title="Решения студии"
-        hint="Что было решено самостоятельно после ваших ответов — и почему именно так."
+        title={t('result.decisions')}
+        hint={t('result.decisionsHint')}
       >
         <ol className="grid gap-3">
           {project.analysis.decisions.map((decision, index) => (
@@ -237,14 +242,14 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
 
         <div className="mt-5 grid gap-x-8 sm:grid-cols-2">
           <div>
-            <SpecRow label="Тип проекта" value={project.analysis.productLabel} />
-            <SpecRow label="Задача" value={project.analysis.purposeLabel} />
-            <SpecRow label="Аудитория" value={project.analysis.audienceLabel} />
+            <SpecRow label={t('spec.product')} value={project.analysis.productLabel} />
+            <SpecRow label={t('spec.purpose')} value={project.analysis.purposeLabel} />
+            <SpecRow label={t('spec.audience')} value={project.analysis.audienceLabel} />
           </div>
           <div>
-            <SpecRow label="Стиль" value={project.analysis.styleLabel} />
-            <SpecRow label="Настроение" value={project.analysis.moodLabel} />
-            <SpecRow label="Цвет" value={project.analysis.colorLabel} />
+            <SpecRow label={t('spec.style')} value={project.analysis.styleLabel} />
+            <SpecRow label={t('spec.mood')} value={project.analysis.moodLabel} />
+            <SpecRow label={t('spec.color')} value={project.analysis.colorLabel} />
           </div>
         </div>
       </ResultCard>
@@ -252,9 +257,9 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       {/* palette */}
       <ResultCard
         icon={Palette}
-        title="Цветовая палитра"
-        hint={`${ds.color.harmony} гармония. Оттенки построены по кругу от базового тона, контраст проверен по WCAG.`}
-        action={<CopyButton value={cssExport(ds)} label="CSS-переменные" />}
+        title={t('result.palette')}
+        hint={t('result.paletteHint', { harmony: ds.color.harmony })}
+        action={<CopyButton value={cssExport(ds)} label={t('result.cssVars')} />}
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {swatches.map((swatch) => {
@@ -264,11 +269,11 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
             return (
               <div key={swatch.id} className="overflow-hidden rounded-xl ring-1 ring-white/8">
                 <div className="flex h-20 items-end justify-between p-3" style={{ background: swatch.value, color: readableOn(swatch.value) }}>
-                  <span className="text-[13px] font-semibold">{swatch.label}</span>
+                  <span className="text-[13px] font-semibold">{t(`swatch.${swatch.id}`)}</span>
                   <span className="font-mono text-[11px] uppercase opacity-70">{swatch.value}</span>
                 </div>
                 <div className="bg-white/[0.03] px-3 py-3">
-                  <p className="text-xs leading-relaxed text-white/45">{swatch.role}</p>
+                  <p className="text-xs leading-relaxed text-white/45">{t(`swatch.${swatch.id}.role`)}</p>
                   {audit && (
                     <div className="mt-2.5">
                       <Chip tone={audit.tone}>
@@ -284,7 +289,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       </ResultCard>
 
       {/* typography */}
-      <ResultCard icon={TypeIcon} title="Типографика" hint={ds.type.rationale}>
+      <ResultCard icon={TypeIcon} title={t('result.typography')} hint={ds.type.rationale}>
         <div className="grid gap-4">
           {ds.type.scale.map((step) => (
             <div key={step.id} className="grid gap-2 border-b border-white/6 pb-4 last:border-0 last:pb-0 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
@@ -300,7 +305,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
                     textTransform: step.transform,
                   }}
                 >
-                  {step.role === 'display' ? 'Заголовок в сгенерированной шкале' : 'Основной текст проекта в выбранной гарнитуре'}
+                  {step.role === 'display' ? t('result.sampleDisplay') : t('result.sampleBody')}
                 </div>
                 <div className="mt-1.5 text-xs text-white/35">{step.usage}</div>
               </div>
@@ -320,14 +325,14 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       {/* structure */}
       <ResultCard
         icon={Boxes}
-        title="Структура и композиция"
-        hint={`${project.archetypeNote}`}
+        title={t('result.structure')}
+        hint={project.archetypeNote}
       >
         <div className="grid gap-5 lg:grid-cols-2">
           {draft.frames.map((entry) => (
             <div key={entry.id}>
               <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
-                {entry.name} · {entry.canvas.label}
+                {entry.name} · {tr(entry.canvas.labelKey, entry.canvas.label)}
               </h3>
               <ol className="mt-3 grid gap-2">
                 {entry.blocks.map((block, index) => (
@@ -339,7 +344,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
                         <span className="rounded bg-white/6 px-1.5 py-0.5 font-mono text-[10.5px] text-white/45">{block.variant}</span>
                         {block.params.columns && block.params.columns > 1 && (
                           <span className="rounded bg-white/6 px-1.5 py-0.5 font-mono text-[10.5px] text-white/45">
-                            {block.params.columns} кол.
+                            {t('result.columnsShort', { count: block.params.columns })}
                           </span>
                         )}
                       </div>
@@ -354,21 +359,21 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       </ResultCard>
 
       {/* tokens */}
-      <ResultCard icon={Ruler} title="Сетка, размеры и элементы" hint="Числовые решения, на которых держится макет.">
+      <ResultCard icon={Ruler} title={t('result.tokens')} hint={t('result.tokensHint')}>
         <div className="grid gap-x-8 sm:grid-cols-2">
           <div>
-            <SpecRow label="Сетка" value={ds.grid.label} />
-            <SpecRow label="Поля артборда" value={`${ds.grid.margin}px`} />
-            <SpecRow label="Шаг сетки" value={`${ds.space.unit}px`} />
-            <SpecRow label="Отступ секции" value={`${ds.space.section}px`} />
-            <SpecRow label="Плотность" value={ds.space.density === 'compact' ? 'компактная' : ds.space.density === 'spacious' ? 'просторная' : 'обычная'} />
+            <SpecRow label={t('spec.grid')} value={ds.grid.label} />
+            <SpecRow label={t('spec.artboardMargins')} value={`${ds.grid.margin}px`} />
+            <SpecRow label={t('spec.gridStep')} value={`${ds.space.unit}px`} />
+            <SpecRow label={t('spec.sectionSpacing')} value={`${ds.space.section}px`} />
+            <SpecRow label={t('spec.density')} value={t(`density.${ds.space.density}`)} />
           </div>
           <div>
-            <SpecRow label="Скругления" value={`${ds.radius.family} · ${ds.radius.sm}/${ds.radius.md}/${ds.radius.lg}px`} />
-            <SpecRow label="Тени" value={ds.shadow.family} />
-            <SpecRow label="Поверхности" value={{ flat: 'плоские заливки', elevated: 'карточки с тенью', outlined: 'контурные карточки', glass: 'стекло с размытием', gradient: 'градиентные подложки' }[ds.surfaceStyle]} />
-            <SpecRow label="Иконки" value={ds.iconStyle === 'line' ? 'контурные' : ds.iconStyle === 'solid' ? 'заливкой' : 'двухцветные'} />
-            <SpecRow label="Анимация" value={`${ds.motion.entrance} · ${ds.motion.duration}мс`} />
+            <SpecRow label={t('spec.radius')} value={`${ds.radius.family} · ${ds.radius.sm}/${ds.radius.md}/${ds.radius.lg}px`} />
+            <SpecRow label={t('spec.shadow')} value={ds.shadow.family} />
+            <SpecRow label={t('spec.surfaces')} value={t(`surface.${ds.surfaceStyle}`)} />
+            <SpecRow label={t('spec.icons')} value={t(`icons.${ds.iconStyle}`)} />
+            <SpecRow label={t('spec.motion')} value={`${ds.motion.entrance} · ${ds.motion.duration}${t('unit.ms')}`} />
           </div>
         </div>
       </ResultCard>
@@ -376,8 +381,8 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
       {/* imagery */}
       <ResultCard
         icon={Images}
-        title="Изображения и иллюстрации"
-        hint="В макете стоит процедурная графика из палитры. Вот что поставить на её место."
+        title={t('result.imagery')}
+        hint={t('result.imageryHint')}
       >
         <div className="grid gap-3 sm:grid-cols-2">
           {project.imagery.map((idea) => (
@@ -388,22 +393,22 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
               </div>
               <dl className="mt-3 grid gap-1.5 text-xs">
                 <div className="flex gap-2">
-                  <dt className="shrink-0 text-white/30">Где:</dt>
+                  <dt className="shrink-0 text-white/30">{t('result.imageryWhere')}</dt>
                   <dd className="text-white/55">{idea.placement}</dd>
                 </div>
                 <div className="flex gap-2">
-                  <dt className="shrink-0 text-white/30">Формат:</dt>
+                  <dt className="shrink-0 text-white/30">{t('result.imageryFormat')}</dt>
                   <dd className="font-mono text-white/55">{idea.ratio}</dd>
                 </div>
                 <div className="flex gap-2">
-                  <dt className="shrink-0 text-white/30">Обработка:</dt>
+                  <dt className="shrink-0 text-white/30">{t('result.imageryTreatment')}</dt>
                   <dd className="text-white/55">{idea.treatment}</dd>
                 </div>
               </dl>
               <div className="mt-3 flex-1 rounded-lg bg-black/25 p-3 ring-1 ring-white/6">
                 <p className="font-mono text-[11.5px] leading-relaxed text-white/50">{idea.prompt}</p>
               </div>
-              <CopyButton value={idea.prompt} label="Промпт" className="mt-3 self-start" />
+              <CopyButton value={idea.prompt} label={t('result.prompt')} className="mt-3 self-start" />
             </article>
           ))}
         </div>

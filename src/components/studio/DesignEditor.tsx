@@ -5,6 +5,7 @@ import { FAMILIES } from '../../lib/studio/typography';
 import { mix, readableOn } from '../../lib/color';
 import ColorField from './ColorField';
 import { cn } from '../../lib/cn';
+import { useT } from '../../lib/i18n';
 
 /* ===========================================================================
    Editing the generated design.
@@ -69,6 +70,7 @@ function BlockRow({
   block: BlockInstance;
   onChange: (next: BlockInstance) => void;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [imageError, setImageError] = useState('');
 
@@ -79,16 +81,16 @@ function BlockRow({
     setImageError('');
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      setImageError('Нужен файл изображения.');
+      setImageError(t('editor.imageWrongType'));
       return;
     }
     if (file.size > MAX_IMAGE_BYTES) {
-      setImageError(`Файл больше ${Math.round(MAX_IMAGE_BYTES / 1024)} КБ.`);
+      setImageError(t('editor.imageTooLarge', { size: Math.round(MAX_IMAGE_BYTES / 1024) }));
       return;
     }
     const reader = new FileReader();
     reader.onload = () => setContent({ image: String(reader.result ?? '') });
-    reader.onerror = () => setImageError('Не удалось прочитать файл.');
+    reader.onerror = () => setImageError(t('editor.imageUnreadable'));
     reader.readAsDataURL(file);
   };
 
@@ -98,7 +100,7 @@ function BlockRow({
         <button
           type="button"
           onClick={() => onChange({ ...block, hidden: !block.hidden })}
-          title={block.hidden ? 'Показать секцию' : 'Скрыть секцию'}
+          title={block.hidden ? t('editor.showSection') : t('editor.hideSection')}
           aria-pressed={!block.hidden}
           className="focus-ring grid h-7 w-7 shrink-0 place-items-center rounded-md text-white/45 transition hover:bg-white/8 hover:text-white"
         >
@@ -125,7 +127,7 @@ function BlockRow({
               className={textInput}
               value={block.content.title ?? ''}
               onChange={(e) => setContent({ title: e.target.value })}
-              placeholder="Заголовок"
+              placeholder={t('editor.fieldTitle')}
             />
           )}
           {block.content.subtitle !== undefined && (
@@ -134,7 +136,7 @@ function BlockRow({
               rows={2}
               value={block.content.subtitle ?? ''}
               onChange={(e) => setContent({ subtitle: e.target.value })}
-              placeholder="Описание"
+              placeholder={t('editor.fieldSubtitle')}
             />
           )}
           {block.content.cta !== undefined && (
@@ -143,13 +145,13 @@ function BlockRow({
                 className={textInput}
                 value={block.content.cta ?? ''}
                 onChange={(e) => setContent({ cta: e.target.value })}
-                placeholder="Текст кнопки"
+                placeholder={t('editor.fieldCta')}
               />
               <input
                 className={textInput}
                 value={block.content.ctaHref ?? ''}
                 onChange={(e) => setContent({ ctaHref: e.target.value })}
-                placeholder="Ссылка кнопки"
+                placeholder={t('editor.fieldCtaHref')}
                 inputMode="url"
               />
             </div>
@@ -158,7 +160,7 @@ function BlockRow({
           <div className="flex flex-wrap items-center gap-2">
             <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-white/[0.05] px-3 py-2 text-[12.5px] text-white/65 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white">
               <ImageIcon size={13} />
-              Изображение
+              {t('editor.image')}
               <input type="file" accept="image/*" className="sr-only" onChange={(e) => upload(e.target.files?.[0])} />
             </label>
             {block.content.image && (
@@ -169,7 +171,7 @@ function BlockRow({
                   onClick={() => setContent({ image: undefined })}
                   className="focus-ring rounded px-2 py-1 text-[12px] text-white/40 transition hover:text-white"
                 >
-                  Убрать
+                  {t('editor.imageRemove')}
                 </button>
               </>
             )}
@@ -193,6 +195,7 @@ export default function DesignEditor({
   original: Project;
   onChange: (next: Project) => void;
 }) {
+  const t = useT();
   const [frameIndex, setFrameIndex] = useState(0);
   const { ds } = draft;
   const frame = draft.frames[Math.min(frameIndex, draft.frames.length - 1)];
@@ -274,11 +277,9 @@ export default function DesignEditor({
           </span>
           <div>
             <h2 className="font-display text-[15px] font-semibold tracking-tight">
-              Редактировать сгенерированный дизайн
+              {t('editor.title')}
             </h2>
-            <p className="mt-0.5 text-[12.5px] text-white/40">
-              Изменения применяются к макету сразу, без повторной генерации.
-            </p>
+            <p className="mt-0.5 text-[12.5px] text-white/40">{t('editor.subtitle')}</p>
           </div>
         </div>
 
@@ -287,7 +288,7 @@ export default function DesignEditor({
           onClick={() => onChange(original)}
           className="focus-ring flex items-center gap-2 rounded-lg px-3 py-2 text-[12.5px] font-medium text-white/55 ring-1 ring-white/10 transition hover:bg-white/6 hover:text-white"
         >
-          <RotateCcw size={13} /> Вернуть как было
+          <RotateCcw size={13} /> {t('editor.reset')}
         </button>
       </header>
 
@@ -295,33 +296,37 @@ export default function DesignEditor({
         {/* ------------------------------ tokens ----------------------------- */}
         <div className="grid gap-5 self-start">
           <div>
-            <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">Цвета</h3>
+            <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
+              {t('editor.colors')}
+            </h3>
             <div className="mt-2 divide-y divide-white/6">
-              <Row label="Основной">
-                <ColorField label="Основной цвет" value={ds.color.primary} onChange={(v) => setColor('primary', v)} />
+              <Row label={t('color.primary')}>
+                <ColorField label={t('color.primary')} value={ds.color.primary} onChange={(v) => setColor('primary', v)} />
               </Row>
-              <Row label="Дополнительный">
-                <ColorField label="Дополнительный цвет" value={ds.color.secondary} onChange={(v) => setColor('secondary', v)} />
+              <Row label={t('color.secondary')}>
+                <ColorField label={t('color.secondary')} value={ds.color.secondary} onChange={(v) => setColor('secondary', v)} />
               </Row>
-              <Row label="Акцентный">
-                <ColorField label="Акцентный цвет" value={ds.color.accent} onChange={(v) => setColor('accent', v)} />
+              <Row label={t('color.accent')}>
+                <ColorField label={t('color.accent')} value={ds.color.accent} onChange={(v) => setColor('accent', v)} />
               </Row>
-              <Row label="Фон">
-                <ColorField label="Цвет фона" value={ds.color.bg} onChange={(v) => onChange(reconcile(draft, v, ds.color.text))} />
+              <Row label={t('color.background')}>
+                <ColorField label={t('color.background')} value={ds.color.bg} onChange={(v) => onChange(reconcile(draft, v, ds.color.text))} />
               </Row>
-              <Row label="Текст">
-                <ColorField label="Цвет текста" value={ds.color.text} onChange={(v) => onChange(reconcile(draft, ds.color.bg, v))} />
+              <Row label={t('color.text')}>
+                <ColorField label={t('color.text')} value={ds.color.text} onChange={(v) => onChange(reconcile(draft, ds.color.bg, v))} />
               </Row>
             </div>
           </div>
 
           <div>
-            <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">Шрифты</h3>
+            <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
+              {t('editor.fonts')}
+            </h3>
             <div className="mt-2 grid gap-2.5">
               {(['display', 'body'] as const).map((role) => (
                 <label key={role} className="block">
                   <span className="text-[12.5px] text-white/50">
-                    {role === 'display' ? 'Заголовки' : 'Основной текст'}
+                    {role === 'display' ? t('editor.headings') : t('editor.body')}
                   </span>
                   <select
                     value={familyKey(ds.type[role].family)}
@@ -340,10 +345,12 @@ export default function DesignEditor({
           </div>
 
           <div>
-            <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">Форма</h3>
+            <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
+              {t('editor.shape')}
+            </h3>
             <label className="mt-2 block">
               <span className="flex items-baseline justify-between text-[12.5px] text-white/50">
-                Скругление <span className="font-mono text-white/40">{ds.radius.md}px</span>
+                {t('editor.radius')} <span className="font-mono text-white/40">{ds.radius.md}px</span>
               </span>
               <input
                 type="range"
@@ -358,12 +365,12 @@ export default function DesignEditor({
 
           <div>
             <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
-              Отступы и размеры
+              {t('editor.spacing')}
             </h3>
 
             <label className="mt-2 block">
               <span className="flex items-baseline justify-between text-[12.5px] text-white/50">
-                Отступ секций <span className="font-mono text-white/40">{ds.space.section}px</span>
+                {t('editor.sectionGap')} <span className="font-mono text-white/40">{ds.space.section}px</span>
               </span>
               <input
                 type="range"
@@ -378,7 +385,7 @@ export default function DesignEditor({
 
             <label className="mt-3 block">
               <span className="flex items-baseline justify-between text-[12.5px] text-white/50">
-                Внутренние поля <span className="font-mono text-white/40">{ds.grid.margin}px</span>
+                {t('editor.innerMargins')} <span className="font-mono text-white/40">{ds.grid.margin}px</span>
               </span>
               <input
                 type="range"
@@ -393,7 +400,7 @@ export default function DesignEditor({
 
             <label className="mt-3 block">
               <span className="flex items-baseline justify-between text-[12.5px] text-white/50">
-                Базовый кегль <span className="font-mono text-white/40">{ds.type.baseSize}px</span>
+                {t('editor.baseSize')} <span className="font-mono text-white/40">{ds.type.baseSize}px</span>
               </span>
               <input
                 type="range"
@@ -411,7 +418,7 @@ export default function DesignEditor({
         <div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-[11px] font-semibold tracking-[0.16em] text-white/35 uppercase">
-              Секции и содержимое
+              {t('editor.sections')}
             </h3>
             {draft.frames.length > 1 && (
               <div className="flex flex-wrap gap-1.5">

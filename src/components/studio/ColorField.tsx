@@ -3,6 +3,7 @@ import { Check, Pipette } from 'lucide-react';
 import { hexToHsl, parseHex, readableOn } from '../../lib/color';
 import { NEUTRALS, RAMPS, harmoniesFor, parseColorInput } from '../../lib/studio/swatches';
 import { cn } from '../../lib/cn';
+import { useT } from '../../lib/i18n';
 
 /* ===========================================================================
    Colour control for the editor.
@@ -33,6 +34,7 @@ export default function ColorField({
   onChange: (hex: string) => void;
   label: string;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('hex');
   const [draft, setDraft] = useState(value);
@@ -108,7 +110,7 @@ export default function ColorField({
             </span>
             <label className="focus-within:ring-brand-400/60 flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-white/50 ring-1 ring-white/10 transition hover:text-white">
               <Pipette size={12} />
-              Свой
+              {t('color.custom')}
               <input
                 type="color"
                 value={value}
@@ -150,15 +152,13 @@ export default function ColorField({
             </div>
           </div>
           {invalid && (
-            <p className="mt-1.5 text-[11px] text-rose-300">
-              Не распознал цвет. Примеры: #2E7D32, rgb(46 125 50), hsl(123 46% 34%)
-            </p>
+            <p className="mt-1.5 text-[11px] text-rose-300">{t('color.invalid')}</p>
           )}
 
           <div className="scroll-slim mt-3 max-h-[15rem] space-y-3 overflow-y-auto pr-1">
             {/* harmonies first: the shortest path to a combination that works */}
             <div>
-              <span className="text-[10.5px] text-white/35">Гармонии с текущим</span>
+              <span className="text-[10.5px] text-white/35">{t('color.harmonies')}</span>
               <div className="mt-1.5 space-y-1">
                 {harmoniesFor(value).map((harmony) => (
                   <div key={harmony.id} className="flex items-center gap-2">
@@ -176,7 +176,7 @@ export default function ColorField({
             </div>
 
             <div>
-              <span className="text-[10.5px] text-white/35">Палитра</span>
+              <span className="text-[10.5px] text-white/35">{t('color.palette')}</span>
               <div className="mt-1.5 space-y-1">
                 {RAMPS.map((ramp) => (
                   <div key={ramp.id} className="grid grid-cols-9 gap-1" title={ramp.label}>
@@ -189,7 +189,7 @@ export default function ColorField({
             </div>
 
             <div>
-              <span className="text-[10.5px] text-white/35">Нейтральные</span>
+              <span className="text-[10.5px] text-white/35">{t('color.neutrals')}</span>
               <div className="mt-1.5 grid grid-cols-11 gap-1">
                 {NEUTRALS.map((hex) => (
                   <Swatch key={hex} hex={hex} />

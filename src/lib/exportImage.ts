@@ -1,6 +1,7 @@
 import { toCanvas } from 'html-to-image';
 import type { FontId } from '../types';
 import { fontEmbedCss, fontEmbedCssForSpecs } from './fontEmbed';
+import { translate } from './i18n/fallback';
 
 export type ExportFormat = 'png' | 'jpeg';
 
@@ -38,7 +39,7 @@ export async function captureNode(
 ): Promise<Blob> {
   const width = node.offsetWidth;
   const height = node.offsetHeight;
-  if (!width || !height) throw new Error('Предпросмотр ещё не готов');
+  if (!width || !height) throw new Error(translate('result.previewNotReady'));
 
   const budget = Math.sqrt(MAX_PIXELS / (width * height));
   const pixelRatio = Math.max(1, Math.min(scale, budget));
@@ -60,7 +61,7 @@ export async function captureNode(
       filter: (el) => !(el instanceof HTMLElement && el.dataset.exportIgnore === 'true'),
     }),
     RENDER_TIMEOUT_MS,
-    'Браузер не успел отрисовать изображение. Попробуйте вид «Планшет» или «Телефон».',
+    translate('result.renderTimeout'),
   );
 
   return encode(canvas, format === 'png' ? 'image/png' : 'image/jpeg', 0.95);
