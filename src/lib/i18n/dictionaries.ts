@@ -87,6 +87,29 @@ const en = {
   'color.neutrals': 'Neutrals',
   'color.invalid': 'Not a colour I recognise. Try #2E7D32, rgb(46 125 50) or hsl(123 46% 34%).',
 
+  /* --- page metadata (title and description per route) --- */
+  'meta.studio.title': 'Design generator for sites and logos — Template Studio',
+  'meta.studio.description':
+    'Answer a few questions and the studio builds a design from scratch: palette, type, grid, blocks. {count} kinds of layout — site, landing page, logo, deck, business card.',
+  'meta.catalog.title': 'Catalog of ready-made site designs — Template Studio',
+  'meta.catalog.description':
+    'Ready-made mini-site designs. Open one, adjust colours, fonts and shape, and take it into development.',
+  'meta.community.title': 'Community work — Template Studio',
+  'meta.community.description':
+    'Designs published by other people, with descriptions from their authors. Open any of them in full and rate it.',
+
+  /* --- per-product landing pages --- */
+  'design.titleSuffix': 'design generator',
+  'design.intro':
+    '{product} — one of {count} kinds of design the studio builds from scratch. Nothing is reused from a template: the palette, the type scale, the grid and every block are made for your project, from your answers.',
+  'design.start': 'Generate a design',
+  'design.whatYouGet': 'What the studio assembles',
+  'design.screens': 'Screens',
+  'design.blocks': 'Blocks it draws from',
+  'design.others': 'Other things the studio designs',
+  'design.notFound': 'No such kind of design',
+  'design.notFoundHint': 'The link may be out of date — the studio designs eighteen other things.',
+
   /* --- publishing --- */
   'publish.title': 'Publish to the community',
   'publish.subtitle':
@@ -213,6 +236,27 @@ const ru: Dictionary = {
   'color.neutrals': 'Нейтральные',
   'color.invalid': 'Не распознал цвет. Примеры: #2E7D32, rgb(46 125 50), hsl(123 46% 34%)',
 
+  'meta.studio.title': 'Генератор дизайна сайтов и логотипов — Template Studio',
+  'meta.studio.description':
+    'Отвечаете на вопросы — студия собирает дизайн с нуля: палитра, шрифты, сетка, блоки. {count} типов макетов: сайт, лендинг, логотип, презентация, визитка.',
+  'meta.catalog.title': 'Каталог готовых дизайнов сайтов — Template Studio',
+  'meta.catalog.description':
+    'Готовые дизайны мини-сайтов. Откройте шаблон, подберите цвета, шрифты и форму элементов — и заберите в разработку.',
+  'meta.community.title': 'Работы пользователей — Template Studio',
+  'meta.community.description':
+    'Дизайны, опубликованные другими людьми, с описанием от авторов. Каждую работу можно открыть целиком и оценить.',
+
+  'design.titleSuffix': 'генератор дизайна',
+  'design.intro':
+    '{product} — один из {count} типов, которые студия проектирует с нуля. Ничего не берётся из готового шаблона: палитра, шрифтовая шкала, сетка и все блоки собираются под ваш проект по вашим ответам.',
+  'design.start': 'Сгенерировать дизайн',
+  'design.whatYouGet': 'Что соберёт студия',
+  'design.screens': 'Экранов',
+  'design.blocks': 'Блоки, из которых собирается',
+  'design.others': 'Что студия проектирует ещё',
+  'design.notFound': 'Такого типа дизайна нет',
+  'design.notFoundHint': 'Возможно, ссылка устарела — студия проектирует ещё восемнадцать вещей.',
+
   'publish.title': 'Опубликовать в сообществе',
   'publish.subtitle':
     'Работа появится в общей галерее вместе с вашим описанием и станет доступна для оценок.',
@@ -334,6 +378,27 @@ const hy: Dictionary = {
   'color.palette': 'Գունապնակ',
   'color.neutrals': 'Չեզոք',
   'color.invalid': 'Գույնը չճանաչվեց։ Օրինակ՝ #2E7D32, rgb(46 125 50), hsl(123 46% 34%)',
+
+  'meta.studio.title': 'Կայքերի և լոգոտիպերի դիզայնի գեներատոր — Template Studio',
+  'meta.studio.description':
+    'Պատասխանում եք հարցերին — ստուդիան հավաքում է դիզայնը զրոյից՝ գունապնակ, տառատեսակներ, ցանց, բլոկներ։ {count} տեսակի մակետ՝ կայք, լենդինգ, լոգոտիպ, ներկայացում, այցեքարտ։',
+  'meta.catalog.title': 'Կայքերի պատրաստի դիզայնների կատալոգ — Template Studio',
+  'meta.catalog.description':
+    'Մինի-կայքերի պատրաստի դիզայններ։ Բացեք ձևանմուշը, ընտրեք գույները, տառատեսակները և տարրերի ձևը — և վերցրեք մշակման։',
+  'meta.community.title': 'Օգտատերերի աշխատանքները — Template Studio',
+  'meta.community.description':
+    'Այլ մարդկանց հրապարակած դիզայներ՝ հեղինակների նկարագրություններով։ Յուրաքանչյուր աշխատանք կարելի է բացել ամբողջությամբ և գնահատել։',
+
+  'design.titleSuffix': 'դիզայնի գեներատոր',
+  'design.intro':
+    '{product} — այն {count} տեսակներից մեկն է, որոնք ստուդիան նախագծում է զրոյից։ Ոչինչ չի վերցվում պատրաստի ձևանմուշից. գունապնակը, տառաչափերի սանդղակը, ցանցը և բոլոր բլոկները հավաքվում են ձեր նախագծի համար՝ ըստ ձեր պատասխանների։',
+  'design.start': 'Գեներացնել դիզայն',
+  'design.whatYouGet': 'Ինչ կհավաքի ստուդիան',
+  'design.screens': 'Էկրաններ',
+  'design.blocks': 'Բլոկներ, որոնցից հավաքվում է',
+  'design.others': 'Ինչ է ստուդիան նախագծում ևս',
+  'design.notFound': 'Դիզայնի այդպիսի տեսակ չկա',
+  'design.notFoundHint': 'Հնարավոր է՝ հղումը հնացել է — ստուդիան նախագծում է ևս տասնութ բան։',
 
   'publish.title': 'Հրապարակել համայնքում',
   'publish.subtitle':

@@ -191,6 +191,13 @@ const BLOCK_META: Record<string, { name: string; purpose: string }> = {
 
 const meta = (type: string) => BLOCK_META[type] ?? { name: type, purpose: '' };
 
+/**
+ * The same lookup, for anything outside the composer that needs to name a
+ * block — the per-product landing pages list what a design of that type is
+ * built from, and that list has to match what the composer actually draws.
+ */
+export const blockMeta = meta;
+
 /** Generates a bento mosaic: `count` cells of varying span on `columns`. */
 function mosaicSpans(rng: Rng, count: number, columns: number): number[][] {
   const spans: number[][] = [];

@@ -5,6 +5,7 @@ import type { PublishedProject } from '../lib/community/types';
 import { community } from '../lib/community/store';
 import { useInView } from '../hooks/useInView';
 import { useI18n, useT } from '../lib/i18n';
+import { usePageMeta } from '../lib/seo';
 import { useFitScale } from '../hooks/useFitScale';
 import TopBar from '../components/TopBar';
 import FrameView from '../components/studio/FrameView';
@@ -184,6 +185,8 @@ function Detail({ entry }: { entry: PublishedProject }) {
 
 export default function CommunityPage() {
   const t = useT();
+  usePageMeta(t('meta.community.title'), t('meta.community.description'));
+
   const { id } = useParams<{ id: string }>();
   useCommunity();
 

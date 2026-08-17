@@ -3,18 +3,26 @@ import { Link } from 'react-router-dom';
 import { Search, Sparkles, Wand2 } from 'lucide-react';
 import { TEMPLATES } from '../templates/registry';
 import { HOW_IT_WORKS, studio } from '../data/studio';
+import { useT } from '../lib/i18n';
+import { usePageMeta } from '../lib/seo';
 import TopBar from '../components/TopBar';
 import TemplateCard from '../components/TemplateCard';
 import AdSense, { AD_SLOTS } from '../components/AdSense';
 
 export default function GalleryPage() {
+  const t = useT();
+  usePageMeta(t('meta.catalog.title'), t('meta.catalog.description'));
+
   const [query, setQuery] = useState('');
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return TEMPLATES;
-    return TEMPLATES.filter((t) =>
-      [t.name, t.category, t.description, ...t.tags].join(' ').toLowerCase().includes(q),
+    return TEMPLATES.filter((template) =>
+      [template.name, template.category, template.description, ...template.tags]
+        .join(' ')
+        .toLowerCase()
+        .includes(q),
     );
   }, [query]);
 
