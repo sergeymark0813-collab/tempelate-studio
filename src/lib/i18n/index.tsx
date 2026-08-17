@@ -1,12 +1,17 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { DICTIONARIES, LOCALES, type Locale, type TranslationKey } from './dictionaries';
+import { DEFAULT_LOCALE, DICTIONARIES, LOCALES, type Locale, type TranslationKey } from './dictionaries';
 
 /* ===========================================================================
    Translation.
 
-   English is the default and stays the default until the visitor picks
-   something else — no locale sniffing from the browser, which would surprise
-   anyone whose system language differs from what they want to read.
+   Russian is the default. The browser locale is still never sniffed — that
+   would surprise anyone whose system language differs from what they want to
+   read — but the fallback had to stop being English: the static HTML each
+   address ships with is written in Russian, so an English default meant a
+   crawler running JavaScript saw a different language than one that did not,
+   and the site targets Russian queries either way.
+
+   Change DEFAULT_LOCALE to move it; nothing else depends on the value.
 
    The choice persists per device.
    =========================================================================== */
@@ -29,9 +34,9 @@ const isLocale = (value: unknown): value is Locale =>
 function readStored(): Locale {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return isLocale(stored) ? stored : 'en';
+    return isLocale(stored) ? stored : DEFAULT_LOCALE;
   } catch {
-    return 'en';
+    return DEFAULT_LOCALE;
   }
 }
 

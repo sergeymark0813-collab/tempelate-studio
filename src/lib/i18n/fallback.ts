@@ -1,4 +1,4 @@
-import { DICTIONARIES, LOCALES, type Locale, type TranslationKey } from './dictionaries';
+import { DEFAULT_LOCALE, DICTIONARIES, LOCALES, type Locale, type TranslationKey } from './dictionaries';
 
 /* ===========================================================================
    Translation outside React.
@@ -17,9 +17,11 @@ const STORAGE_KEY = 'template-studio:locale';
 function storedLocale(): Locale {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return (LOCALES as readonly string[]).includes(stored ?? '') ? (stored as Locale) : 'en';
+    return (LOCALES as readonly string[]).includes(stored ?? '')
+      ? (stored as Locale)
+      : DEFAULT_LOCALE;
   } catch {
-    return 'en';
+    return DEFAULT_LOCALE;
   }
 }
 

@@ -9,6 +9,13 @@
 export const LOCALES = ['en', 'ru', 'hy'] as const;
 export type Locale = (typeof LOCALES)[number];
 
+/**
+ * Shown to anyone who has not picked a language. Russian, because the static
+ * HTML every address ships with is Russian and the site targets Russian
+ * queries — an English default made the two disagree.
+ */
+export const DEFAULT_LOCALE: Locale = 'ru';
+
 export const LOCALE_NAMES: Record<Locale, string> = {
   en: 'English',
   ru: 'Русский',
