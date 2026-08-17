@@ -248,12 +248,16 @@ export default function StudioPage() {
       </section>
 
       {/* Ad unit sits below the working area and never over it. Renders nothing
-          until an AdSense publisher id is configured. */}
-      {!busy && (
-        <div className="mx-auto max-w-6xl px-5 pb-10 sm:px-8">
-          <AdSense slot={AD_SLOTS.studioBottom} />
-        </div>
-      )}
+          until an AdSense publisher id is configured.
+
+          Mounted unconditionally, including while a design is generating: an
+          `ins` that unmounts and comes back asks AdSense for a fresh ad every
+          time. Regenerating a dozen times would then bill a dozen impressions
+          against one page view, which is exactly what Google counts as
+          invalid traffic. */}
+      <div className="mx-auto max-w-6xl px-5 pb-10 sm:px-8">
+        <AdSense slot={AD_SLOTS.studioBottom} />
+      </div>
     </div>
   );
 }
