@@ -1,26 +1,40 @@
 /* ===========================================================================
    Google AdSense — the only advertising system in this project.
 
-   Nothing renders and no script is loaded until a real publisher id is
-   supplied through the environment, so the app ships inert rather than with a
-   placeholder pretending to be an ad network.
+   The script loads lazily and only on a route that actually renders a unit —
+   never from index.html, so a page with no ad on it makes no request to Google.
 
-   Setup:
-     1. Create `.env.local` (see `.env.example`).
-     2. VITE_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX
-     3. Add the per-unit slot ids issued by AdSense.
+   To point this at a different account, override the ids in `.env.local`
+   (see `.env.example`); the defaults below are used when nothing is set.
    =========================================================================== */
 
+/*
+  Neither id is a secret. AdSense prints the publisher id and the slot id into
+  the markup of every page that shows an ad, so both are readable with View
+  Source on any site running it. Keeping them only in environment variables
+  bought no privacy and cost a real failure: the Vercel dashboard never got the
+  variables, so production quietly shipped without a publisher id and no ad
+  could ever render. They are defaults now, and the env vars still win when set.
+*/
+const DEFAULT_CLIENT = 'ca-pub-4525460186750429';
+
+/** The one unit created so far. Both placements point at it — see AD_SLOTS. */
+const DEFAULT_SLOT = '7230761902';
+
 /** Publisher id, e.g. `ca-pub-1234567890123456`. */
-export const ADSENSE_CLIENT: string = import.meta.env.VITE_ADSENSE_CLIENT ?? '';
+export const ADSENSE_CLIENT: string = import.meta.env.VITE_ADSENSE_CLIENT || DEFAULT_CLIENT;
 
 /**
  * Ad unit ids, one per placement in the app. An empty value disables that
  * unit — the component renders nothing at all.
+ *
+ * The two placements live on different routes and never appear together, so
+ * sharing one unit is safe; giving the catalog its own would only be for
+ * telling the two apart in AdSense reporting.
  */
 export const AD_SLOTS = {
-  studioBottom: import.meta.env.VITE_ADSENSE_SLOT_STUDIO_BOTTOM ?? '',
-  galleryTop: import.meta.env.VITE_ADSENSE_SLOT_GALLERY_TOP ?? '',
+  studioBottom: import.meta.env.VITE_ADSENSE_SLOT_STUDIO_BOTTOM || DEFAULT_SLOT,
+  galleryTop: import.meta.env.VITE_ADSENSE_SLOT_GALLERY_TOP || DEFAULT_SLOT,
 } as const;
 
 /** AdSense refuses anything that isn't a well-formed publisher id. */
