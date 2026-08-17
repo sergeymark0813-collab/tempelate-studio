@@ -6,6 +6,7 @@ import { PRODUCTS } from '../lib/studio/products';
 import type { Answers, Project } from '../lib/studio/types';
 import { cn } from '../lib/cn';
 import { useT } from '../lib/i18n';
+import { usePageMeta } from '../lib/seo';
 import TopBar from '../components/TopBar';
 import Wizard, { clearWizardDraft } from '../components/studio/Wizard';
 import ProjectView from '../components/studio/ProjectView';
@@ -25,6 +26,8 @@ const STEP_MS = 260;
 
 export default function StudioPage() {
   const t = useT();
+  usePageMeta(t('meta.studio.title'), t('meta.studio.description', { count: PRODUCTS.length }));
+
   const [answers, setAnswers] = useState<Answers | null>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [step, setStep] = useState(-1);

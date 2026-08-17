@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Generated designs live in the browser, not on the server, so there is
+# nothing behind these worth indexing — and /template/ is one editor screen
+# repeated for every catalog entry.
+Disallow: /template/
+
+Sitemap: https://www.temlatestudio.site/sitemap.xml
