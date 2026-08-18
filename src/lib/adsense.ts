@@ -28,12 +28,14 @@ export const ADSENSE_CLIENT: string = import.meta.env.VITE_ADSENSE_CLIENT || DEF
  * Ad unit ids, one per placement in the app. An empty value disables that
  * unit — the component renders nothing at all.
  *
- * The two placements live on different routes and never appear together, so
- * sharing one unit is safe; giving the catalog its own would only be for
- * telling the two apart in AdSense reporting.
+ * `siteBottom` is rendered by SiteFooter, so it appears once on every page
+ * carrying that footer. The catalog has its own placement above the grid and
+ * deliberately does not render SiteFooter: one unit twice on a single page is
+ * the thing to avoid. Both ids point at the same unit today; separate ones
+ * would only be for telling the placements apart in AdSense reporting.
  */
 export const AD_SLOTS = {
-  studioBottom: import.meta.env.VITE_ADSENSE_SLOT_STUDIO_BOTTOM || DEFAULT_SLOT,
+  siteBottom: import.meta.env.VITE_ADSENSE_SLOT_SITE_BOTTOM || DEFAULT_SLOT,
   galleryTop: import.meta.env.VITE_ADSENSE_SLOT_GALLERY_TOP || DEFAULT_SLOT,
 } as const;
 

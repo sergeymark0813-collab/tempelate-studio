@@ -12,7 +12,6 @@ import SiteFooter from '../components/SiteFooter';
 import Wizard, { clearWizardDraft } from '../components/studio/Wizard';
 import ProjectView from '../components/studio/ProjectView';
 import ErrorBoundary from '../components/ErrorBoundary';
-import AdSense, { AD_SLOTS } from '../components/AdSense';
 
 const STEP_KEYS = [
   'gen.step.parse',
@@ -251,18 +250,12 @@ export default function StudioPage() {
         )}
       </section>
 
-      {/* Ad unit sits below the working area and never over it. Renders nothing
-          until an AdSense publisher id is configured.
-
-          Mounted unconditionally, including while a design is generating: an
-          `ins` that unmounts and comes back asks AdSense for a fresh ad every
-          time. Regenerating a dozen times would then bill a dozen impressions
-          against one page view, which is exactly what Google counts as
-          invalid traffic. */}
-      <div className="mx-auto max-w-6xl px-5 pb-10 sm:px-8">
-        <AdSense slot={AD_SLOTS.studioBottom} />
-      </div>
-
+      {/* The ad moved into SiteFooter, which puts it below the working area on
+          every page at once. It keeps the property that mattered here: the
+          footer is outside the `busy` branch, so the unit stays mounted while a
+          design generates. An `ins` that unmounts and comes back asks AdSense
+          for a fresh ad each time, and regenerating a dozen times would then
+          bill a dozen impressions against a single page view. */}
       <SiteFooter />
     </div>
   );
