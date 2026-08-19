@@ -63,5 +63,23 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!--
+      Adsterra. Two placements: the first is a popunder that also asks for push
+      notification permission, the second a closable banner.
+
+      They sit here, in the document, rather than in a React component on
+      purpose. A popunder has to fire once per page load; mounted inside the
+      app it would re-run on every client-side route change and open a window
+      each time. Living in index.html also means the build copies them into
+      every generated page for free — see the static-pages plugin in
+      vite.config.
+
+      Loaded last so 176 KB of third-party script does not delay first paint.
+      Both are disclosed in the privacy policy (src/data/privacy.ts); removing
+      either means changing that text with it.
+    -->
+    <script src="https://pl30907289.effectivecpmnetwork.com/13/2b/f5/132bf5a41c0f5b6add20e9039af2862f.js"></script>
+    <script src="https://pl30907290.effectivecpmnetwork.com/49/65/46/496546331c85b40fd882377b62d691ef.js"></script>
   </body>
 </html>
