@@ -59,8 +59,7 @@ const ru: Policy = {
       heading: 'Реклама',
       paragraphs: [
         'Сайт монетизируется рекламой. Подключены две сети: Adsterra и Google AdSense. Обе могут использовать файлы cookie и похожие технологии, чтобы подбирать объявления с учётом ваших предыдущих посещений этого и других сайтов.',
-        'Скрипты Adsterra загружаются на каждой странице. Одно из размещений — попандер: при взаимодействии со страницей может открыться дополнительное окно браузера с рекламой. Второе — баннер, его можно закрыть.',
-        'Adsterra может запросить разрешение на отправку push-уведомлений. Это отдельный запрос браузера, отказать на него вы вправе, а уже выданное разрешение отзывается в настройках сайта в браузере.',
+        'Скрипт Adsterra загружается на каждой странице и показывает баннер, закреплённый вверху экрана. Баннер можно закрыть.',
         'Скрипт Google AdSense загружается только на страницах с рекламным блоком. Отказаться от персонализированной рекламы Google можно в настройках по адресу google.com/settings/ads; как Google обрабатывает данные на сайтах-партнёрах, описано на policies.google.com/technologies/partner-sites.',
       ],
     },
@@ -124,8 +123,7 @@ const en: Policy = {
       heading: 'Advertising',
       paragraphs: [
         'The site is monetised with advertising. Two networks are in use: Adsterra and Google AdSense. Both may use cookies and similar technologies to select ads based on your prior visits to this and other websites.',
-        'The Adsterra scripts load on every page. One placement is a pop-under: interacting with the page may open an additional browser window carrying an ad. The other is a banner, which can be closed.',
-        'Adsterra may also ask permission to send push notifications. That is a separate browser prompt, you are free to decline it, and a permission already granted can be revoked in your browser’s site settings.',
+        'The Adsterra script loads on every page and shows a banner pinned near the top of the screen. The banner can be closed.',
         'The Google AdSense script loads only on pages that carry an ad unit. You can opt out of personalised Google advertising at google.com/settings/ads; how Google handles data on partner sites is described at policies.google.com/technologies/partner-sites.',
       ],
     },
@@ -187,8 +185,7 @@ const hy: Policy = {
       heading: 'Գովազդ',
       paragraphs: [
         'Կայքը դրամայնացվում է գովազդով։ Միացված է երկու ցանց՝ Adsterra և Google AdSense։ Երկուսն էլ կարող են օգտագործել cookie-ներ և նմանատիպ տեխնոլոգիաներ՝ այս և այլ կայքեր ձեր նախորդ այցելությունների հիման վրա գովազդ ընտրելու համար։',
-        'Adsterra-ի սկրիպտները բեռնվում են ամեն էջում։ Տեղաբաշխումներից մեկը popunder է. էջի հետ փոխազդելիս կարող է բացվել բրաուզերի լրացուցիչ պատուհան՝ գովազդով։ Երկրորդը բաններ է, որը կարելի է փակել։',
-        'Adsterra-ն կարող է նաև թույլտվություն խնդրել push-ծանուցումներ ուղարկելու համար։ Դա բրաուզերի առանձին հարցում է, դուք իրավունք ունեք մերժել այն, իսկ արդեն տրված թույլտվությունը հետ է կանչվում բրաուզերի կայքի կարգավորումներում։',
+        'Adsterra-ի սկրիպտը բեռնվում է ամեն էջում և ցուցադրում է բաններ՝ ամրացված էկրանի վերևում։ Բանները կարելի է փակել։',
         'Google AdSense-ի սկրիպտը բեռնվում է միայն գովազդային բլոկ պարունակող էջերում։ Անհատականացված Google-գովազդից կարող եք հրաժարվել google.com/settings/ads հասցեում. գործընկեր կայքերում Google-ի տվյալների մշակումը նկարագրված է policies.google.com/technologies/partner-sites հասցեում։',
       ],
     },
