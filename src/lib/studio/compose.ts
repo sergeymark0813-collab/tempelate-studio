@@ -1,4 +1,7 @@
 import type { ContentPack } from './content';
+import type { Locale } from '../i18n/dictionaries';
+import type { Vocabulary } from './vocab';
+import { VOCAB } from './vocab';
 import type { Rng } from './rng';
 import type { BlockInstance, DesignSystem, Frame, ProductKind } from './types';
 
@@ -135,68 +138,17 @@ const PAGE_ORDER = [
   'testimonials', 'faq', 'contactForm', 'cta', 'footer',
 ];
 
-const BLOCK_META: Record<string, { name: string; purpose: string }> = {
-  nav: { name: 'Навигация', purpose: 'Ориентирует и держит целевое действие в поле зрения.' },
-  hero: { name: 'Первый экран', purpose: 'Отвечает, что это и что делать дальше, за пять секунд.' },
-  logos: { name: 'Полоса доверия', purpose: 'Снимает первое сомнение до того, как оно сформулировано.' },
-  pageHeader: { name: 'Шапка раздела', purpose: 'Задаёт контекст внутренней страницы.' },
-  categories: { name: 'Категории', purpose: 'Даёт быстрый вход в нужный раздел каталога.' },
-  features: { name: 'Преимущества', purpose: 'Объясняет, чем это лучше очевидных альтернатив.' },
-  bento: { name: 'Бенто-блок', purpose: 'Показывает разное по важности в одной модульной сетке.' },
-  showcase: { name: 'Работы и кейсы', purpose: 'Доказывает делом то, что обещано текстом.' },
-  catalog: { name: 'Каталог', purpose: 'Витрина с ценой и быстрым действием.' },
-  productDetail: { name: 'Карточка товара', purpose: 'Галерея, характеристики и покупка в одном экране.' },
-  gallery: { name: 'Галерея', purpose: 'Передаёт атмосферу без единого слова.' },
-  stats: { name: 'Цифры', purpose: 'Переводит опыт в измеримую величину.' },
-  steps: { name: 'Как мы работаем', purpose: 'Делает сотрудничество предсказуемым.' },
-  pricing: { name: 'Тарифы', purpose: 'Открытая цена снимает половину обращений.' },
-  team: { name: 'Команда', purpose: 'Показывает людей, а не абстрактную компанию.' },
-  testimonials: { name: 'Отзывы', purpose: 'Социальное доказательство от конкретных людей.' },
-  faq: { name: 'Вопросы и ответы', purpose: 'Закрывает возражения до обращения в поддержку.' },
-  contactForm: { name: 'Форма заявки', purpose: 'Превращает интерес в контакт минимальным числом полей.' },
-  cta: { name: 'Финальный призыв', purpose: 'Последняя точка входа для дочитавших.' },
-  footer: { name: 'Подвал', purpose: 'Навигация, контакты и юридические ссылки.' },
-  authForm: { name: 'Форма входа', purpose: 'Минимум полей и понятный путь восстановления доступа.' },
-  kpis: { name: 'Ключевые метрики', purpose: 'Состояние системы одним взглядом.' },
-  chart: { name: 'График', purpose: 'Динамика вместо одного числа.' },
-  table: { name: 'Таблица данных', purpose: 'Основная рабочая область оператора.' },
-  activity: { name: 'Лента активности', purpose: 'Кто и что изменил за последнее время.' },
-  board: { name: 'Канбан-доска', purpose: 'Статусы и движение задач по этапам.' },
-  mobileHeader: { name: 'Шапка экрана', purpose: 'Заголовок, поиск и профиль.' },
-  mobileHero: { name: 'Приветственный блок', purpose: 'Главное действие сразу под большим пальцем.' },
-  mobileChips: { name: 'Категории', purpose: 'Быстрый фильтр в одно касание.' },
-  mobileCards: { name: 'Карточки', purpose: 'Основной контент ленты.' },
-  mobileList: { name: 'Список', purpose: 'Плотный перечень записей с действиями.' },
-  mobileStats: { name: 'Метрики', purpose: 'Личный прогресс или состояние счёта.' },
-  tabbar: { name: 'Нижняя навигация', purpose: 'Разделы в зоне уверенного нажатия.' },
-  poster: { name: 'Композиция макета', purpose: 'Одно сообщение, считываемое за секунду.' },
-  posterTall: { name: 'Вертикальная композиция', purpose: 'Формат под печать и ленту соцсетей.' },
-  posterStory: { name: 'Сторис', purpose: 'Вертикаль 9:16 с безопасными полями.' },
-  slideTitle: { name: 'Титульный слайд', purpose: 'Тема, автор и дата.' },
-  slideContent: { name: 'Содержательный слайд', purpose: 'Тезисы без стены текста.' },
-  slideStats: { name: 'Слайд с цифрами', purpose: 'Три-четыре числа как аргумент.' },
-  cardFront: { name: 'Лицевая сторона', purpose: 'Имя, роль и знак — ничего лишнего.' },
-  cardBack: { name: 'Оборот', purpose: 'Контакты и способ связи.' },
-  emailHeader: { name: 'Шапка письма', purpose: 'Логотип и прехедер.' },
-  emailHero: { name: 'Главный блок письма', purpose: 'Оффер и одна кнопка.' },
-  emailCards: { name: 'Подборка', purpose: 'Две-три позиции с картинкой и ценой.' },
-  emailCta: { name: 'Призыв', purpose: 'Повтор действия ближе к концу.' },
-  emailFooter: { name: 'Подвал письма', purpose: 'Отписка, контакты, соцсети.' },
-  logoMark: { name: 'Знак и логотип', purpose: 'Основная версия в защитном поле.' },
-  logoVariants: { name: 'Варианты', purpose: 'Цветные, монохромные и инверсные версии.' },
-  logoUsage: { name: 'Носители', purpose: 'Как знак живёт на реальных предметах.' },
-  uiKit: { name: 'Библиотека компонентов', purpose: 'Кнопки, поля, карточки и состояния.' },
-  productCard: { name: 'Карточка товара', purpose: 'Изображение, цена и выгода в одном кадре.' },
-};
 
-const meta = (type: string) => BLOCK_META[type] ?? { name: type, purpose: '' };
+
+const meta = (type: string, pack: Vocabulary) =>
+  pack.blockMeta[type] ?? { name: type, purpose: '' };
 
 /**
  * The same lookup, for anything outside the composer that needs to name a
  * block — the per-product landing pages list what a design of that type is
  * built from, and that list has to match what the composer actually draws.
  */
-export const blockMeta = meta;
+export const blockMeta = (type: string, locale: Locale) => meta(type, VOCAB[locale]);
 
 /** Generates a bento mosaic: `count` cells of varying span on `columns`. */
 function mosaicSpans(rng: Rng, count: number, columns: number): number[][] {
@@ -234,7 +186,7 @@ interface ComposeInput {
 function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance {
   const { ds, content, archetype } = input;
   const variant = pickVariant(rng, type, archetype);
-  const info = meta(type);
+  const info = meta(type, content.vocab);
 
   const align: 'left' | 'center' | 'right' =
     archetype.align === 'center'

@@ -24,6 +24,13 @@ export interface Domain {
 
 export interface Vocabulary {
   domains: Domain[];
+  /**
+   * Name and rationale for each block type, keyed by type id. Shown in the
+   * editor's section list and in the structure report, and baked into the
+   * project at generation time — so a design keeps the wording of the language
+   * it was generated in.
+   */
+  blockMeta: Record<string, { name: string; purpose: string }>;
   /** Primary button wording, keyed by the purpose answered in the brief. */
   ctaByPurpose: Record<string, string[]>;
   /** Secondary button wording, shared across purposes. */

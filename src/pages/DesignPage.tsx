@@ -4,7 +4,7 @@ import TopBar from '../components/TopBar';
 import SiteFooter from '../components/SiteFooter';
 import { PRODUCTS } from '../lib/studio/products';
 import { blockMeta } from '../lib/studio/compose';
-import { useT } from '../lib/i18n';
+import { useI18n, useT } from '../lib/i18n';
 import { useTr } from '../lib/i18n/engine';
 import { usePageMeta } from '../lib/seo';
 
@@ -23,6 +23,7 @@ export default function DesignPage() {
   const { productId } = useParams();
   const t = useT();
   const tr = useTr();
+  const { locale } = useI18n();
 
   const product = PRODUCTS.find((entry) => entry.id === productId);
 
@@ -116,7 +117,7 @@ export default function DesignPage() {
           </h3>
           <ul className="mt-3 grid gap-2 sm:grid-cols-2">
             {product.blocks.map((type) => {
-              const block = blockMeta(type);
+              const block = blockMeta(type, locale);
               return (
                 <li key={type} className="rounded-xl bg-white/[0.03] px-3.5 py-2.5 ring-1 ring-white/6">
                   <span className="text-[13.5px] font-medium text-white/90">{block.name}</span>

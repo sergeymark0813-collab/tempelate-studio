@@ -1,6 +1,6 @@
 import type { Rng } from './rng';
 import type { Locale } from '../i18n/dictionaries';
-import type { Domain } from './vocab';
+import type { Domain, Vocabulary } from './vocab';
 import { DOMAIN_IDS, VOCAB, fallbackDomain, keywordsFor } from './vocab';
 
 /* ===========================================================================
@@ -50,6 +50,9 @@ export function pickBrand(rng: Rng, description: string, domain: Domain): string
 }
 
 export interface ContentPack {
+  /** The language pack this copy came from — carried so the composer, which
+      also names blocks, does not have to be told the locale separately. */
+  vocab: Vocabulary;
   domain: Domain;
   brand: string;
   purpose: string;
@@ -92,6 +95,7 @@ export function buildContent(rng: Rng, input: ContentInput): ContentPack {
   const ctas = pack.ctaByPurpose[purpose] ?? pack.ctaByPurpose.present;
 
   return {
+    vocab: pack,
     domain,
     brand,
     purpose,
