@@ -43,14 +43,14 @@ export function Poster({ block }: { block: BlockInstance }) {
           </Stack>
           <Btn size="lg">{block.content.cta}</Btn>
         </div>
-        <Visual seed={seed} radius="none" />
+        <Visual src={block.content.image} seed={seed} radius="none" />
       </div>
     );
   }
 
   return (
     <div style={{ ...fill, position: 'relative', background: ds.color.bg, overflow: 'hidden' }}>
-      <Visual seed={seed} radius="none" style={{ position: 'absolute', inset: 0, opacity: corner ? 1 : 0.9 }} />
+      <Visual src={block.content.image} seed={seed} radius="none" style={{ position: 'absolute', inset: 0, opacity: corner ? 1 : 0.9 }} />
       <div
         style={{
           position: 'absolute',
@@ -98,7 +98,7 @@ export function PosterTall({ block }: { block: BlockInstance }) {
   if (overlay) {
     return (
       <div style={{ ...fill, position: 'relative', overflow: 'hidden', background: ds.color.bg }}>
-        <Visual seed={seed} radius="none" style={{ position: 'absolute', inset: 0 }} />
+        <Visual src={block.content.image} seed={seed} radius="none" style={{ position: 'absolute', inset: 0 }} />
         <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${ds.color.bg} 12%, transparent 70%)` }} />
         <div style={{ position: 'relative', ...fill, padding: 56, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 18 }}>
           <Type step="overline" tone="primary">
@@ -129,7 +129,7 @@ export function PosterTall({ block }: { block: BlockInstance }) {
         {block.content.title}
       </Type>
 
-      <Visual seed={seed} style={{ flex: 1, minHeight: 0 }} />
+      <Visual src={block.content.image} seed={seed} style={{ flex: 1, minHeight: 0 }} />
 
       <Stack gap={16}>
         <Type step="lead" tone="muted">
@@ -147,7 +147,7 @@ export function PosterStory({ block }: { block: BlockInstance }) {
 
   return (
     <div style={{ ...fill, position: 'relative', background: ds.color.bg, overflow: 'hidden' }}>
-      <Visual seed={seed} radius="none" style={{ position: 'absolute', inset: 0, opacity: 0.85 }} />
+      <Visual src={block.content.image} seed={seed} radius="none" style={{ position: 'absolute', inset: 0, opacity: 0.85 }} />
       <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom, ${ds.color.bg}cc 0%, transparent 35%, ${ds.color.bg} 92%)` }} />
       {/* Safe margins: interface chrome eats roughly 250px top and bottom. */}
       <div style={{ position: 'relative', ...fill, padding: '160px 64px 200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -209,7 +209,7 @@ export function SlideTitle({ block }: { block: BlockInstance }) {
           {block.content.subtitle}
         </Type>
       </div>
-      <Visual seed={seed} radius="none" />
+      <Visual src={block.content.image} seed={seed} radius="none" />
     </div>
   );
 }
@@ -378,7 +378,7 @@ export function EmailHero({ block }: { block: BlockInstance }) {
   const seed = hash(block.id);
   return (
     <div style={{ padding: 32 }}>
-      <Visual seed={seed} style={{ height: 220, marginBottom: 26 }} />
+      <Visual src={block.content.image} seed={seed} style={{ height: 220, marginBottom: 26 }} />
       <Stack gap={14}>
         <Type step="overline" tone="primary">
           {block.content.eyebrow}
@@ -583,7 +583,7 @@ export function LogoUsage({ block }: { block: BlockInstance }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gap: 20, flex: 1, minHeight: 0 }}>
         {/* Signage */}
         <div style={{ position: 'relative', borderRadius: ds.radius.md, overflow: 'hidden' }}>
-          <Visual seed={seed} radius="none" style={{ position: 'absolute', inset: 0 }} />
+          <Visual src={block.content.image} seed={seed} radius="none" style={{ position: 'absolute', inset: 0 }} />
           <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', gap: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <LogoGlyph spec={spec} c1={ds.color.onPrimary} c2={ds.color.onPrimary} bg="transparent" size={64} />
@@ -643,7 +643,7 @@ export function ProductCard({ block }: { block: BlockInstance }) {
   return (
     <div style={{ ...fill, background: ds.color.bg, padding: 40, display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
-        <Visual seed={seed} radius="lg" style={{ position: 'absolute', inset: 0 }} />
+        <Visual src={block.content.image} seed={seed} radius="lg" style={{ position: 'absolute', inset: 0 }} />
         <span
           style={{
             position: 'absolute',

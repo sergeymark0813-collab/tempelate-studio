@@ -4,6 +4,7 @@ import type { BlockInstance, Project } from '../../lib/studio/types';
 import { FAMILIES } from '../../lib/studio/typography';
 import { mix, readableOn } from '../../lib/color';
 import ColorField from './ColorField';
+import { IMAGE_BLOCKS } from './FrameView';
 import { cn } from '../../lib/cn';
 import { useT } from '../../lib/i18n';
 
@@ -157,12 +158,17 @@ function BlockRow({
             </div>
           )}
 
+          {/* Offered only where the renderer has an image slot. Everywhere else
+              the upload used to succeed, store the picture on the block and
+              show nothing — the file went in and vanished. */}
           <div className="flex flex-wrap items-center gap-2">
-            <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-white/[0.05] px-3 py-2 text-[12.5px] text-white/65 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white">
-              <ImageIcon size={13} />
-              {t('editor.image')}
-              <input type="file" accept="image/*" className="sr-only" onChange={(e) => upload(e.target.files?.[0])} />
-            </label>
+            {IMAGE_BLOCKS.has(block.type) && (
+              <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-white/[0.05] px-3 py-2 text-[12.5px] text-white/65 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white">
+                <ImageIcon size={13} />
+                {t('editor.image')}
+                <input type="file" accept="image/*" className="sr-only" onChange={(e) => upload(e.target.files?.[0])} />
+              </label>
+            )}
             {block.content.image && (
               <>
                 <img src={block.content.image} alt="" className="h-8 w-12 rounded object-cover ring-1 ring-white/10" />

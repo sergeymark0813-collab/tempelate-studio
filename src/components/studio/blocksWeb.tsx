@@ -180,6 +180,8 @@ export function Hero({ block }: { block: BlockInstance }) {
               <Copy />
             </Stack>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: ds.grid.gutter / 2, minHeight: 460 }}>
+              {/* The wide tile is this block's image slot; the small one stays
+                  procedural so an upload does not appear twice in one mosaic. */}
               <Visual seed={seed} src={block.content.image} radius="md" style={{ gridColumn: 'span 2' }} />
               <Visual seed={seed + 7} radius="md" />
               <Surface pad={22} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -286,7 +288,7 @@ export function Categories({ block }: { block: BlockInstance }) {
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${block.params.columns ?? 3}, minmax(0,1fr))`, gap: ds.grid.gutter, marginTop: 44 }}>
           {items.map((item, i) => (
             <div key={item.title} style={{ position: 'relative', height: 190, borderRadius: ds.radius.md, overflow: 'hidden' }}>
-              <Visual seed={seed + i * 11} radius="none" style={{ position: 'absolute', inset: 0 }} />
+              <Visual src={i === 0 ? block.content.image : undefined} seed={seed + i * 11} radius="none" style={{ position: 'absolute', inset: 0 }} />
               <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${ds.color.bg}e6, transparent 65%)` }} />
               <Type step="h3" style={{ position: 'absolute', left: 20, bottom: 18 }}>
                 {item.title}
@@ -373,7 +375,7 @@ export function Features({ block }: { block: BlockInstance }) {
                     {item.text}
                   </Type>
                 </Stack>
-                <Visual seed={seed + i * 13} radius="lg" style={{ height: 340, order: i % 2 === 0 ? 1 : 0 }} />
+                <Visual src={i === 0 ? block.content.image : undefined} seed={seed + i * 13} radius="lg" style={{ height: 340, order: i % 2 === 0 ? 1 : 0 }} />
               </div>
             ))}
           </Stack>
@@ -427,7 +429,7 @@ export function Showcase({ block }: { block: BlockInstance }) {
                     {item.meta}
                   </Type>
                 </Stack>
-                <Visual seed={seed + i * 17} radius="md" style={{ height: 260 }} />
+                <Visual src={i === 0 ? block.content.image : undefined} seed={seed + i * 17} radius="md" style={{ height: 260 }} />
               </div>
             ))}
           </Stack>
@@ -445,7 +447,7 @@ export function Showcase({ block }: { block: BlockInstance }) {
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${block.params.columns ?? 2}, minmax(0,1fr))`, gap: ds.grid.gutter, marginTop: 48 }}>
           {items.slice(0, block.params.count ?? 4).map((item, i) => (
             <Stack key={item.title} gap={16} style={{ marginTop: staggered && i % 2 === 1 ? 64 : 0 }}>
-              <Visual seed={seed + i * 19} radius="md" style={{ height: staggered ? 300 + (i % 2) * 60 : 300 }} />
+              <Visual src={i === 0 ? block.content.image : undefined} seed={seed + i * 19} radius="md" style={{ height: staggered ? 300 + (i % 2) * 60 : 300 }} />
               <div>
                 <Type step="h3">{item.title}</Type>
                 <Type step="small" tone="faint" style={{ marginTop: 6 }}>
@@ -481,7 +483,7 @@ export function Catalog({ block }: { block: BlockInstance }) {
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, minmax(0,1fr))`, gap: ds.grid.gutter, marginTop: 44 }}>
           {items.slice(0, block.params.count ?? 6).map((item, i) => (
             <Surface key={item.title} pad={0} style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <Visual seed={seed + i * 23} radius="none" style={{ height: block.variant === 'masonry' ? 210 + (i % 3) * 40 : 230 }} />
+              <Visual src={i === 0 ? block.content.image : undefined} seed={seed + i * 23} radius="none" style={{ height: block.variant === 'masonry' ? 210 + (i % 3) * 40 : 230 }} />
               <Stack gap={8} style={{ padding: 20, flex: 1 }}>
                 <Type step="h3" style={{ fontSize: 18 }}>
                   {item.title}
@@ -518,7 +520,7 @@ export function ProductDetail({ block }: { block: BlockInstance }) {
             <Visual seed={seed} src={block.content.image} radius="lg" style={{ height: 460 }} />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: ds.grid.gutter / 2 }}>
               {[0, 1, 2].map((i) => (
-                <Visual key={i} seed={seed + i * 29} radius="md" style={{ height: 120 }} />
+                <Visual src={i === 0 ? block.content.image : undefined} key={i} seed={seed + i * 29} radius="md" style={{ height: 120 }} />
               ))}
             </div>
           </Stack>
@@ -576,7 +578,7 @@ export function Gallery({ block }: { block: BlockInstance }) {
         </Container>
         <div style={{ display: 'flex', gap: ds.grid.gutter / 2, marginTop: 44, paddingInline: ds.grid.margin, overflow: 'hidden' }}>
           {Array.from({ length: count }, (_, i) => (
-            <Visual key={i} seed={seed + i * 31} radius="md" style={{ flex: '1 0 300px', height: 380 }} />
+            <Visual src={i === 0 ? block.content.image : undefined} key={i} seed={seed + i * 31} radius="md" style={{ flex: '1 0 300px', height: 380 }} />
           ))}
         </div>
       </Section>
@@ -593,7 +595,7 @@ export function Gallery({ block }: { block: BlockInstance }) {
               const wide = i % 5 === 0;
               const tall = i % 3 === 1;
               return (
-                <Visual
+                <Visual src={i === 0 ? block.content.image : undefined}
                   key={i}
                   seed={seed + i * 37}
                   radius="md"
@@ -613,7 +615,7 @@ export function Gallery({ block }: { block: BlockInstance }) {
         <Heading block={block} />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: ds.grid.gutter, marginTop: 44 }}>
           {Array.from({ length: count }, (_, i) => (
-            <Visual key={i} seed={seed + i * 41} radius="md" style={{ height: 280 }} />
+            <Visual src={i === 0 ? block.content.image : undefined} key={i} seed={seed + i * 41} radius="md" style={{ height: 280 }} />
           ))}
         </div>
       </Container>
@@ -825,7 +827,7 @@ export function Team({ block }: { block: BlockInstance }) {
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${items.length}, minmax(0,1fr))`, gap: ds.grid.gutter, marginTop: 48 }}>
           {items.map((item, i) => (
             <Stack key={item.title} gap={14}>
-              <Visual seed={seed + i * 43} radius="md" style={{ height: 260 }} />
+              <Visual src={i === 0 ? block.content.image : undefined} seed={seed + i * 43} radius="md" style={{ height: 260 }} />
               <div>
                 <Type step="h3" style={{ fontSize: 18 }}>
                   {item.title}
@@ -1164,7 +1166,7 @@ export function AuthForm({ block }: { block: BlockInstance }) {
     return (
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: 900, background: ds.color.bg }}>
         <div style={{ display: 'grid', placeItems: 'center', padding: 48 }}>{card}</div>
-        <Visual seed={seed} radius="none" />
+        <Visual src={block.content.image} seed={seed} radius="none" />
       </div>
     );
   }

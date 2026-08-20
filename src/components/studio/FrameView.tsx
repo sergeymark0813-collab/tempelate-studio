@@ -14,6 +14,41 @@ import * as Graphic from './blocksGraphic';
    window is doing.
    =========================================================================== */
 
+/**
+ * Block types whose renderer has somewhere to put an uploaded image.
+ *
+ * Keep this beside REGISTRY: the two are edited together, and a type listed
+ * here without a `src={block.content.image}` in its component is a promise the
+ * editor cannot keep — the upload control appears and the picture never shows.
+ *
+ * Caveat worth knowing: support is per component, but several components pick
+ * a layout from `block.variant`, and not every variant has an image slot —
+ * `features`, for one, only shows a picture in its `alternating` layout.
+ * Listing the type is therefore necessary for the upload to work, not a
+ * guarantee that it will.
+ */
+export const IMAGE_BLOCKS = new Set([
+  'hero',
+  'categories',
+  'features',
+  'bento',
+  'showcase',
+  'catalog',
+  'productDetail',
+  'gallery',
+  'team',
+  'cta',
+  'authForm',
+  'uiKit',
+  'poster',
+  'posterTall',
+  'posterStory',
+  'slideTitle',
+  'emailHero',
+  'logoUsage',
+  'productCard',
+]);
+
 const REGISTRY: Record<string, ComponentType<{ block: BlockInstance }>> = {
   nav: Web.Nav,
   hero: Web.Hero,

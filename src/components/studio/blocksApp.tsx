@@ -487,7 +487,7 @@ export function UiKit({ block }: { block: BlockInstance }) {
           </Surface>
 
           <Surface pad={0} style={{ width: 260, overflow: 'hidden' }}>
-            <Visual seed={seed + 3} radius="none" style={{ height: 120 }} />
+            <Visual src={block.content.image} seed={seed + 3} radius="none" style={{ height: 120 }} />
             <div style={{ padding: 18 }}>
               <Type step="h3" style={{ fontSize: 17 }}>
                 С изображением
