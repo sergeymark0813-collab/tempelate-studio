@@ -9,6 +9,7 @@ import { answerOf, customOf, firstAnswer, requiredBlocks, trackOf } from './flow
 import { createRng, newSeed } from './rng';
 import { buildDesignSystem } from './tokens';
 import type { Answers, DesignSystem, ImageDirection, Project, ProjectAnalysis } from './types';
+import type { Locale } from '../i18n/dictionaries';
 
 /* ===========================================================================
    Answers → a finished project.
@@ -151,7 +152,12 @@ function buildImagery(
   return base;
 }
 
-export function generateProject(answers: Answers, seedInput?: number): Project {
+/**
+ * `locale` is required deliberately. It was absent altogether before, so every
+ * generated design came out in Russian regardless of the language the studio
+ * was displaying — the choice was lost before generation even began.
+ */
+export function generateProject(answers: Answers, locale: Locale, seedInput?: number): Project {
   const seed = seedInput ?? newSeed();
   const rng = createRng(seed);
 
@@ -212,6 +218,7 @@ export function generateProject(answers: Answers, seedInput?: number): Project {
   const content = buildContent(rng, {
     description,
     purpose,
+    locale,
     // An explicitly chosen sphere always beats guessing from free text.
     domainId: niche?.domain,
     name,
@@ -318,6 +325,10 @@ export function generateProject(answers: Answers, seedInput?: number): Project {
   return {
     id: `${seed.toString(36)}-${Date.now().toString(36)}`,
     seed,
+    // Recorded so the design keeps the language it was written in. Switching
+    // the interface afterwards must not silently reinterpret finished copy,
+    // and a published project has to render in its own language for everyone.
+    locale,
     createdAt: Date.now(),
     name: conceptName,
     tagline: `${content.brand} · ${nicheLabel ?? content.domain.label}`,

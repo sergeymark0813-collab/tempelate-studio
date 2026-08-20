@@ -8,6 +8,8 @@
    description with primitives — so two runs of the same brief genuinely differ.
    =========================================================================== */
 
+import type { Locale } from '../i18n/dictionaries';
+
 /* --------------------------------- brief --------------------------------- */
 
 /** One answer to one question. Free text lives in `custom`. */
@@ -279,6 +281,8 @@ export interface Project {
   /** Unique per generation — the same brief never reuses one. */
   id: string;
   seed: number;
+  /** Language the copy was written in, fixed at generation time. */
+  locale: Locale;
   createdAt: number;
   name: string;
   tagline: string;

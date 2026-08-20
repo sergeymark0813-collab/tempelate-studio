@@ -5,7 +5,7 @@ import { generateProject } from '../lib/studio/generate';
 import { PRODUCTS } from '../lib/studio/products';
 import type { Answers, Project } from '../lib/studio/types';
 import { cn } from '../lib/cn';
-import { useT } from '../lib/i18n';
+import { useI18n, useT } from '../lib/i18n';
 import { usePageMeta } from '../lib/seo';
 import TopBar from '../components/TopBar';
 import SiteFooter from '../components/SiteFooter';
@@ -26,6 +26,7 @@ const STEP_MS = 260;
 
 export default function StudioPage() {
   const t = useT();
+  const { locale } = useI18n();
   usePageMeta(t('meta.studio.title'), t('meta.studio.description', { count: PRODUCTS.length }));
 
   const [answers, setAnswers] = useState<Answers | null>(null);
@@ -59,7 +60,9 @@ export default function StudioPage() {
       // has committed to showing a result. The brief is kept either way.
       let result: Project;
       try {
-        result = generateProject(input);
+        // The language showing in the studio is the language the design is
+        // written in — that is the whole point of passing it here.
+        result = generateProject(input, locale);
       } catch (error) {
         running.current = false;
         setStep(-1);
@@ -84,7 +87,10 @@ export default function StudioPage() {
         }, STEP_KEYS.length * STEP_MS + 140),
       );
     },
-    [clearTimers],
+    // `locale` and `t` belong here: without them the callback keeps whichever
+    // language was current when the page mounted, and switching to English
+    // before generating would still produce a Russian design.
+    [clearTimers, locale, t],
   );
 
   useEffect(() => {
