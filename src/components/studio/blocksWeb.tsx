@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { BlockInstance } from '../../lib/studio/types';
-import { Avatar, Btn, Chip, Container, Field, Glyph, Section, Stack, Surface, Type, useDs, Visual } from './atoms';
+import { Avatar, Btn, Chip, Container, Field, Glyph, Section, Stack, Surface, Type, useChrome, useDs, Visual } from './atoms';
 
 /* ===========================================================================
    Flowing page blocks.
@@ -1044,6 +1044,7 @@ export function Cta({ block }: { block: BlockInstance }) {
 
 export function Footer({ block }: { block: BlockInstance }) {
   const ds = useDs();
+  const chrome = useChrome();
   const items = block.content.items ?? [];
 
   if (block.variant === 'minimal') {
@@ -1094,7 +1095,7 @@ export function Footer({ block }: { block: BlockInstance }) {
           {[0, 1, 2].map((column) => (
             <Stack key={column} gap={12}>
               <Type step="overline" tone="faint">
-                {['Разделы', 'Компания', 'Связь'][column]}
+                {chrome.footerColumns[column]}
               </Type>
               {items.slice(column, column + 3).map((item) => (
                 <Type key={item.title} step="small" tone="muted">
@@ -1110,7 +1111,7 @@ export function Footer({ block }: { block: BlockInstance }) {
             © {new Date().getFullYear()} {block.content.title}
           </Type>
           <Type step="small" tone="faint">
-            Политика конфиденциальности
+            {chrome.privacy}
           </Type>
         </div>
       </Container>

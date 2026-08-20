@@ -33,7 +33,7 @@ function Thumb({ entry }: { entry: PublishedProject }) {
         className="pointer-events-none origin-top-left select-none"
         style={{ width: THUMB_WIDTH, transform: `scale(${scale})` }}
       >
-        <FrameView frame={frame} ds={entry.project.ds} deviceWidth={THUMB_WIDTH} />
+        <FrameView frame={frame} ds={entry.project.ds} locale={entry.project.locale} deviceWidth={THUMB_WIDTH} />
       </div>
     </div>
   );
@@ -174,7 +174,7 @@ function Detail({ entry }: { entry: PublishedProject }) {
 
         <div className="scroll-slim stage-grid max-h-[680px] overflow-y-auto bg-shell-950 p-4">
           <ErrorBoundary title={t('community.renderError')}>
-            <FrameView frame={frame} ds={entry.project.ds} nodeRef={captureRef} />
+            <FrameView frame={frame} ds={entry.project.ds} locale={entry.project.locale} nodeRef={captureRef} />
           </ErrorBoundary>
         </div>
       </section>

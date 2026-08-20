@@ -5,6 +5,167 @@ import type { Vocabulary } from './types';
    Russian counterpart says, in the way English marketing copy says it. */
 
 const en: Vocabulary = {
+  currency: '$',
+  numberLocale: 'en-US',
+
+  archetypes: {
+    split: {
+      label: 'Asymmetric split',
+      note: 'The screen divides unevenly: text holds the left axis, the visual takes the larger right.',
+    },
+    centered: {
+      label: 'Centred axis',
+      note: 'Everything lines up on one vertical axis — a calm rhythm with air at both edges.',
+    },
+    editorial: {
+      label: 'Editorial layout',
+      note: 'Type outranks pictures: large sizes, a narrow column of text, images as insets.',
+    },
+    bento: {
+      label: 'Bento grid',
+      note: 'A modular mosaic of tiles at different sizes — dense, but on a clear rhythm.',
+    },
+    immersive: {
+      label: 'Full-screen scene',
+      note: 'A full-height opener with text over the visual, then bands of strong contrast.',
+    },
+    dense: {
+      label: 'Dense information grid',
+      note: 'A lot per screen: tight margins, four columns, tables instead of cards.',
+    },
+    stacked: {
+      label: 'Stepped bands',
+      note: 'Sections run as full-width bands, each with its own background and rhythm.',
+    },
+  },
+
+  chrome: {
+    footerColumns: ['Sections', 'Company', 'Contact'],
+    privacy: 'Privacy policy',
+    appNav: ['Overview', 'Deals', 'Clients', 'Reports', 'Tasks', 'Settings'],
+    tableHeaders: ['Name', 'Description', 'Status', 'Amount'],
+    boardColumns: ['New', 'In progress', 'On hold', 'Done'],
+    people: ['Anna Reut', 'Igor Savelyev', 'Maria Dolina', 'Peter Ilyin'],
+    appTitle: 'Dashboard',
+    adminRole: 'Administrator',
+    search: 'Search',
+  },
+
+  sections: {
+    logoNames: ['Olkhon', 'Remark', 'Northerly', 'Greenwich', 'Atlas', 'Medium'],
+    pageHeaderEyebrow: 'Section',
+    categories: { eyebrow: 'Categories', title: 'Choose a direction' },
+    features: {
+      eyebrow: 'Why us',
+      titles: ['What you get', 'How it works', 'What the work includes'],
+    },
+    bento: { eyebrow: 'In brief', title: 'The essentials' },
+    showcase: {
+      food: { eyebrow: 'Menu', titles: ['On the table', 'From the oven and the grill', 'This season'], cta: 'Full menu' },
+      shop: { eyebrow: 'Storefront', titles: ['Popular', 'New collection', "Customers' choice"], cta: 'Whole catalogue' },
+      health: { eyebrow: 'Services', titles: ['What we treat', 'Clinic services'], cta: 'All services' },
+      beauty: { eyebrow: 'Services', titles: ['What we do', 'Our treatments'], cta: 'Full price list' },
+      sport: { eyebrow: 'Classes', titles: ['Training options', "What's in the club"], cta: 'Schedule' },
+      education: { eyebrow: 'Programmes', titles: ['What we teach', 'Current courses'], cta: 'All courses' },
+      home: { eyebrow: 'Properties', titles: ['Completed projects', 'Our work'], cta: 'All properties' },
+      tech: { eyebrow: 'Case studies', titles: ['What we have built', 'Projects in production'], cta: 'All cases' },
+      default: {
+        eyebrow: 'Work',
+        titles: ['Selected projects', 'Recent work', 'What we have built'],
+        cta: 'All work',
+      },
+    },
+    catalog: {
+      eyebrow: 'Catalogue',
+      titles: ['Popular', 'New collection', 'Best sellers'],
+      ctaSecondary: 'Save for later',
+    },
+    gallery: { eyebrow: 'Gallery', titles: ['Atmosphere', 'How it looks', 'Frames from the project'] },
+    stats: { eyebrow: 'In numbers', title: 'The scale, briefly' },
+    steps: { eyebrow: 'Process', title: 'How we work' },
+    pricing: {
+      eyebrow: 'Pricing',
+      title: 'Transparent plans',
+      tiers: [
+        { title: 'Basic', value: '$290', text: 'For small jobs and a first launch' },
+        { title: 'Standard', value: '$690', text: 'The full cycle with a month of support' },
+        { title: 'Complete', value: 'from $1,400', text: 'End-to-end work, handled for you' },
+      ],
+    },
+    team: {
+      eyebrow: 'Team',
+      title: 'Who you will work with',
+      members: [
+        { title: 'Anna Reut', meta: 'art director' },
+        { title: 'Igor Savelyev', meta: 'lead designer' },
+        { title: 'Maria Dolina', meta: 'project manager' },
+        { title: 'Peter Ilyin', meta: 'developer' },
+      ],
+    },
+    testimonials: { eyebrow: 'Testimonials', title: 'What clients say' },
+    faq: { eyebrow: 'Questions', title: 'Frequently asked' },
+    contactForm: {
+      eyebrow: 'Contact',
+      titles: ['Let us talk it through', 'Send an enquiry', 'Get in touch'],
+      subtitle: 'We reply within the working day and suggest a time to talk.',
+      fields: ['Name', 'Phone or email', 'A line about the job'],
+    },
+    cta: {
+      titles: ['Ready to start?', 'Let us discuss your project', 'Let us build it together'],
+      subtitle: 'Tell us about the job — we come back with a proposal and a date.',
+    },
+    authForm: {
+      titles: ['Welcome back', 'Sign in', 'Good to see you again'],
+      subtitle: 'Enter your email and password to carry on.',
+      cta: 'Sign in',
+      ctaSecondary: 'Create an account',
+      fields: ['Email address', 'Password'],
+    },
+    kpisTitle: 'Overview',
+    chartTitles: ['Last 30 days', 'Revenue by week', 'User activity'],
+    tableTitles: ['Recent records', 'Deals in progress', 'Enquiries'],
+    activity: {
+      title: 'Activity',
+      entries: [
+        { title: 'Anna Reut', text: 'changed a deal status', meta: '5 minutes ago' },
+        { title: 'Igor Savelyev', text: 'left a comment', meta: '28 minutes ago' },
+        { title: 'System', text: 'exported the weekly report', meta: '2 hours ago' },
+        { title: 'Maria Dolina', text: 'created a task', meta: 'yesterday' },
+        { title: 'Peter Ilyin', text: 'closed an enquiry', meta: 'yesterday' },
+      ],
+    },
+    board: { title: 'Board', columns: ['New', 'In progress', 'In review', 'Done'] },
+    mobileGreetings: ['Good morning', 'Good afternoon', 'Welcome back'],
+    mobileHeroEyebrow: 'Today',
+    mobileCardTitles: ['For you', 'Popular', 'New'],
+    mobileListTitle: 'History',
+    tabbar: ['Home', 'Catalogue', 'Saved', 'Profile'],
+    slideContent: {
+      eyebrow: 'Approach',
+      titles: ['What we offer', 'Three lines of work', 'How the solution works'],
+    },
+    slideStats: { eyebrow: 'Results', title: 'The numbers, briefly' },
+    card: {
+      name: 'Anna Reut',
+      role: 'art director',
+      phone: '+1 555 000 0000',
+      address: '14 Riverside, London',
+      emailHost: 'com',
+    },
+    email: {
+      headerSubtitle: 'Letter of the month',
+      heroEyebrow: 'News',
+      cardsTitle: 'This week’s picks',
+      ctaTitle: 'Do not miss it',
+      ctaSubtitle: 'The offer runs until the end of the week.',
+      footerSubtitle: 'You are receiving this because you subscribed to our mailing list.',
+    },
+    logoMarkEyebrow: 'Mark',
+    uiKitTitle: 'Component library',
+    productBadge: 'Best seller',
+    mainFrame: 'Main screen',
+  },
+
   blockMeta: {
     nav: { name: 'Navigation', purpose: 'Orients the visitor and keeps the main action in view.' },
     hero: { name: 'Opening screen', purpose: 'Says what this is and what to do next, in five seconds.' },

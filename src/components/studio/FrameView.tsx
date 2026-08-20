@@ -1,7 +1,9 @@
 import type { ComponentType } from 'react';
 import type { BlockInstance, DesignSystem, Frame } from '../../lib/studio/types';
 import { useFitScale } from '../../hooks/useFitScale';
-import { Avatar, DsProvider, Field, Glyph, Type, useDs } from './atoms';
+import { Avatar, ChromeProvider, DsProvider, Field, Glyph, Type, useChrome, useDs } from './atoms';
+import { VOCAB } from '../../lib/studio/vocab';
+import type { Locale } from '../../lib/i18n/dictionaries';
 import * as Web from './blocksWeb';
 import * as App from './blocksApp';
 import * as Graphic from './blocksGraphic';
@@ -116,7 +118,8 @@ function Block({ block }: { block: BlockInstance }) {
 /** Sidebar + topbar for dashboard-style products, drawn from the same tokens. */
 function AppChrome({ frame }: { frame: Frame }) {
   const ds = useDs();
-  const nav = ['Обзор', 'Сделки', 'Клиенты', 'Отчёты', 'Задачи', 'Настройки'];
+  const chrome = useChrome();
+  const nav = chrome.appNav;
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '236px 1fr', height: '100%', background: ds.color.bg }}>
@@ -124,7 +127,7 @@ function AppChrome({ frame }: { frame: Frame }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 22 }}>
           <span style={{ width: 28, height: 28, borderRadius: ds.radius.sm, background: ds.color.gradient }} />
           <Type step="h3" style={{ fontSize: 16 }}>
-            Панель
+            {chrome.appTitle}
           </Type>
         </div>
 
@@ -148,11 +151,11 @@ function AppChrome({ frame }: { frame: Frame }) {
         ))}
 
         <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 10, paddingTop: 16, borderTop: `1px solid ${ds.color.border}` }}>
-          <Avatar seed={11} name="Анна Реут" size={32} />
+          <Avatar seed={11} name={chrome.people[0]} size={32} />
           <div style={{ minWidth: 0 }}>
-            <Type step="small">Анна Реут</Type>
+            <Type step="small">{chrome.people[0]}</Type>
             <Type step="small" tone="faint" style={{ fontSize: 11 }}>
-              Администратор
+              {chrome.adminRole}
             </Type>
           </div>
         </div>
@@ -164,9 +167,9 @@ function AppChrome({ frame }: { frame: Frame }) {
             {frame.name}
           </Type>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Field label="Поиск" style={{ paddingBlock: 8, minWidth: 220 }} />
+            <Field label={chrome.search} style={{ paddingBlock: 8, minWidth: 220 }} />
             <Glyph seed={5} size={20} color={ds.color.textFaint} />
-            <Avatar seed={11} name="Анна Реут" size={32} />
+            <Avatar seed={11} name={chrome.people[0]} size={32} />
           </div>
         </header>
 
@@ -227,11 +230,14 @@ function Artboard({ frame }: { frame: Frame }) {
 export default function FrameView({
   frame,
   ds,
+  locale,
   nodeRef,
   deviceWidth,
 }: {
   frame: Frame;
   ds: DesignSystem;
+  /** Language the design was generated in — drives the page furniture. */
+  locale: Locale;
   /** Points at the unscaled artboard, so image export captures full resolution. */
   nodeRef?: React.Ref<HTMLDivElement>;
   /**
@@ -292,7 +298,9 @@ export default function FrameView({
               style={{ height: canvas.height ? canvas.height : undefined }}
             >
               <DsProvider ds={ds}>
-                <Artboard frame={frame} />
+                <ChromeProvider chrome={VOCAB[locale].chrome}>
+                  <Artboard frame={frame} />
+                </ChromeProvider>
               </DsProvider>
             </div>
           </div>

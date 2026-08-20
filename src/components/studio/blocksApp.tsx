@@ -1,5 +1,5 @@
 import type { BlockInstance } from '../../lib/studio/types';
-import { Avatar, Btn, Chip, Field, Glyph, Stack, Surface, Type, useDs, Visual } from './atoms';
+import { Avatar, Btn, Chip, Field, Glyph, Stack, Surface, Type, useChrome, useDs, Visual } from './atoms';
 
 /* ===========================================================================
    Interface blocks: dashboard widgets, mobile screens and the component sheet.
@@ -105,9 +105,10 @@ export function Chart({ block }: { block: BlockInstance }) {
 }
 
 export function Table({ block }: { block: BlockInstance }) {
+  const chrome = useChrome();
   const ds = useDs();
   const items = block.content.items ?? [];
-  const statuses = ['В работе', 'Новая', 'Готово', 'Пауза'];
+  const statuses = chrome.boardColumns;
 
   return (
     <Surface pad={0} style={{ overflow: 'hidden' }}>
@@ -122,7 +123,7 @@ export function Table({ block }: { block: BlockInstance }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.6fr 1fr 1fr', gap: 16, padding: '12px 24px', background: ds.color.surface2 }}>
-        {['Название', 'Описание', 'Статус', 'Сумма'].map((title) => (
+        {chrome.tableHeaders.map((title) => (
           <Type key={title} step="small" tone="faint">
             {title}
           </Type>
@@ -422,6 +423,7 @@ export function Tabbar({ block }: { block: BlockInstance }) {
 /* --------------------------------- ui kit -------------------------------- */
 
 export function UiKit({ block }: { block: BlockInstance }) {
+  const chrome = useChrome();
   const ds = useDs();
   const seed = hash(block.id);
 
@@ -517,7 +519,7 @@ export function UiKit({ block }: { block: BlockInstance }) {
         </Row>
 
         <Row title="Аватары и статусы">
-          {['Анна Реут', 'Игорь Савельев', 'Мария Долина', 'Пётр Ильин'].map((name, i) => (
+          {chrome.people.map((name, i) => (
             <Avatar key={name} seed={seed + i * 4} name={name} />
           ))}
         </Row>

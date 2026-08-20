@@ -1,5 +1,6 @@
 import { createContext, useContext, type CSSProperties, type ReactNode } from 'react';
 import type { DesignSystem } from '../../lib/studio/types';
+import type { Chrome } from '../../lib/studio/vocab/types';
 
 /* ===========================================================================
    Rendering primitives.
@@ -19,6 +20,24 @@ export function useDs(): DesignSystem {
   const ds = useContext(DsContext);
   if (!ds) throw new Error('useDs must be used inside <DsProvider>');
   return ds;
+}
+
+/*
+  Page furniture the renderers print themselves — footer column headings, the
+  sidebar of an app mock, table headers — is not block content, so it never
+  passed through the composer and stayed Russian in every language. A context
+  beside the design system is the cheapest way to hand it to whoever draws it.
+*/
+const ChromeContext = createContext<Chrome | null>(null);
+
+export function ChromeProvider({ chrome, children }: { chrome: Chrome; children: ReactNode }) {
+  return <ChromeContext.Provider value={chrome}>{children}</ChromeContext.Provider>;
+}
+
+export function useChrome(): Chrome {
+  const chrome = useContext(ChromeContext);
+  if (!chrome) throw new Error('useChrome must be used inside <ChromeProvider>');
+  return chrome;
 }
 
 /* --------------------------------- text ---------------------------------- */

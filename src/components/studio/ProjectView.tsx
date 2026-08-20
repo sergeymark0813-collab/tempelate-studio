@@ -211,6 +211,7 @@ export default function ProjectView({ project, onRegenerate }: { project: Projec
             key={`${project.id}-${frame.id}`}
             frame={frame}
             ds={ds}
+            locale={draft.locale}
             nodeRef={artboardRef}
             deviceWidth={reflows ? getDevice(deviceId).width : undefined}
           />

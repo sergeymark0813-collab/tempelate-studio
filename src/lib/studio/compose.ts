@@ -185,6 +185,10 @@ interface ComposeInput {
 
 function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance {
   const { ds, content, archetype } = input;
+  // Every literal below comes from the language pack the brief was built with.
+  const S = content.vocab.sections;
+  const money = (value: number) =>
+    `${value.toLocaleString(content.vocab.numberLocale)} ${content.vocab.currency}`;
   const variant = pickVariant(rng, type, archetype);
   const info = meta(type, content.vocab);
 
@@ -235,16 +239,16 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
       break;
 
     case 'logos':
-      block.content = { items: rng.sample(['Ольхон', 'Ремарк', 'Северянка', 'Гринвич', 'Атлас', 'Медиум'], 6).map((title) => ({ title })) };
+      block.content = { items: rng.sample(S.logoNames, 6).map((title) => ({ title })) };
       break;
 
     case 'pageHeader':
-      block.content = { eyebrow: 'Раздел', title: rng.pick(content.categories), subtitle: content.subtitle };
+      block.content = { eyebrow: S.pageHeaderEyebrow, title: rng.pick(content.categories), subtitle: content.subtitle };
       break;
 
     case 'categories':
       block.params = { ...block.params, columns: wideCanvas ? rng.pick([3, 4, 6]) : 2, count: 6 };
-      block.content = { eyebrow: 'Категории', title: 'Выберите направление', items: content.categories.map((title) => ({ title })) };
+      block.content = { eyebrow: S.categories.eyebrow, title: S.categories.title, items: content.categories.map((title) => ({ title })) };
       break;
 
     case 'features': {
@@ -256,8 +260,8 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
         spans: variant === 'bento' ? mosaicSpans(rng, count, 4) : undefined,
       };
       block.content = {
-        eyebrow: 'Почему мы',
-        title: rng.pick(['Что вы получаете', 'Как это устроено', 'Что входит в работу']),
+        eyebrow: S.features.eyebrow,
+        title: rng.pick(S.features.titles),
         items: content.features.slice(0, count).map((feature) => ({ title: feature.title, text: feature.text })),
       };
       break;
@@ -267,8 +271,8 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
       const count = rng.int(5, 6);
       block.params = { ...block.params, columns: 4, count, spans: mosaicSpans(rng, count, 4) };
       block.content = {
-        eyebrow: 'Коротко',
-        title: 'Главное о проекте',
+        eyebrow: S.bento.eyebrow,
+        title: S.bento.title,
         items: content.features.slice(0, count).map((feature) => ({ title: feature.title, text: feature.text })),
       };
       break;
@@ -277,20 +281,11 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'showcase': {
       // The same block shows dishes for a restaurant and case studies for an
       // agency — the heading has to follow the sphere or the page reads wrong.
-      const headings: Record<string, { eyebrow: string; titles: string[]; cta: string }> = {
-        food: { eyebrow: 'Меню', titles: ['Что на столе', 'Из печи и с гриля', 'Позиции сезона'], cta: 'Полное меню' },
-        shop: { eyebrow: 'Витрина', titles: ['Популярное', 'Новая коллекция', 'Выбор покупателей'], cta: 'Весь каталог' },
-        health: { eyebrow: 'Направления', titles: ['С чем мы работаем', 'Услуги клиники'], cta: 'Все направления' },
-        beauty: { eyebrow: 'Услуги', titles: ['Что мы делаем', 'Наши процедуры'], cta: 'Полный прайс' },
-        sport: { eyebrow: 'Занятия', titles: ['Направления тренировок', 'Что есть в клубе'], cta: 'Расписание' },
-        education: { eyebrow: 'Программы', titles: ['Чему мы учим', 'Актуальные курсы'], cta: 'Все курсы' },
-        home: { eyebrow: 'Объекты', titles: ['Реализованные проекты', 'Наши работы'], cta: 'Все объекты' },
-        tech: { eyebrow: 'Кейсы', titles: ['Что мы уже сделали', 'Проекты в продакшене'], cta: 'Все кейсы' },
-      };
+      const headings: Record<string, { eyebrow: string; titles: string[]; cta: string }> = S.showcase;
       const heading = headings[content.domain.id] ?? {
-        eyebrow: 'Работы',
-        titles: ['Избранные проекты', 'Последние работы', 'Что мы уже сделали'],
-        cta: 'Все работы',
+        eyebrow: S.showcase.default.eyebrow,
+        titles: S.showcase.default.titles,
+        cta: S.showcase.default.cta,
       };
 
       block.params = { ...block.params, columns: variant === 'rows' ? 1 : rng.pick([2, 3]), count: variant === 'rows' ? 3 : rng.pick([4, 6]) };
@@ -306,12 +301,12 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'catalog':
       block.params = { ...block.params, columns: variant === 'grid4' ? 4 : 3, count: variant === 'grid4' ? 8 : 6 };
       block.content = {
-        eyebrow: 'Каталог',
-        title: rng.pick(['Популярное', 'Новая коллекция', 'Хиты продаж']),
+        eyebrow: S.catalog.eyebrow,
+        title: rng.pick(S.catalog.titles),
         items: content.items.slice(0, 8).map((item, index) => ({
           title: item.title,
           meta: item.meta,
-          value: `${(rng.int(9, 240) * 100 + index * 50).toLocaleString('ru-RU')} ₽`,
+          value: money(rng.int(9, 240) * 100 + index * 50),
         })),
         cta: content.cta,
       };
@@ -324,21 +319,21 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
         subtitle: content.items[0].meta,
         body: content.subtitle,
         cta: content.cta,
-        ctaSecondary: 'В избранное',
+        ctaSecondary: S.catalog.ctaSecondary,
         items: content.items.slice(1, 5).map((item) => ({ title: item.title, meta: item.meta })),
       };
       break;
 
     case 'gallery':
       block.params = { ...block.params, count: variant === 'strip' ? 4 : rng.pick([5, 6, 7]), columns: 4 };
-      block.content = { eyebrow: 'Галерея', title: rng.pick(['Атмосфера', 'Как это выглядит', 'Кадры проекта']) };
+      block.content = { eyebrow: S.gallery.eyebrow, title: rng.pick(S.gallery.titles) };
       break;
 
     case 'stats':
       block.params = { ...block.params, count: 4, columns: 4 };
       block.content = {
-        eyebrow: 'В цифрах',
-        title: 'Коротко о масштабе',
+        eyebrow: S.stats.eyebrow,
+        title: S.stats.title,
         items: content.stats.slice(0, 4).map((stat) => ({ title: stat.label, value: stat.value })),
       };
       break;
@@ -346,8 +341,8 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'steps':
       block.params = { ...block.params, count: 4, columns: 4 };
       block.content = {
-        eyebrow: 'Процесс',
-        title: 'Как мы работаем',
+        eyebrow: S.steps.eyebrow,
+        title: S.steps.title,
         items: content.steps.map((step) => ({ title: step.title, text: step.text })),
       };
       break;
@@ -355,12 +350,10 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'pricing':
       block.params = { ...block.params, count: 3, columns: 3, emphasis: 'high' };
       block.content = {
-        eyebrow: 'Стоимость',
-        title: 'Прозрачные тарифы',
+        eyebrow: S.pricing.eyebrow,
+        title: S.pricing.title,
         items: [
-          { title: 'Базовый', value: '25 000 ₽', text: 'Для небольших задач и первого запуска' },
-          { title: 'Оптимальный', value: '60 000 ₽', text: 'Полный цикл с поддержкой на месяц' },
-          { title: 'Максимальный', value: 'от 120 000 ₽', text: 'Комплексная работа под ключ' },
+          ...S.pricing.tiers,
         ],
         cta: content.cta,
       };
@@ -369,13 +362,10 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'team':
       block.params = { ...block.params, count: 4, columns: 4 };
       block.content = {
-        eyebrow: 'Команда',
-        title: 'Кто будет работать',
+        eyebrow: S.team.eyebrow,
+        title: S.team.title,
         items: [
-          { title: 'Анна Реут', meta: 'арт-директор' },
-          { title: 'Игорь Савельев', meta: 'ведущий дизайнер' },
-          { title: 'Мария Долина', meta: 'проектный менеджер' },
-          { title: 'Пётр Ильин', meta: 'разработчик' },
+          ...S.team.members,
         ],
       };
       break;
@@ -383,8 +373,8 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'testimonials':
       block.params = { ...block.params, count: variant === 'quote' ? 1 : 3, columns: 3 };
       block.content = {
-        eyebrow: 'Отзывы',
-        title: 'Что говорят клиенты',
+        eyebrow: S.testimonials.eyebrow,
+        title: S.testimonials.title,
         items: content.testimonials.map((entry) => ({ title: entry.name, meta: entry.role, text: entry.text })),
       };
       break;
@@ -392,27 +382,27 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'faq':
       block.params = { ...block.params, count: 5, columns: variant === 'twoColumn' ? 2 : 1 };
       block.content = {
-        eyebrow: 'Вопросы',
-        title: 'Частые вопросы',
+        eyebrow: S.faq.eyebrow,
+        title: S.faq.title,
         items: content.faq.map((entry) => ({ title: entry.title, text: entry.text })),
       };
       break;
 
     case 'contactForm':
       block.content = {
-        eyebrow: 'Контакт',
-        title: rng.pick(['Обсудим задачу', 'Оставьте заявку', 'Напишите нам']),
-        subtitle: 'Ответим в течение рабочего дня и предложим ближайшее время для разговора.',
+        eyebrow: S.contactForm.eyebrow,
+        title: rng.pick(S.contactForm.titles),
+        subtitle: S.contactForm.subtitle,
         cta: content.cta,
-        items: [{ title: 'Имя' }, { title: 'Телефон или почта' }, { title: 'Коротко о задаче' }],
+        items: S.contactForm.fields.map((title) => ({ title })),
       };
       break;
 
     case 'cta':
       block.params = { ...block.params, emphasis: 'high', invert: rng.chance(0.6) };
       block.content = {
-        title: rng.pick(['Готовы начать?', 'Обсудим ваш проект', 'Сделаем это вместе']),
-        subtitle: 'Расскажите о задаче — вернёмся с предложением и сроками.',
+        title: rng.pick(S.cta.titles),
+        subtitle: S.cta.subtitle,
         cta: content.cta,
         ctaSecondary: content.ctaSecondary,
       };
@@ -429,34 +419,34 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'authForm':
       block.content = {
         eyebrow: content.brand,
-        title: rng.pick(['С возвращением', 'Вход в аккаунт', 'Рады видеть снова']),
-        subtitle: 'Введите почту и пароль, чтобы продолжить работу.',
-        cta: 'Войти',
-        ctaSecondary: 'Создать аккаунт',
-        items: [{ title: 'Электронная почта' }, { title: 'Пароль' }],
+        title: rng.pick(S.authForm.titles),
+        subtitle: S.authForm.subtitle,
+        cta: S.authForm.cta,
+        ctaSecondary: S.authForm.ctaSecondary,
+        items: S.authForm.fields.map((title) => ({ title })),
       };
       break;
 
     case 'kpis':
       block.params = { ...block.params, count: 4, columns: 4 };
       block.content = {
-        title: 'Обзор',
+        title: S.kpisTitle,
         items: content.stats.slice(0, 4).map((stat) => ({ title: stat.label, value: stat.value, meta: rng.chance(0.5) ? `+${rng.int(2, 24)}%` : `−${rng.int(1, 9)}%` })),
       };
       break;
 
     case 'chart':
-      block.content = { title: rng.pick(['Динамика за 30 дней', 'Выручка по неделям', 'Активность пользователей']) };
+      block.content = { title: rng.pick(S.chartTitles) };
       break;
 
     case 'table':
       block.params = { ...block.params, count: 6 };
       block.content = {
-        title: rng.pick(['Последние записи', 'Сделки в работе', 'Заявки']),
+        title: rng.pick(S.tableTitles),
         items: content.items.slice(0, 6).map((item, index) => ({
           title: item.title,
           meta: item.meta,
-          value: `${(rng.int(5, 90) * 1000 + index).toLocaleString('ru-RU')} ₽`,
+          value: money(rng.int(5, 90) * 1000 + index),
         })),
       };
       break;
@@ -464,13 +454,9 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'activity':
       block.params = { ...block.params, count: 5 };
       block.content = {
-        title: 'Активность',
+        title: S.activity.title,
         items: [
-          { title: 'Анна Реут', text: 'изменила статус сделки', meta: '5 минут назад' },
-          { title: 'Игорь Савельев', text: 'добавил комментарий', meta: '28 минут назад' },
-          { title: 'Система', text: 'выгрузила отчёт за неделю', meta: '2 часа назад' },
-          { title: 'Мария Долина', text: 'создала задачу', meta: 'вчера' },
-          { title: 'Пётр Ильин', text: 'закрыл заявку', meta: 'вчера' },
+          ...S.activity.entries,
         ],
       };
       break;
@@ -478,17 +464,17 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'board':
       block.params = { ...block.params, columns: 4 };
       block.content = {
-        title: 'Доска',
-        items: ['Новые', 'В работе', 'На проверке', 'Готово'].map((title) => ({ title })),
+        title: S.board.title,
+        items: S.board.columns.map((title) => ({ title })),
       };
       break;
 
     case 'mobileHeader':
-      block.content = { title: content.brand, subtitle: rng.pick(['Доброе утро', 'Добрый день', 'С возвращением']) };
+      block.content = { title: content.brand, subtitle: rng.pick(S.mobileGreetings) };
       break;
 
     case 'mobileHero':
-      block.content = { eyebrow: 'Сегодня', title: content.headline, cta: content.cta };
+      block.content = { eyebrow: S.mobileHeroEyebrow, title: content.headline, cta: content.cta };
       break;
 
     case 'mobileChips':
@@ -498,15 +484,15 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'mobileCards':
       block.params = { ...block.params, count: variant === 'grid' ? 4 : 3, columns: variant === 'grid' ? 2 : 1 };
       block.content = {
-        title: rng.pick(['Для вас', 'Популярное', 'Новое']),
-        items: content.items.slice(0, 4).map((item) => ({ title: item.title, meta: item.meta, value: `${rng.int(3, 40) * 100} ₽` })),
+        title: rng.pick(S.mobileCardTitles),
+        items: content.items.slice(0, 4).map((item) => ({ title: item.title, meta: item.meta, value: money(rng.int(3, 40) * 100) })),
       };
       break;
 
     case 'mobileList':
       block.params = { ...block.params, count: 4 };
       block.content = {
-        title: 'История',
+        title: S.mobileListTitle,
         items: content.items.slice(0, 4).map((item) => ({ title: item.title, meta: item.meta })),
       };
       break;
@@ -517,7 +503,7 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
       break;
 
     case 'tabbar':
-      block.content = { items: ['Главная', 'Каталог', 'Избранное', 'Профиль'].map((title) => ({ title })) };
+      block.content = { items: S.tabbar.map((title) => ({ title })) };
       break;
 
     case 'poster':
@@ -543,8 +529,8 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'slideContent':
       block.params = { ...block.params, count: 3, columns: 3 };
       block.content = {
-        eyebrow: 'Подход',
-        title: rng.pick(['Что мы предлагаем', 'Три направления работы', 'Как устроено решение']),
+        eyebrow: S.slideContent.eyebrow,
+        title: rng.pick(S.slideContent.titles),
         items: content.features.slice(0, 3).map((feature) => ({ title: feature.title, text: feature.text })),
       };
       break;
@@ -552,56 +538,56 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
     case 'slideStats':
       block.params = { ...block.params, count: 3, columns: 3 };
       block.content = {
-        eyebrow: 'Результаты',
-        title: 'Коротко о цифрах',
+        eyebrow: S.slideStats.eyebrow,
+        title: S.slideStats.title,
         items: content.stats.slice(0, 3).map((stat) => ({ title: stat.label, value: stat.value })),
       };
       break;
 
     case 'cardFront':
-      block.content = { title: 'Анна Реут', subtitle: 'арт-директор', eyebrow: content.brand };
+      block.content = { title: S.card.name, subtitle: S.card.role, eyebrow: content.brand };
       break;
 
     case 'cardBack':
       block.content = {
         title: content.brand,
-        items: [{ title: '+7 900 000-00-00' }, { title: `hello@${(content.brand || 'studio').toLowerCase().replace(/[^a-z]/g, '') || 'studio'}.ru` }, { title: 'Москва, Набережная 14' }],
+        items: [{ title: S.card.phone }, { title: `hello@${(content.brand || 'studio').toLowerCase().replace(/[^a-z]/g, '') || 'studio'}.${S.card.emailHost}` }, { title: S.card.address }],
       };
       break;
 
     case 'emailHeader':
-      block.content = { title: content.brand, subtitle: 'Письмо месяца' };
+      block.content = { title: content.brand, subtitle: S.email.headerSubtitle };
       break;
 
     case 'emailHero':
-      block.content = { eyebrow: 'Новости', title: content.headline, subtitle: content.subtitle, cta: content.cta };
+      block.content = { eyebrow: S.email.heroEyebrow, title: content.headline, subtitle: content.subtitle, cta: content.cta };
       break;
 
     case 'emailCards':
       block.params = { ...block.params, count: 2, columns: 1 };
       block.content = {
-        title: 'Подборка недели',
-        items: content.items.slice(0, 2).map((item) => ({ title: item.title, meta: item.meta, value: `${rng.int(9, 60) * 100} ₽` })),
+        title: S.email.cardsTitle,
+        items: content.items.slice(0, 2).map((item) => ({ title: item.title, meta: item.meta, value: money(rng.int(9, 60) * 100) })),
       };
       break;
 
     case 'emailCta':
-      block.content = { title: 'Не пропустите', subtitle: 'Предложение действует до конца недели.', cta: content.cta };
+      block.content = { title: S.email.ctaTitle, subtitle: S.email.ctaSubtitle, cta: content.cta };
       break;
 
     case 'emailFooter':
-      block.content = { title: content.brand, subtitle: 'Вы получили это письмо, потому что подписались на рассылку.' };
+      block.content = { title: content.brand, subtitle: S.email.footerSubtitle };
       break;
 
     case 'logoMark':
     case 'logoVariants':
     case 'logoUsage':
-      block.content = { title: content.brand, subtitle: content.domain.label, eyebrow: 'Знак' };
+      block.content = { title: content.brand, subtitle: content.domain.label, eyebrow: S.logoMarkEyebrow };
       block.mark = input.mark;
       break;
 
     case 'uiKit':
-      block.content = { title: 'Библиотека компонентов', subtitle: content.brand };
+      block.content = { title: S.uiKitTitle, subtitle: content.brand };
       break;
 
     case 'productCard':
@@ -610,7 +596,7 @@ function buildBlock(rng: Rng, type: string, input: ComposeInput): BlockInstance 
         title: content.items[0].title,
         subtitle: content.items[0].meta,
         cta: content.cta,
-        items: [{ title: 'Хит продаж' }, { title: `${rng.int(4, 5)}.${rng.int(0, 9)}` }],
+        items: [{ title: S.productBadge }, { title: `${rng.int(4, 5)}.${rng.int(0, 9)}` }],
       };
       break;
 
@@ -657,7 +643,7 @@ export function composeFrames(rng: Rng, input: ComposeInput): Frame[] {
   const frames: Frame[] = [
     {
       id: rng.id('frame'),
-      name: product.extraFrames?.length ? 'Главный экран' : product.label,
+      name: product.extraFrames?.length ? input.content.vocab.sections.mainFrame : product.label,
       canvas: product.canvas,
       blocks: mainTypes.map((type) => buildBlock(rng, type, input)),
     },

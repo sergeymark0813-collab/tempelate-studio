@@ -3,6 +3,7 @@ import { ARCHETYPES, composeFrames } from './compose';
 import { COLOR_HUES } from './palette';
 import { getProduct } from './products';
 import { getNiche } from './niches';
+import { VOCAB } from './vocab';
 import { buildMarkSpec, type LogoType } from './logo/spec';
 import { plural } from '../plural';
 import { answerOf, customOf, firstAnswer, requiredBlocks, trackOf } from './flow';
@@ -231,7 +232,11 @@ export function generateProject(answers: Answers, locale: Locale, seedInput?: nu
       : ds.space.density === 'compact'
         ? ARCHETYPES.filter((entry) => entry.id !== 'immersive')
         : ARCHETYPES;
-  const archetype = rng.pick(archetypePool);
+  const archetypeBase = rng.pick(archetypePool);
+  // Label and rationale come from the language pack; the archetype itself only
+  // carries layout rules, which are the same in every language.
+  const archetypeCopy = VOCAB[locale].archetypes[archetypeBase.id] ?? archetypeBase;
+  const archetype = { ...archetypeBase, ...archetypeCopy };
 
   // The logo track runs its own synthesis: a construction principle and a motif
   // chosen from the brand's meaning, never the brand's first letter.
